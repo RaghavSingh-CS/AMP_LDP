@@ -1,0 +1,15 @@
+# Python-generated files
+__pycache__/
+*.py[cod]
+.venv/
+
+# Local IDE settings
+.idea/
+
+# Dataset artifacts
+data/raw/*
+data/interim/*.parquet
+
+# Keep data directories visible when datasets are absent
+!data/raw/.gitkeep
+!data/interim/.gitkeep
