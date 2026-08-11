@@ -18,3 +18,8 @@ data/processed/*
 !data/processed/.gitkeep
 
 # The small fitted preprocessing scaler remains tracked.
+
+# Reproducible temporal window manifests
+data/windows/*
+!data/windows/.gitkeep
+

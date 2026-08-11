@@ -76,3 +76,40 @@ Stage 2 ends after creating customer-disjoint scaled train, validation, and test
 Parquets, exactly aligned masks, the authoritative split manifest, and the
 serialized train-fitted scaler. It performs no windowing, balancing, feature
 selection, model training, anomaly scoring, or evaluation.
+
+## Stage 3 — Temporal Windowing
+
+Stage 3 reads the scaled and customer-disjoint Stage 2 Parquets. It creates
+reference-only temporal window manifests; it does not duplicate consumption
+sequences or train a model.
+
+| # | Decision | Reason | What was not done | Possible future revision |
+|---:|---|---|---|---|
+| 1 | Read the scaled Stage 2 train, validation, test, and aligned mask Parquets. | Stage 2 fixes customer assignments and train-only scaling for controlled temporal experiments. | Stage 1 data is not rescaled, and customers are not reassigned. | Version input hashes through a formal artifact registry if the pipeline expands. |
+| 2 | Fix the initial baseline window length at 30 positions. | A consistent approximately monthly sequence length supports controlled stride comparisons. | Different window lengths are not compared in this stage. | Evaluate alternative lengths separately while holding customer splits fixed. |
+| 3 | Support stride configurations 30, 15, and 7. | These represent non-overlapping, 50%-overlapping, and weekly-shifted 30-position windows. | Unsupported strides are rejected. | Change allowed values explicitly if later experiments justify it. |
+| 4 | Make no assumption that one stride is inherently superior. | Overlap changes redundancy and temporal resolution, so performance must be compared empirically. | Stride is not selected using labels or preliminary model results. | Compare approved strides using the same downstream method and splits. |
+| 5 | Execute stride configurations sequentially. | One-stride-at-a-time processing limits RAM and disk use. | Dense outputs for all stride variants are not generated simultaneously. | Consider parallelism only after resource profiling. |
+| 6 | Execute stride 30 for the initial Stage 3 artifact. | It is the requested low-duplication baseline. | Strides 15 and 7 are not generated during the initial run. | Generate them later with unchanged Stage 2 inputs. |
+| 7 | Reuse the exact Stage 2 customer assignments. | Fixed assignments make stride comparisons controlled and prevent customer leakage. | Stage 3 does not perform a new split. | Assignments must remain fixed for baseline comparisons. |
+| 8 | Never resplit customers during window generation. | A customer must remain in one held-out role. | No random or order-based assignment occurs. | No revision is expected for customer-level evaluation. |
+| 9 | Generate windows independently within each customer. | Positions from different customers must never form one sequence. | No window crosses a customer boundary. | Keep this rule for all later sequence artifacts. |
+| 10 | Drop incomplete trailing windows instead of padding them. | The baseline uses only full 30-position sequences. | Final partial sequences are not padded or extended. | Compare masked padding later only as a documented experiment. |
+| 11 | Inherit FLAG from the customer as weak supervision. | FLAG is customer-level; theft event dates are unavailable. | Windows are not treated as verified theft events or relabelled from patterns. | Use event-level labels if a future authoritative source provides them. |
+| 12 | Make no claim that every window from a FLAG=1 customer contains theft. | Positive customers may contain normal intervals, making positive window labels noisy. | Theft dates are not invented or inferred. | Consider weakly supervised methods during later modeling. |
+| 13 | Preserve the aligned mask as separate auxiliary information. | It records which positions were observed versus imputed. | Mask values are not combined with scaled consumption. | Evaluate the mask as a separate later model input. |
+| 14 | Do not pass missingness into a model during Stage 3. | This stage creates manifests only. | No mask-aware architecture or training is implemented. | Decide mask usage alongside model design. |
+| 15 | Do not filter windows by missingness. | A defensible threshold requires empirical analysis. | Highly missing, fully missing, and zero-looking windows are retained. | Evaluate thresholds using the retained metadata. |
+| 16 | Retain missing_count and missing_fraction for every window. | These fields support later diagnostics without losing provenance. | Missingness is not inferred from scaled consumption. | Add gap-run summaries if later analysis needs them. |
+| 17 | Allow windows to span the removed 2014-10-03 date. | The baseline treats the 1,034 features as one positional sequence despite the known discontinuity. | No break, padding date, or special exclusion is introduced. | Compare calendar-contiguous handling separately. |
+| 18 | Store manifests rather than dense 30-value arrays. | Existing split files plus IDs and indices reconstruct windows while avoiding duplication. | Consumption and mask sequences are not embedded per manifest row. | Materialize batches lazily in later training code. |
+| 19 | Recover windows using split, CONS_NO, start index, and inclusive end index. | These references deterministically identify the Stage 2 slice; actual boundary dates are also retained. | Generic day numbers do not replace actual feature dates. | Add a dataset accessor during model implementation. |
+| 20 | Perform no class balancing or model training. | Window creation is separate from sampling, architecture, optimization, and evaluation. | No sampling, Autoencoder, GAN, classifier, anomaly score, or threshold is created. | Address these choices only in approved later stages. |
+
+### Stage 3 boundary
+
+Stage 3 ends after generating and independently validating the stride-30 train,
+validation, and test window manifests plus their configuration and missingness
+summary. Strides 15 and 7 remain planned, not executed. No dense window tensor,
+class balancing, model architecture, training, or evaluation is produced.
+
