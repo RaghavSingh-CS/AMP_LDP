@@ -160,11 +160,13 @@ coverage, and class composition together.
 
 ## Stage 4 — Baseline Autoencoder
 
-Stage 4 implements the first anomaly-detection model pipeline. Full training
-was intentionally **not** executed by Codex. The user will manually run the
-training command on the target machine so runtime and RAM behavior can be
-observed directly. Implementation does not make Stage 4 a completed training
-run.
+Stage 4 implements the first anomaly-detection model pipeline. At implementation
+time, full training was intentionally **not** executed by Codex. The user
+subsequently executed the run manually on CPU. It used 708,308 normal training
+windows and 152,246 normal validation windows, ran 35 of at most 50 epochs, and
+triggered early stopping. The best qualifying checkpoint is epoch 30 with
+normal-validation MSE `0.043589054377373454`. The test set remained untouched,
+and no anomaly threshold was selected during Stage 4.
 
 | Decision | Adopted baseline and reason |
 |---|---|
@@ -194,3 +196,28 @@ Future controlled comparisons may include different latent dimensions, MAE,
 Huber loss, temporal CNN or recurrent Autoencoders, strides 15 or 7, and
 missingness-aware variants. None of these comparisons has been executed. GANs,
 ensembles, threshold selection, and test evaluation remain outside Stage 4.
+
+## Stage 5 — Validation-Based Anomaly Threshold
+
+Stage 5 uses the completed Autoencoder's per-window validation reconstruction
+MSE as the anomaly-score candidate. All metrics below are validation metrics
+under weak customer-level labels; they are not confirmed theft-event results.
+
+| Decision | Reason | What was NOT done | Possible future revision |
+|---|---|---|---|
+| Use validation reconstruction MSE as the anomaly score and keep test data untouched. | Threshold selection must be completed without contaminating the reserved final test evaluation. | No test Parquet, test reconstruction score, test label, or test metric was read or calculated. | Apply the frozen threshold once in a separately approved final test stage. |
+| Compare normal-only p90, p95, p97.5, and p99 thresholds with efficient supervised validation candidates. | Percentiles expose explicit normal false-positive tradeoffs; best-F1 and best-balanced-accuracy candidates show what label-optimized selection would imply. | No millions-point brute-force grid, accuracy-only optimization, or test-tuned threshold was used. | Add an explicit utility investigation-cost model only if a defensible business cost ratio becomes available. |
+| Adopt threshold `0.16436323150992393`, the normal-validation 95th percentile. | It controls normal-window FPR at 5.0005% without fitting the cutoff directly to noisy theft-window labels. It avoids the best-F1 candidate's impractical 79.30% FPR while retaining more theft-labelled windows than p99. | The mathematically highest validation F1 was not adopted blindly, and the threshold is not claimed to be globally optimal. | Reassess the operating point using deployment capacity or explicit false-positive/false-negative costs. |
+| Record selected-threshold validation metrics: TP 1,450, TN 144,633, FP 7,613, FN 11,845, precision 0.159991, recall 0.109064, F1 0.129707, specificity 0.949995, FPR 0.050005, and predicted anomaly rate 5.4748%. | These values make the chosen baseline's detection/false-alarm tradeoff explicit under the available labels. | Accuracy is not treated as the primary metric, and the values are not presented as final test performance. | Report confidence intervals or customer-aware resampling in later robustness work. |
+| Treat the best-F1 and best-balanced-accuracy thresholds as diagnostics, not deployment choices. | Best F1 is only 0.164975 and flags 80.21% of validation windows; best balanced accuracy is 0.556662 with similarly high false-positive volume. | No arbitrary business cost ratio was invented to justify either cutoff. | Revisit supervised selection if event-level labels or investigation-cost evidence becomes available. |
+| Report validation ROC-AUC 0.564310 and PR-AUC 0.110242 as weakly supervised ranking summaries. | Threshold-independent summaries confirm that window-level score separation is limited. | These AUCs are not interpreted as event-level or test performance. | Compare later models using the same untouched test protocol after all validation decisions are frozen. |
+| Explicitly retain the weak-supervision limitation. | `FLAG=1` is customer-level, so an individual theft-labelled window may contain normal behavior; 44.39% of theft-labelled windows score at or below the normal median. | Every `FLAG=1` window is not treated as a confirmed anomalous event. | Use event timestamps or finer labels if an authoritative source becomes available. |
+| Keep customer aggregation diagnostic only. | Mean/max/p95 customer ROC-AUC values are 0.5751/0.5658/0.5781 and PR-AUC values are 0.1428/0.1248/0.1550. P95 improves separation modestly over window ROC-AUC 0.5643 and PR-AUC 0.1102, but remains weak. | No separate customer-level final threshold was selected. | Evaluate customer-level decision rules in a dedicated validation design. |
+| Record that reconstruction MSE is not strongly driven by missing fraction in this validation set. | Overall Pearson/Spearman correlations are -0.0140/-0.0417; within-label correlations are also small and negative. | The model, Stage 3C filter, or selected threshold was not changed solely from this diagnostic. | Repeat with mask-aware and stricter-missingness sensitivity variants. |
+| Freeze the selected threshold in `models/autoencoder/ae_stride30_threshold.json`. | A versioned artifact prevents later test results from changing the validation-selected operating point. | No anomaly threshold is recomputed from test data. | Version a replacement only after a new approved validation experiment. |
+
+Lower thresholds increase theft-labelled recall but also raise normal false
+alarms; higher thresholds reduce false alarms while missing more theft-labelled
+windows. The selected p95 threshold is a defensible first baseline rather than
+a claim of optimality. Stage 5 ends before Autoencoder test evaluation, GAN
+work, alternative strides, ensembles, dashboards, or deployment.

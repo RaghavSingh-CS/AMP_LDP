@@ -28,7 +28,8 @@ preventing preprocessing leakage.
 - Stage 3 — Configurable temporal windowing: complete for stride 30
 - Stage 3B — Missingness quality analysis: complete
 - Stage 3C — Window quality filtering: complete for stride 30
-- Stage 4 — Baseline Autoencoder: implemented, training pending
+- Stage 4 — Baseline Autoencoder: trained
+- Stage 5 — Validation threshold selection: complete
 
 Stage 3B compares candidate missingness thresholds without changing the
 canonical manifests. See the
@@ -46,8 +47,14 @@ be the scaled consumption sequence only. The missingness mask,
 Stage 4 implements a normal-only, fully connected Autoencoder with architecture
 `30 → 16 → 8 → 4 → 8 → 16 → 30`. It uses usable stride-30 `FLAG=0` training
 windows, normal-only validation MSE for early stopping, Adam at `0.001`, and
-MSE loss. Training is intentionally pending and must be run manually; Stage 4
-does not select an anomaly threshold or use the test set.
+MSE loss. Training completed on CPU and saved the best checkpoint at
+`models/autoencoder/ae_stride30_baseline.pt` without using the test set.
+
+Stage 5 selects the baseline threshold from validation reconstruction errors
+only. The adopted normal-validation 95th-percentile threshold is stored at
+`models/autoencoder/ae_stride30_threshold.json`; detailed evidence is under
+`results/autoencoder/stride_30/threshold_analysis/`. The test split remains
+reserved for later final evaluation.
 
 Files under data/raw/ are immutable source data and must never be overwritten.
 
@@ -59,6 +66,7 @@ Run the implemented stages from the repository root:
     python -m src.analysis.analyze_window_missingness
     python -m src.preprocessing.filter_windows --stride 30
     python -m src.training.train_autoencoder --stride 30
+    python -m src.analysis.analyze_autoencoder_threshold
 
 Planned comparative window runs, not yet executed:
 
