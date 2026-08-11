@@ -221,3 +221,26 @@ alarms; higher thresholds reduce false alarms while missing more theft-labelled
 windows. The selected p95 threshold is a defensible first baseline rather than
 a claim of optimality. Stage 5 ends before Autoencoder test evaluation, GAN
 work, alternative strides, ensembles, dashboards, or deployment.
+
+## Stage 6 — Frozen Test Evaluation
+
+Stage 6 evaluates the stride-30 fully connected Autoencoder once on the reserved
+test customers. The Stage 4 checkpoint and Stage 5 threshold were hashed before
+and after evaluation and remained unchanged.
+
+| Decision | Reason | What was NOT done | Possible future revision |
+|---|---|---|---|
+| Freeze the Stage 5 threshold before reading test outcomes and load it authoritatively from `models/autoencoder/ae_stride30_threshold.json`. | The test split must measure generalization of the already selected baseline rather than influence its operating point. The exact rule is `reconstruction_mse > 0.16436323150992393`. | The threshold was not recomputed, adjusted, rounded independently, or optimized against test labels. | Future models must freeze their validation decisions before using the same test protocol. |
+| Evaluate all 165,020 usable test windows exactly once: 151,985 normal and 13,035 theft-labelled. | This preserves the Stage 2 customer split, Stage 3C eligibility policy, Stage 4 model input, and complete eligible test population. | No customer was recovered, removed, resplit, or reprocessed; no full reconstruction vectors were saved. | Keep this population fixed for controlled future baseline comparisons. |
+| Record frozen window-level results: TP 1,578, TN 144,478, FP 7,507, FN 11,457, precision 0.173693, recall 0.121059, F1 0.142676, specificity 0.950607, FPR 0.049393, balanced accuracy 0.535833, accuracy 0.885081, and predicted anomaly rate 5.5054%. | These metrics provide the final operating-point record for the stride-30 FC Autoencoder under the frozen validation threshold. | Accuracy is not treated as the primary metric, and the confusion matrix is not used for retrospective tuning. | Compare future models using precision, recall, F1, FPR, ranking metrics, and operational tradeoffs together. |
+| Record test ROC-AUC 0.561688 and PR-AUC 0.114411. | Threshold-independent ranking remains only modestly above random/prevalence baselines and supports a conservative interpretation. | These values are not presented as confirmed theft-event performance. | Later models must improve ranking while preserving a defensible false-positive rate. |
+| Interpret validation-to-test behavior as broadly stable. | Absolute test-minus-validation differences are small: precision 0.013702, recall 0.011995, F1 0.012969, specificity/FPR 0.000612, ROC-AUC 0.002623, PR-AUC 0.004169, and anomaly-rate percentage 0.030617. | The apparent small test improvements in precision, recall, F1, and PR-AUC were not used to alter the model. | Use repeated or external validation only in a separately approved robustness study. |
+| Retain customer aggregation as diagnostic only. | Test customer p95 aggregation gives ROC-AUC 0.599251 and PR-AUC 0.168575; mean/max ROC-AUC values are 0.591093/0.587050. Mean anomalous-window fractions are 0.0482 for normal and 0.1102 for theft-labelled customers. | No fraction cutoff or final customer-level classifier was created. | Develop a customer decision rule only through a new validation design, never from these test outcomes. |
+| Record that test reconstruction MSE remains weakly related to missing fraction. | Overall Pearson/Spearman correlations are -0.0153/-0.0418; normal values are -0.0133/-0.0399 and theft-labelled values are -0.0365/-0.0627. | The model, filter, imputation, or threshold was not changed from this diagnostic. | Repeat the diagnostic for later missingness-aware sensitivity models. |
+| Preserve the customer-level weak-supervision caveat. | `FLAG=1` identifies a theft-labelled customer, not a confirmed theft event in every window. Window TP/FN terminology is therefore an approximation under weak labels. | No causal claim or event-level detection claim is made from high-error examples. | Use event-timestamp labels if an authoritative dataset becomes available. |
+| Classify the frozen baseline as weak. | ROC-AUC 0.561688, PR-AUC 0.114411, F1 0.142676, and recall 0.121059 show limited separation despite stable generalization and controlled FPR near 5%. | The baseline is not described as moderate or strong, and its stability is not confused with high predictive power. | Require future stride/model/GAN experiments to beat this frozen baseline under the same evaluation principles. |
+
+No Autoencoder retraining, architecture modification, threshold adjustment,
+test-driven model selection, stride comparison, GAN, ensemble, dashboard, or
+deployment work was performed. The final machine-readable performance record
+is `results/autoencoder/stride_30/test_evaluation/baseline_final_summary.json`.

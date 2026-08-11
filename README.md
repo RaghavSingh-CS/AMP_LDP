@@ -29,7 +29,8 @@ preventing preprocessing leakage.
 - Stage 3B — Missingness quality analysis: complete
 - Stage 3C — Window quality filtering: complete for stride 30
 - Stage 4 — Baseline Autoencoder: trained
-- Stage 5 — Validation threshold selection: complete
+- Stage 5 — Validation threshold: frozen
+- Stage 6 — Frozen test evaluation: complete
 
 Stage 3B compares candidate missingness thresholds without changing the
 canonical manifests. See the
@@ -53,8 +54,11 @@ MSE loss. Training completed on CPU and saved the best checkpoint at
 Stage 5 selects the baseline threshold from validation reconstruction errors
 only. The adopted normal-validation 95th-percentile threshold is stored at
 `models/autoencoder/ae_stride30_threshold.json`; detailed evidence is under
-`results/autoencoder/stride_30/threshold_analysis/`. The test split remains
-reserved for later final evaluation.
+`results/autoencoder/stride_30/threshold_analysis/`.
+
+Stage 6 applies that frozen threshold once to the reserved test split without
+retraining or tuning. The final stride-30 Autoencoder baseline record is under
+`results/autoencoder/stride_30/test_evaluation/`.
 
 Files under data/raw/ are immutable source data and must never be overwritten.
 
@@ -67,6 +71,7 @@ Run the implemented stages from the repository root:
     python -m src.preprocessing.filter_windows --stride 30
     python -m src.training.train_autoencoder --stride 30
     python -m src.analysis.analyze_autoencoder_threshold
+    python -m src.evaluation.evaluate_autoencoder_test
 
 Planned comparative window runs, not yet executed:
 

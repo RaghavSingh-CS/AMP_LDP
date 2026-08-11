@@ -1,0 +1,243 @@
+{
+  "stage": "Stage 6 \u2014 Frozen Test Evaluation",
+  "frozen_threshold": 0.16436323150992393,
+  "threshold_source": "models\\autoencoder\\ae_stride30_threshold.json",
+  "anomaly_rule": "reconstruction_mse > frozen_threshold",
+  "window_level_test_metrics": {
+    "threshold": 0.16436323150992393,
+    "comparison_rule": "reconstruction_mse > threshold",
+    "TP": 1578,
+    "TN": 144478,
+    "FP": 7507,
+    "FN": 11457,
+    "precision": 0.17369290038525043,
+    "recall": 0.12105868814729574,
+    "F1": 0.1426763110307414,
+    "specificity": 0.9506069677928743,
+    "false_positive_rate": 0.0493930322071257,
+    "balanced_accuracy": 0.535832827970085,
+    "accuracy": 0.8850805962913586,
+    "predicted_anomaly_count": 9085,
+    "predicted_anomaly_percentage": 5.505393285662344,
+    "ROC_AUC": 0.5616878545705716,
+    "PR_AUC": 0.11441086650646873,
+    "theft_label_prevalence": 0.07899042540298146
+  },
+  "error_distributions": {
+    "FLAG_0_normal": {
+      "count": 151985,
+      "mean": 0.04277214211959812,
+      "median": 0.018243642523884773,
+      "standard_deviation": 0.09207725965207246,
+      "minimum": 4.665111191570759e-05,
+      "p25": 0.006208254024386406,
+      "p50": 0.018243642523884773,
+      "p75": 0.04179378226399422,
+      "p90": 0.0971895068883896,
+      "p95": 0.16287253797054266,
+      "p99": 0.4199124526977539,
+      "maximum": 3.918477773666382
+    },
+    "FLAG_1_theft_labelled": {
+      "count": 13035,
+      "mean": 0.08020519919702156,
+      "median": 0.021273000165820122,
+      "standard_deviation": 0.18537264550959084,
+      "minimum": 4.984740007785149e-05,
+      "p25": 0.009394462686032057,
+      "p50": 0.021273000165820122,
+      "p75": 0.05705905146896839,
+      "p90": 0.20541558265686038,
+      "p95": 0.3881888449192045,
+      "p99": 0.8828649151325222,
+      "maximum": 4.220151424407959
+    },
+    "theft_to_normal_median_ratio": 1.1660500438971702,
+    "theft_to_normal_mean_ratio": 1.8751737748545372,
+    "theft_exceedance": {
+      "frozen_threshold": {
+        "threshold": 0.16436323150992393,
+        "theft_windows_exceeding": 1578,
+        "theft_proportion_exceeding": 0.12105868814729574,
+        "diagnostic_only": false
+      },
+      "normal_test_p90": {
+        "threshold": 0.0971895068883896,
+        "theft_windows_exceeding": 2277,
+        "theft_proportion_exceeding": 0.17468354430379746,
+        "diagnostic_only": true
+      },
+      "normal_test_p95": {
+        "threshold": 0.16287253797054266,
+        "theft_windows_exceeding": 1588,
+        "theft_proportion_exceeding": 0.12182585347142309,
+        "diagnostic_only": true
+      },
+      "normal_test_p99": {
+        "threshold": 0.4199124526977539,
+        "theft_windows_exceeding": 598,
+        "theft_proportion_exceeding": 0.045876486382815496,
+        "diagnostic_only": true
+      }
+    }
+  },
+  "validation_vs_test": {
+    "classification": "broadly stable",
+    "metrics": [
+      {
+        "metric": "precision",
+        "validation": 0.15999117290080547,
+        "test": 0.17369290038525043,
+        "signed_difference_test_minus_validation": 0.013701727484444953,
+        "absolute_difference": 0.013701727484444953
+      },
+      {
+        "metric": "recall",
+        "validation": 0.10906355772846935,
+        "test": 0.12105868814729574,
+        "signed_difference_test_minus_validation": 0.011995130418826397,
+        "absolute_difference": 0.011995130418826397
+      },
+      {
+        "metric": "F1",
+        "validation": 0.12970748725288486,
+        "test": 0.1426763110307414,
+        "signed_difference_test_minus_validation": 0.012968823777856547,
+        "absolute_difference": 0.012968823777856547
+      },
+      {
+        "metric": "specificity",
+        "validation": 0.9499954021780539,
+        "test": 0.9506069677928743,
+        "signed_difference_test_minus_validation": 0.0006115656148204529,
+        "absolute_difference": 0.0006115656148204529
+      },
+      {
+        "metric": "false_positive_rate",
+        "validation": 0.05000459782194606,
+        "test": 0.0493930322071257,
+        "signed_difference_test_minus_validation": -0.0006115656148203558,
+        "absolute_difference": 0.0006115656148203558
+      },
+      {
+        "metric": "ROC_AUC",
+        "validation": 0.5643104020251226,
+        "test": 0.5616878545705716,
+        "signed_difference_test_minus_validation": -0.0026225474545510385,
+        "absolute_difference": 0.0026225474545510385
+      },
+      {
+        "metric": "PR_AUC",
+        "validation": 0.11024193103306401,
+        "test": 0.11441086650646873,
+        "signed_difference_test_minus_validation": 0.004168935473404717,
+        "absolute_difference": 0.004168935473404717
+      },
+      {
+        "metric": "predicted_anomaly_percentage",
+        "validation": 5.47477664143626,
+        "test": 5.505393285662344,
+        "signed_difference_test_minus_validation": 0.030616644226084233,
+        "absolute_difference": 0.030616644226084233
+      }
+    ]
+  },
+  "customer_level_diagnostic": {
+    "customer_counts": {
+      "FLAG_0": 5814,
+      "FLAG_1": 542
+    },
+    "aggregation_auc": {
+      "mean_mse": {
+        "ROC_AUC": 0.5910929465331806,
+        "PR_AUC": 0.157129338636314
+      },
+      "maximum_mse": {
+        "ROC_AUC": 0.587049709506383,
+        "PR_AUC": 0.13081333037213627
+      },
+      "p95_mse": {
+        "ROC_AUC": 0.5992509808999019,
+        "PR_AUC": 0.16857539852015607
+      }
+    },
+    "frozen_window_threshold_customer_summary": {
+      "normal_mean_anomalous_fraction": 0.048158918471605854,
+      "theft_mean_anomalous_fraction": 0.1101738473438994,
+      "customer_classifier_created": false
+    }
+  },
+  "missingness_diagnostic": {
+    "overall": {
+      "count": 165020,
+      "pearson": -0.015339254522902373,
+      "spearman": -0.041789685080984754
+    },
+    "FLAG_0": {
+      "count": 151985,
+      "pearson": -0.013255094361775518,
+      "spearman": -0.039939563461378016
+    },
+    "FLAG_1": {
+      "count": 13035,
+      "pearson": -0.03654427699556854,
+      "spearman": -0.06270589920025009
+    }
+  },
+  "weak_supervision_note": "FLAG is customer-level; FLAG=1 test windows are not confirmed theft events.",
+  "model_strength_interpretation": "weak",
+  "retraining_performed": false,
+  "threshold_modified": false,
+  "protected_stage1_stage5_sha256": {
+    "data\\raw\\data set.csv": "99ba49d416238b400771b97aea71975706ce94989dd5440202402441cbcc4579",
+    "data\\interim\\cleaned_data.parquet": "2d2fa195e705886fc0bd9db29db04e46bc15403da5aa021e77b3c15354676435",
+    "data\\interim\\missing_mask.parquet": "f1990841c684ba110d9adb74ccfb04516d98e999a1d0fe59aa91e998833fd679",
+    "data\\processed\\train.parquet": "867e0f188c736c248c4777d2dd4b52c0c20a5518882c8e8aa558dc1c6fed819e",
+    "data\\processed\\val.parquet": "4885e2f40dc7df96adb1e8c365398ace4e132be5a27e3d8359bc7f717a837633",
+    "data\\processed\\test.parquet": "da4cfc4ee72ced02760c720bad8cfc26d14ec4cfe07c83dde9ad4b1caf2cfd0e",
+    "data\\processed\\train_mask.parquet": "af628a9b7f996d3cde7ab1ff824b6eda5440058588ba208733dbc4988bab0128",
+    "data\\processed\\val_mask.parquet": "2cee14c341ef88b79f6bc5548778101958d499e23a5ec34db77f419cd5054065",
+    "data\\processed\\test_mask.parquet": "315be291c798f26e1db79256c5ba45b00571270f1ad1a0b5f2f52b0a68552327",
+    "data\\processed\\split_manifest.parquet": "6ad1132bbaef0c6f6ccc5bdc973844b805c4291612ac7170ec165f273835959c",
+    "models\\preprocessing\\scaler.joblib": "34bbc0491465fb5ba627df70ee95706e71bc92fa21c6fa8a32048048a855d0bc",
+    "data\\windows\\stride_30\\train_windows.parquet": "dd5d6c360e656093fb62cdff8c4a71e18b93e86614ac8dfbd2b34cdc32d3da85",
+    "data\\windows\\stride_30\\val_windows.parquet": "a747a292a78a09dd1182da55e83d4f50aaf745e83b5362677dd442650770a9cd",
+    "data\\windows\\stride_30\\test_windows.parquet": "5c2ef6ecc326b24286d90f8f410cd66a6f58fde086ddf9cae8ffe6d0746cf01b",
+    "data\\windows\\stride_30\\window_summary.json": "cb843b0ce6b3ea428df7cf3d34256d941202e027e637cea5973e6de5045e1a68",
+    "results\\missingness_analysis\\class_missingness_summary.csv": "bbedbf5d07504ed3a1b866443dadd95f45b7cfeda3a42e63a8db492003dc460a",
+    "results\\missingness_analysis\\customer_retention_by_threshold.csv": "60924ec6b5b8d8dd4825096f66c184ed6056100fbed2eeaefcc5d0ab7264ca8e",
+    "results\\missingness_analysis\\fully_missing_count_distribution.csv": "6d3d68318d87d7e28b6c5e64c57cb221fea46f9c53c62f85f530f084ea4991b8",
+    "results\\missingness_analysis\\fully_missing_customer_summary.csv": "487431120eef29f6f0600f7dc965bc6b6a003af455e39a89f36a5bf344163354",
+    "results\\missingness_analysis\\fully_missing_run_distribution.csv": "ab00137a6498859360349d65e3b01b1e1f1d6ce3b8ec2911c6f6b74f8eecdca6",
+    "results\\missingness_analysis\\fully_missing_run_summary.csv": "696f069a1421fc467d4f56f94231215d7cfa1fc513ee1c48bcdfd80c2d2e9e42",
+    "results\\missingness_analysis\\fully_missing_window_summary.csv": "cfe06926e6a3c395f51ba8fcc1dcdcc2c4a335fbfbd7ea810285e7011e432348",
+    "results\\missingness_analysis\\missingness_analysis.json": "48b81dd50da7dce72d1a79d210bafdb5dfae9e7884374c086d9723a7b123b02b",
+    "results\\missingness_analysis\\report.md": "e3d9cf8a9a1b8ff4adfc5daa4f53d25dc20d4421c1278285916b7e50de3ac869",
+    "results\\missingness_analysis\\threshold_comparison.csv": "2b6d877f6c5fb440d459c2d2701920e7a23d0b3b533e9142a97d311505275037",
+    "results\\missingness_analysis\\top_fully_missing_runs.csv": "e1c71291a36998fbcd9f8284ee7ff010b3df71df1dc5d30b4a95bc3b89e7c4e4",
+    "results\\missingness_analysis\\window_position_missingness.csv": "6bbef13892d27e2b59acbe3b3a2924b14f567c5a7c9742cb63534df8a7d2e4ad",
+    "data\\windows\\stride_30\\usable\\train_windows.parquet": "71d04ea00e4e3884892514f10c47ac268d9b9837be204c1dd870c12532895482",
+    "data\\windows\\stride_30\\usable\\val_windows.parquet": "8d0d5563ba010dde0897df1e7f62acc7f702c19074eb4d56af33107507b31f58",
+    "data\\windows\\stride_30\\usable\\test_windows.parquet": "237672636f627b8e550baac1cb64b328a29a4a4f356d745a30f84bb3df03c1c2",
+    "data\\windows\\stride_30\\usable\\filter_summary.json": "aaf5e4101f14742c4a0b9021c08ac8fa0a1b7d52ffea263e38d1897763b48333",
+    "models\\autoencoder\\ae_stride30_baseline.pt": "421f1e2cdf96da1bd3231cd0baa750746d89757700d63ac428f9167f69237fa4",
+    "models\\autoencoder\\ae_stride30_baseline_config.json": "3408e00443df58a32f70520452266e1f3e5a2618974bf15bd913a24f595aa27d",
+    "results\\autoencoder\\stride_30\\training_history.csv": "abca238fcddbd95bff3aa06c874403f106302490907091ef98c5f1de24e0344a",
+    "results\\autoencoder\\stride_30\\training_summary.json": "54cb929b1ea8fcc2d72893c319c0f03f07a14a0c81e1cf522db91ec3d16df374",
+    "results\\autoencoder\\stride_30\\training_curve.png": "fc8fc510b9965fb9fa7052589b60eff097c2461f0674eeafe95e427321a96d16",
+    "results\\autoencoder\\stride_30\\val_reconstruction_errors.parquet": "e015d1f900b964ef0ff4b7333341be0e418a8478b72814aa891f519ab68e6f32",
+    "results\\autoencoder\\stride_30\\validation_error_distribution.png": "7a375a52abfe8591d9a4d92e10ff0f0cb67847c1bf99d3e21085af9b902f8243",
+    "src\\data\\window_dataset.py": "18649e806cbc7b104ad12d6fe3fa11a8e9d735ff412f375088fc2a4c49159ece",
+    "src\\models\\autoencoder.py": "30abcff176386a61277471beae21cbc52a42c819b4236a9295b5ae99e318d105",
+    "src\\training\\train_autoencoder.py": "f6921f6edb203ee8a6399eadef0589974c40fc1c52dcd7e7a0f1c1af71ac40be",
+    "models\\autoencoder\\ae_stride30_threshold.json": "50bdc17a266fd7208a1bf8a614b505edc68653b7484c7d0873d425eb639de96c",
+    "results\\autoencoder\\stride_30\\threshold_analysis\\threshold_metrics.csv": "2851d24e905f0dd0c0aa61693183ef9bb299acd55876629fbde981dcf932a0ac",
+    "results\\autoencoder\\stride_30\\threshold_analysis\\threshold_summary.json": "e978552f5d3dbcf0c599fbc9cf86a43bc326692195bdc92ff4cc23c7a4fb5253",
+    "results\\autoencoder\\stride_30\\threshold_analysis\\threshold_report.md": "62e078ab58a5b90d88f35f35468291e422d441733e8d66864b39c5dbd0cd1bf1",
+    "results\\autoencoder\\stride_30\\threshold_analysis\\precision_recall_curve.png": "9b7aa3841b9e220f4d52dabe6a2877e8c530efea85907b6fea67fc7c22321262",
+    "results\\autoencoder\\stride_30\\threshold_analysis\\threshold_tradeoff.png": "0ff41d1d771111c4ce0a3de926425d6337affef02d633ae3e518b16ad9bae393",
+    "results\\autoencoder\\stride_30\\threshold_analysis\\customer_level_diagnostics.csv": "ce0961f1d93a54ba6ff188cf882c6aee7ac5c6b73fb16fdc419228349b2f137b",
+    "results\\autoencoder\\stride_30\\threshold_analysis\\missingness_group_summary.csv": "0b0ec3d9cb7bf70960dc22c376281f3f3ee9b5926ff39c51c37c35a9a57c9575",
+    "src\\analysis\\analyze_autoencoder_threshold.py": "17da8f43c77ab8bb5e1c47dedd2f6d82342b1443cef5e96aaaa5460b123aa4f5"
+  }
+}

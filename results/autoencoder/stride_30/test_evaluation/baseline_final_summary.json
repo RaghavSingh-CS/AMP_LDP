@@ -1,0 +1,62 @@
+{
+  "artifact_role": "final stride-30 fully connected Autoencoder baseline performance record",
+  "model": {
+    "architecture": [
+      30,
+      16,
+      8,
+      4,
+      8,
+      16,
+      30
+    ],
+    "latent_dimension": 4,
+    "checkpoint": "models\\autoencoder\\ae_stride30_baseline.pt",
+    "checkpoint_sha256": "421f1e2cdf96da1bd3231cd0baa750746d89757700d63ac428f9167f69237fa4"
+  },
+  "preprocessing": {
+    "window_length": 30,
+    "stride": 30,
+    "usable_window_rule": "missing_fraction < 1.0; at least one observed reading",
+    "scaler_policy": "Stage 2 feature-wise StandardScaler fitted on train customers only",
+    "model_input": "30 scaled consumption values only"
+  },
+  "threshold": {
+    "value": 0.16436323150992393,
+    "selection_method": "normal_validation_95th_percentile",
+    "validation_source": "Stage 5 validation reconstruction errors",
+    "artifact": "models\\autoencoder\\ae_stride30_threshold.json",
+    "artifact_sha256": "50bdc17a266fd7208a1bf8a614b505edc68653b7484c7d0873d425eb639de96c",
+    "rule": "reconstruction_mse > threshold"
+  },
+  "test_sample_counts": {
+    "normal_windows": 151985,
+    "theft_labelled_windows": 13035,
+    "total_windows": 165020
+  },
+  "test_metrics": {
+    "TP": 1578,
+    "TN": 144478,
+    "FP": 7507,
+    "FN": 11457,
+    "precision": 0.17369290038525043,
+    "recall": 0.12105868814729574,
+    "F1": 0.1426763110307414,
+    "specificity": 0.9506069677928743,
+    "false_positive_rate": 0.0493930322071257,
+    "balanced_accuracy": 0.535832827970085,
+    "accuracy": 0.8850805962913586,
+    "ROC_AUC": 0.5616878545705716,
+    "PR_AUC": 0.11441086650646873,
+    "predicted_anomaly_percentage": 5.505393285662344
+  },
+  "validation_test_generalization": "broadly stable",
+  "model_strength_interpretation": "weak",
+  "weak_supervision_caveat": "FLAG is customer-level; window metrics do not measure confirmed theft events.",
+  "frozen_evaluation_guarantees": {
+    "checkpoint_unchanged": true,
+    "threshold_unchanged": true,
+    "retraining_performed": false,
+    "test_driven_tuning_performed": false
+  }
+}
