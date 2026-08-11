@@ -1,0 +1,53 @@
+{
+  "stage": "Stage 4 \u2014 Baseline Autoencoder",
+  "model": {
+    "type": "fully_connected_autoencoder",
+    "layer_dimensions": [
+      30,
+      16,
+      8,
+      4,
+      8,
+      16,
+      30
+    ],
+    "hidden_activation": "ReLU",
+    "output_activation": "Linear",
+    "input_dimension": 30,
+    "latent_dimension": 4
+  },
+  "trainable_parameters": 1362,
+  "window_length": 30,
+  "stride": 30,
+  "loss": "MSELoss",
+  "optimizer": "Adam",
+  "learning_rate": 0.001,
+  "batch_size": 256,
+  "maximum_epochs": 50,
+  "early_stopping": {
+    "monitor": "normal_validation_mse",
+    "patience": 5,
+    "minimum_delta": 1e-05
+  },
+  "seed": 42,
+  "num_workers": 0,
+  "input_policy": {
+    "included": [
+      "30 StandardScaled consumption values"
+    ],
+    "excluded": [
+      "CONS_NO",
+      "FLAG",
+      "missingness mask",
+      "missing_count",
+      "missing_fraction",
+      "dates",
+      "window_id"
+    ]
+  },
+  "training_population": "usable stride-30 train windows with FLAG == 0 only",
+  "early_stopping_population": "usable stride-30 validation windows with FLAG == 0 only",
+  "scaling_assumption": "Stage 1 log1p consumption transformed by the Stage 2 training-fitted feature-wise StandardScaler",
+  "test_set_policy": "not loaded or used during Stage 4",
+  "determinism_note": "Seeds and deterministic modes are set, but exact reproducibility can still depend on device, backend, and PyTorch operations."
+}

@@ -1,0 +1,42 @@
+{
+  "stage": "Stage 4 \u2014 Baseline Autoencoder",
+  "device": "cpu",
+  "training_normal_window_count": 708308,
+  "validation_normal_window_count": 152246,
+  "validation_theft_window_count": 13295,
+  "batch_size": 256,
+  "learning_rate": 0.001,
+  "epochs_executed": 35,
+  "best_epoch": 30,
+  "best_validation_mse": 0.043589054377373454,
+  "early_stopping_occurred": true,
+  "runtime_seconds": 600.961045,
+  "reconstruction_error_summary": {
+    "FLAG_0": {
+      "count": 152246,
+      "mean": 0.043589054253592996,
+      "median": 0.01833775918930769,
+      "standard_deviation": 0.09866227237239475,
+      "p75": 0.041765403002500534,
+      "p90": 0.09662897139787674,
+      "p95": 0.16436323150992393,
+      "p99": 0.4555447861552232,
+      "maximum": 4.286164283752441
+    },
+    "FLAG_1": {
+      "count": 13295,
+      "mean": 0.07767822368835742,
+      "median": 0.02167252078652382,
+      "standard_deviation": 0.20311639900696196,
+      "p75": 0.05579439178109169,
+      "p90": 0.17806693315505984,
+      "p95": 0.35174631178379046,
+      "p99": 0.9156383466720563,
+      "maximum": 5.975423812866211
+    },
+    "theft_to_normal_median_ratio": 1.1818521861253664,
+    "theft_minus_normal_median": 0.0033347615972161293
+  },
+  "anomaly_threshold_selected": false,
+  "test_set_used": false
+}

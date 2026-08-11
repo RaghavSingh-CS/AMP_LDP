@@ -1,0 +1,13 @@
+scope,FLAG,total_customers,customers_with_zero_fully_missing_windows,customers_with_at_least_one_fully_missing_window,customers_all_windows_fully_missing,fully_missing_count_median,fully_missing_count_p75,fully_missing_count_p90,fully_missing_count_p95,fully_missing_count_p99,fully_missing_count_maximum
+train,all,29656,13446,16210,1,2.0,20.0,24.0,24.0,24.0,34.0
+train,0,27128,12633,14495,0,2.0,19.0,24.0,24.0,24.0,33.0
+train,1,2528,813,1715,1,6.0,24.0,24.0,24.0,27.0,34.0
+val,all,6355,2924,3431,0,2.0,19.0,24.0,24.0,24.0,33.0
+val,0,5813,2739,3074,0,2.0,19.0,24.0,24.0,24.0,33.0
+val,1,542,185,357,0,5.0,22.0,24.0,24.0,26.590000000000032,31.0
+test,all,6356,2887,3469,0,2.0,20.0,24.0,24.0,24.0,33.0
+test,0,5814,2705,3109,0,2.0,19.0,24.0,24.0,24.0,33.0
+test,1,542,182,360,0,7.0,24.0,24.0,24.0,24.590000000000032,33.0
+overall,all,42367,19257,23110,1,2.0,20.0,24.0,24.0,24.0,34.0
+overall,0,38755,18077,20678,0,2.0,19.0,24.0,24.0,24.0,33.0
+overall,1,3612,1180,2432,1,6.0,24.0,24.0,24.0,27.0,34.0

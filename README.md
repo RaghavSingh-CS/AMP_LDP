@@ -7,31 +7,47 @@ preventing preprocessing leakage.
 
 ## Repository structure
 
-    data/raw/                  Immutable source data
-    data/interim/              Validated Stage 1 outputs
-    data/processed/            Customer-level Stage 2 split outputs
-    data/windows/              Reproducible Stage 3 window manifests
-    docs/                      Master technical decision record
-    src/preprocessing/         Reproducible preprocessing stages
-    models/preprocessing/      Fitted train-only preprocessing artifacts
-    notebooks/                 Future exploratory work
-    results/                   Future evaluation outputs
-    dashboard/                 Future presentation layer
+    data/raw/                    Immutable source data
+    data/interim/                Validated Stage 1 outputs
+    data/processed/              Customer-level Stage 2 split outputs
+    data/windows/                Reproducible Stage 3 window manifests
+    data/windows/stride_30/usable/ Stage 3C baseline-eligible manifests
+    results/missingness_analysis/ Stage 3B quality evidence and recommendation
+    docs/                        Master technical decision record
+    src/preprocessing/           Reproducible preprocessing stages
+    src/analysis/                Reproducible descriptive analyses
+    src/data/                    Lazy model-input datasets
+    src/models/                  Neural-network architectures
+    src/training/                Reproducible training entry points
+    models/preprocessing/        Fitted train-only preprocessing artifacts
 
 ## Pipeline status
 
 - Stage 1 — Cleaning: complete
 - Stage 2 — Customer split and scaling: complete
-- Stage 3 — Configurable temporal windowing: implemented; stride 30 executed
-- Windowing does not perform class balancing or model training
+- Stage 3 — Configurable temporal windowing: complete for stride 30
+- Stage 3B — Missingness quality analysis: complete
+- Stage 3C — Window quality filtering: complete for stride 30
+- Stage 4 — Baseline Autoencoder: implemented, training pending
 
-Stage 3 creates reference-only manifests under data/windows/stride_30/. Each row
-identifies a 30-position window by customer, split, and feature indices while
-retaining missingness metadata. The authoritative customer assignments remain
-in data/processed/split_manifest.parquet, and the training-fitted scaler remains
-at models/preprocessing/scaler.joblib. See
-[the preprocessing decision log](docs/preprocessing_decisions.md) for the full
-methodology and stage boundaries.
+Stage 3B compares candidate missingness thresholds without changing the
+canonical manifests. See the
+[missingness quality report](results/missingness_analysis/report.md) for the
+window, customer, class, temporal-position, and consecutive-run findings.
+
+Stage 3C adopts the minimum baseline eligibility rule
+`missing_fraction < 1.0` (equivalently `missing_count < 30`): a window is
+retained when at least one of its 30 source readings was observed. The filtered
+manifests are exact subsets under `data/windows/stride_30/usable/`; the original
+Stage 3 manifests remain canonical and unchanged. The baseline model input will
+be the scaled consumption sequence only. The missingness mask,
+`missing_fraction`, `FLAG`, and `CONS_NO` are excluded from model inputs.
+
+Stage 4 implements a normal-only, fully connected Autoencoder with architecture
+`30 → 16 → 8 → 4 → 8 → 16 → 30`. It uses usable stride-30 `FLAG=0` training
+windows, normal-only validation MSE for early stopping, Adam at `0.001`, and
+MSE loss. Training is intentionally pending and must be run manually; Stage 4
+does not select an anomaly threshold or use the test set.
 
 Files under data/raw/ are immutable source data and must never be overwritten.
 
@@ -40,6 +56,9 @@ Run the implemented stages from the repository root:
     python -m src.preprocessing.clean_data
     python -m src.preprocessing.split_and_scale
     python -m src.preprocessing.generate_windows --stride 30
+    python -m src.analysis.analyze_window_missingness
+    python -m src.preprocessing.filter_windows --stride 30
+    python -m src.training.train_autoencoder --stride 30
 
 Planned comparative window runs, not yet executed:
 

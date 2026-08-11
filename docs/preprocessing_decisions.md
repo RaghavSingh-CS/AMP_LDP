@@ -113,3 +113,84 @@ validation, and test window manifests plus their configuration and missingness
 summary. Strides 15 and 7 remain planned, not executed. No dense window tensor,
 class balancing, model architecture, training, or evaluation is produced.
 
+### Stage 3B — Missingness Quality Analysis
+
+Stage 3B is descriptive analysis only. It does not filter or rewrite the
+canonical stride-30 manifests.
+
+| Decision | Reason | What was not done | Possible future revision |
+|---|---|---|---|
+| Pause model implementation to analyze missingness quality. | Stage 3 showed that 340,994 windows (23.67%) have all 30 source positions originally missing. Imputed numerical values do not create directly observed consumption information. | No Autoencoder, GAN, classifier, anomaly score, training, or evaluation was started. | Resume model design only after a filtering policy is reviewed and approved. |
+| Compare candidate retention thresholds empirically. | Rules 0%, <=10%, <=25%, <=50%, <=75%, and <100% have different window, customer, and class effects. | No threshold was selected from intuition alone. | Use the evidence tables and later sensitivity analysis to approve a rule. |
+| Interpret thresholds explicitly using missing counts out of 30. | Integer counts avoid floating-point ambiguity; for example, <=10% permits at most 3 missing positions. | Threshold comparisons do not rely on approximate float equality. | Keep count-based semantics if other window lengths are evaluated. |
+| Preserve all Stage 3 manifests unchanged. | Stage 3B must remain reversible analysis rather than a data mutation. | No filtered train, validation, or test manifest was created. | Generate versioned filtered artifacts only after an explicit decision. |
+| Examine effects at both window and customer levels. | Large window retention can hide customers who lose every usable window. | The analysis does not rely on window percentages alone. | Retain customer-coverage checks in every future filtering experiment. |
+| Check class-composition distortion explicitly. | Theft-customer windows have higher missingness on average, so filtering reduces their representation disproportionately. | No balancing or label-specific filtering is applied. | Evaluate downstream sampling only after a common quality rule is approved. |
+| Analyze temporal position and consecutive fully-missing runs. | Missingness is uneven across dates and often occurs in long blocks. | No date position or long-run pattern is automatically excluded. | Consider temporal-quality features or policies as controlled experiments. |
+| Treat removing only fully missing windows as a proposed minimum rule pending review. | A 30/30-missing window contains zero observed readings; this proposal retains 76.33% of windows and causes one theft-labelled customer to lose all windows. | This proposal is not canonical and has not been applied. | Review customer coverage and class effects before accepting or revising it. |
+| Keep more aggressive thresholds unresolved. | The analysis does not establish an objectively optimal aggressive cutoff. | No <=75%, <=50%, <=25%, <=10%, or zero-missing-only policy is adopted. | Compare model sensitivity only after the minimum quality policy is agreed. |
+
+The complete evidence and proposed recommendation are in
+results/missingness_analysis/report.md. Model training remains intentionally
+paused pending review of the filtering decision.
+
+### Stage 3C — Window Quality Filtering
+
+Stage 3C adopts and applies the minimum baseline eligibility rule to the
+unfiltered stride-30 manifests. It creates versioned usable subsets while
+leaving the canonical Stage 1, Stage 2, Stage 3, and Stage 3B artifacts
+unchanged.
+
+| Decision | Reason | What was not done | Possible future revision |
+|---|---|---|---|
+| Retain a window when `missing_fraction < 1.0`, equivalently `missing_count < 30`. | This requires at least one directly observed position in every eligible 30-position sequence. A 30/30-missing window has imputed numerical values but no direct consumption signal. | No stricter cutoff is applied. Partially missing windows remain eligible. | Compare stricter common thresholds only as documented sensitivity experiments. |
+| Apply the same rule to train, validation, and test manifests. | A common data-quality definition avoids label- or split-specific selection rules. | No label-specific filtering, resplitting, rebalancing, over-sampling, or under-sampling is performed. | Any later sampling policy belongs to model training and must use training data only. |
+| Preserve each usable manifest as an exact, order-preserving subset of its canonical Stage 3 manifest. | This retains window IDs, customer IDs, labels, split assignments, temporal boundaries, and missingness metadata without transformation. | No consumption values, masks, dates, labels, identifiers, or manifest fields are rewritten. | Add formal artifact version metadata if multiple filtering policies are retained. |
+| Accept the measured class and customer-coverage effect of the minimum rule for the initial baseline. | The rule removes 340,994 of 1,440,478 windows (23.67%) and retains 1,099,484 (76.33%). One theft-labelled train customer loses all 34 windows; no normal customer loses all windows. | The lost customer is not moved to another split, given synthetic windows, or recovered using a lower-quality exception. | Report customer coverage in evaluation and test a documented alternative only if the loss materially affects conclusions. |
+| Treat missingness as associated with the supplied customer label and therefore as a potential shortcut signal. | Theft-labelled windows are removed disproportionately: theft share changes from 8.53% before filtering to 7.91% after filtering. Aggressive quality thresholds could further distort class composition. | Missingness is not interpreted as theft evidence, and the baseline is not allowed to learn directly from missingness metadata. | Evaluate missingness-aware variants separately and disclose their shortcut-risk controls. |
+| Use only the scaled consumption sequence as the baseline model input. | This isolates the temporal consumption baseline and avoids direct use of missingness or identity metadata. | The missingness mask, `missing_fraction`, `FLAG`, and `CONS_NO` are not baseline model inputs. `FLAG` remains the evaluation label; `CONS_NO` remains traceability metadata. | Test mask-aware architectures only as a separately named sensitivity study. |
+| Keep model construction outside Stage 3C. | This stage establishes a reproducible eligible-window population only. | No dense tensor, data loader, Autoencoder, GAN, classifier, anomaly score, training, tuning, or evaluation is created. | Begin modeling in a separately approved stage using the usable manifests. |
+
+The retained population contains 1,012,539 normal-labelled windows and 86,945
+theft-labelled windows. The removed-only-fully-missing rule is deliberately a
+minimum eligibility policy, not a claim that every retained partially missing
+window is equally reliable. Future missingness-threshold sensitivity analyses
+must keep the customer split fixed and report window retention, customer
+coverage, and class composition together.
+
+## Stage 4 — Baseline Autoencoder
+
+Stage 4 implements the first anomaly-detection model pipeline. Full training
+was intentionally **not** executed by Codex. The user will manually run the
+training command on the target machine so runtime and RAM behavior can be
+observed directly. Implementation does not make Stage 4 a completed training
+run.
+
+| Decision | Adopted baseline and reason |
+|---|---|
+| Model | A fully connected Autoencoder is the first anomaly-detection baseline. It learns to reconstruct normal consumption behavior without treating `FLAG` as a network feature. |
+| Architecture | `30 → 16 → 8 → 4 → 8 → 16 → 30`, with latent dimension 4. Hidden layers use ReLU. The final output is linear because StandardScaled inputs can be negative or positive. |
+| Training population | Usable stride-30 `FLAG=0` train windows only. Theft-labelled train windows are not used to update model parameters. The theft-labelled train customer with zero usable windows is not recovered, replaced, or resplit. |
+| Validation population | Usable stride-30 `FLAG=0` validation windows only for validation loss, early stopping, and best-checkpoint selection. Theft-labelled validation windows are used only after training to inspect reconstruction-error distributions. |
+| Model input | Exactly 30 scaled consumption values. `FLAG`, `CONS_NO`, the missingness mask, `missing_count`, `missing_fraction`, dates, and window IDs are excluded from network input and remain labels or metadata. |
+| Loss | `nn.MSELoss()`. Mean squared error directly optimizes reconstruction and penalizes larger reconstruction mistakes more strongly. MAE, Huber, BCE, and weighted MSE are not used in this baseline. |
+| Optimizer | Adam with learning rate `1e-3` and standard defaults. No learning-rate search is performed. |
+| Batch and epochs | Default batch size 256 and maximum 50 epochs; both are CLI-configurable. The default DataLoader worker count is zero to avoid Windows process duplication and excess memory use. |
+| Early stopping | Monitor normal validation MSE with patience 5 and minimum delta `1e-5`. Save the state-dictionary checkpoint corresponding to the best qualifying validation MSE. |
+| Reproducibility | Seed 42 for Python, NumPy, PyTorch, and CUDA when available. Deterministic modes are requested where practical, although exact determinism can depend on device, backend, and operations. |
+| Window configuration | Window length 30 and stride 30. Strides 15 and 7 have not been executed. |
+| Anomaly-score candidate | Per-window reconstruction MSE. No anomaly threshold is selected during Stage 4, and no `MSE > threshold` classifier is implemented as a final decision. |
+| Test-set policy | Test data is excluded from training, model selection, validation-distribution analysis, and threshold decisions. It remains reserved for later final evaluation. |
+| Weak supervision | `FLAG=1` is a customer-level label; an individual window from a theft-labelled customer is not guaranteed to contain theft behavior. Validation error separation alone is not final performance evidence. |
+| Memory policy | Load one processed split into a compact float32 NumPy matrix, vectorize customer-ID mapping once, retain compact integer manifest references, and slice 30 values lazily in `Dataset.__getitem__`. Train and validation are held only when training requires both; test is never loaded. |
+
+The real run saves a state-dictionary checkpoint and model configuration under
+`models/autoencoder/`, plus training history, summary, training curve,
+validation reconstruction errors, and an error-distribution plot under
+`results/autoencoder/stride_30/`. The saved validation-error table contains
+metadata and per-window MSE only, not reconstructed 30-value arrays.
+
+Future controlled comparisons may include different latent dimensions, MAE,
+Huber loss, temporal CNN or recurrent Autoencoders, strides 15 or 7, and
+missingness-aware variants. None of these comparisons has been executed. GANs,
+ensembles, threshold selection, and test evaluation remain outside Stage 4.
