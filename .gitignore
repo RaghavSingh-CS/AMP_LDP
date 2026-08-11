@@ -2,14 +2,19 @@
 __pycache__/
 *.py[cod]
 .venv/
+venv/
 
 # Local IDE settings
 .idea/
 
-# Dataset artifacts
+# Generated dataset artifacts
 data/raw/*
-data/interim/*.parquet
+data/interim/*
+data/processed/*
 
 # Keep data directories visible when datasets are absent
 !data/raw/.gitkeep
 !data/interim/.gitkeep
+!data/processed/.gitkeep
+
+# The small fitted preprocessing scaler remains tracked.
