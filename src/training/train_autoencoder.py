@@ -255,9 +255,11 @@ def model_config(args: argparse.Namespace) -> dict[str, object]:
                 "window_id",
             ],
         },
-        "training_population": "usable stride-30 train windows with FLAG == 0 only",
+        "training_population": (
+            f"usable stride-{args.stride} train windows with FLAG == 0 only"
+        ),
         "early_stopping_population": (
-            "usable stride-30 validation windows with FLAG == 0 only"
+            f"usable stride-{args.stride} validation windows with FLAG == 0 only"
         ),
         "scaling_assumption": (
             "Stage 1 log1p consumption transformed by the Stage 2 "
@@ -407,8 +409,8 @@ def run_training(args: argparse.Namespace) -> None:
 
     model_dir = PROJECT_ROOT / "models" / "autoencoder"
     results_dir = PROJECT_ROOT / "results" / "autoencoder" / f"stride_{args.stride}"
-    checkpoint_path = model_dir / "ae_stride30_baseline.pt"
-    config_path = model_dir / "ae_stride30_baseline_config.json"
+    checkpoint_path = model_dir / f"ae_stride{args.stride}_baseline.pt"
+    config_path = model_dir / f"ae_stride{args.stride}_baseline_config.json"
     history_path = results_dir / "training_history.csv"
     summary_path = results_dir / "training_summary.json"
     curve_path = results_dir / "training_curve.png"
@@ -579,9 +581,9 @@ def nonnegative_float(value: str) -> float:
 def parse_args(arguments: Iterable[str] | None = None) -> argparse.Namespace:
     """Parse the fixed baseline plus safe resource controls."""
     parser = argparse.ArgumentParser(
-        description="Train the normal-only stride-30 baseline Autoencoder."
+        description="Train the normal-only baseline Autoencoder for one prepared stride."
     )
-    parser.add_argument("--stride", type=int, choices=(30,), default=DEFAULT_STRIDE)
+    parser.add_argument("--stride", type=int, choices=(30, 15), default=DEFAULT_STRIDE)
     parser.add_argument("--batch-size", type=positive_int, default=DEFAULT_BATCH_SIZE)
     parser.add_argument("--epochs", type=positive_int, default=DEFAULT_MAX_EPOCHS)
     parser.add_argument(

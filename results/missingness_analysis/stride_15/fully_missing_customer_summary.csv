@@ -1,0 +1,13 @@
+scope,FLAG,total_customers,customers_with_zero_fully_missing_windows,customers_with_at_least_one_fully_missing_window,customers_all_windows_fully_missing,fully_missing_count_median,fully_missing_count_p75,fully_missing_count_p90,fully_missing_count_p95,fully_missing_count_p99,fully_missing_count_maximum
+train,all,29656,13369,16287,1,4.0,39.0,47.0,47.0,48.0,67.0
+train,0,27128,12566,14562,0,3.0,38.0,47.0,47.0,47.0,65.0
+train,1,2528,803,1725,1,12.0,47.0,47.0,47.0,53.0,67.0
+val,all,6355,2907,3448,0,4.0,38.0,47.0,47.0,48.0,65.0
+val,0,5813,2724,3089,0,3.0,38.0,47.0,47.0,47.0,65.0
+val,1,542,183,359,0,10.0,43.0,47.0,47.0,52.770000000000095,61.0
+test,all,6356,2872,3484,0,4.0,40.0,47.0,47.0,47.0,65.0
+test,0,5814,2693,3121,0,3.0,38.0,47.0,47.0,47.0,65.0
+test,1,542,179,363,0,13.0,47.0,47.0,47.0,48.59000000000003,65.0
+overall,all,42367,19148,23219,1,4.0,39.0,47.0,47.0,48.0,67.0
+overall,0,38755,17983,20772,0,3.0,38.0,47.0,47.0,47.0,65.0
+overall,1,3612,1165,2447,1,12.0,47.0,47.0,47.0,53.0,67.0

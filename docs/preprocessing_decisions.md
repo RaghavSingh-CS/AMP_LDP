@@ -244,3 +244,152 @@ No Autoencoder retraining, architecture modification, threshold adjustment,
 test-driven model selection, stride comparison, GAN, ensemble, dashboard, or
 deployment work was performed. The final machine-readable performance record
 is `results/autoencoder/stride_30/test_evaluation/baseline_final_summary.json`.
+
+## Stage 7 — Stride-15 Autoencoder Ablation
+
+Stage 7 evaluates stride 15 as the first temporal-overlap ablation. Its purpose
+is to determine whether overlapping 30-day windows improve anomaly separation
+relative to the frozen stride-30 fully connected Autoencoder. The controlled
+change is only `stride: 30 → 15`. The customer split, Stage 1 transformations,
+train-fitted scaler, window length 30, `missing_count < 30` eligibility rule,
+architecture `30 → 16 → 8 → 4 → 8 → 16 → 30`, ReLU/linear activations, MSE,
+Adam, learning rate 0.001, batch size 256, maximum 50 epochs, patience 5,
+minimum delta 1e-5, seed 42, normal-only training and early stopping,
+normal-validation P95 threshold methodology, and frozen-test evaluation
+methodology remain fixed.
+
+The programmatic window calculation is
+`floor((1,034 - 30) / 15) + 1 = 67` windows per customer. The final window ends
+at feature index 1,019, leaving 14 trailing chronological positions unused.
+The original Stage 2 customer assignments are reused exactly, with no overlap
+between train, validation, and test customers.
+
+| Split | Customers | Raw windows | Fully missing | Usable | Usable normal | Usable theft-labelled | Retained |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Train | 29,656 | 1,986,952 | 466,091 | 1,520,861 | 1,400,965 | 119,896 | 76.5424% |
+| Validation | 6,355 | 425,785 | 98,373 | 327,412 | 301,102 | 26,310 | 76.8961% |
+| Test | 6,356 | 425,852 | 99,426 | 326,426 | 300,631 | 25,795 | 76.6525% |
+| Overall | 42,367 | 2,838,589 | 663,890 | 2,174,699 | 2,002,698 | 172,001 | 76.6120% |
+
+Before filtering, the raw window population contains 2,596,585 normal and
+242,004 theft-labelled windows (8.5255% theft-labelled). After applying only
+the fixed fully-missing-window rule, the theft-labelled share is 7.9092%.
+One theft-labelled training customer (`B08E0670C8A6933E5EC44715F7A80E9D`)
+loses all 67 windows; no normal, validation, or test customer loses all usable
+windows. This is diagnostic evidence only and does not reopen the fixed
+missingness-policy decision.
+
+Shared preprocessing, Dataset, and training code now accepts strides 30 and 15.
+Stride-specific paths isolate the future checkpoint at
+`models/autoencoder/ae_stride15_baseline.pt`, its config at
+`models/autoencoder/ae_stride15_baseline_config.json`, and training outputs at
+`results/autoencoder/stride_15/`; the frozen stride-30 paths are unchanged.
+The training entry point continues to exclude test data and does not select a
+threshold. After manual training, the same normal-validation 95th-percentile
+threshold policy and the same one-time frozen-test methodology are to be used;
+no numeric stride-15 threshold or performance result is recorded at this stage.
+
+A normal-only 256-window training smoke test produced finite `(256, 30)` input
+and output tensors, finite MSE, and a successful forward/backward optimizer
+step. It loaded no test data and wrote no artifact. The compact train split
+matrix occupied 117.0 MiB and the sampled integer manifest references occupied
+2 KiB. The real run retains lazy NumPy slicing, batched loading, and
+`num_workers=0` on Windows; it does not construct a dense all-window tensor.
+
+Full stride-15 training is intentionally executed manually by the user:
+
+    python -m src.training.train_autoencoder --stride 15
+
+## Stage 8 — Stride-15 Evaluation and Stride Ablation
+
+Stage 8 verifies the manually completed stride-15 training run, freezes the
+normal-validation P95 threshold before test access, evaluates the reserved test
+split exactly once, and compares saved stride-15 results against the frozen
+stride-30 baseline. No model was retrained. The stride-15 checkpoint SHA-256 is
+`7df22d08a04aacba45fbab701dab517bf431892b61ea4fcb7d68f7d753cc6547`.
+
+### Training verification
+
+The checkpoint and configuration retain architecture
+`30 → 16 → 8 → 4 → 8 → 16 → 30`, latent dimension 4, ReLU hidden layers,
+linear output, MSE, Adam, learning rate 0.001, batch size 256, patience 5,
+minimum delta 1e-5, and seed 42. Training used 1,400,965 usable `FLAG=0`
+training windows only; early stopping used 301,102 usable `FLAG=0` validation
+windows only. The CPU run executed 36 epochs, stopped early after epoch 36,
+selected epoch 31, achieved best normal-validation MSE
+`0.04118696386392505`, and ran for 1,251.49 seconds. The saved summary records
+`test_set_used: false` and `anomaly_threshold_selected: false`; all 327,412
+saved validation reconstruction errors are finite and nonnegative.
+
+| Validation population | Count | Mean | Median | Std | Min | P25 | P50 | P75 | P90 | P95 | P99 | Max |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Normal | 301,102 | 0.041187 | 0.017682 | 0.095739 | 0.000051 | 0.005784 | 0.017682 | 0.039526 | 0.089932 | 0.152459 | 0.425142 | 8.414934 |
+| Theft-labelled | 26,310 | 0.073601 | 0.020584 | 0.197337 | 0.000048 | 0.009521 | 0.020584 | 0.052271 | 0.164702 | 0.321152 | 0.874865 | 6.058082 |
+
+The theft/normal validation median ratio is 1.1641 and mean ratio is 1.7870.
+Theft-labelled proportions exceeding normal P90/P95/P97.5/P99 are
+16.4082%/10.7678%/6.7199%/3.6754%. Validation ROC-AUC is 0.563470 and PR-AUC
+is 0.109945. Because `FLAG` is customer-level, these are weakly supervised
+window-label results rather than confirmed theft-event results.
+
+### Frozen threshold and test
+
+The authoritative threshold is the normal-validation 95th percentile,
+`0.1524585030972959`, saved in
+`models/autoencoder/ae_stride15_threshold.json` with SHA-256
+`6166e63c36599e9eb17efb8f8d17df5cab146d2293cf1af93b312ee772ab8630`.
+Best-F1 and best-balanced-accuracy candidates were diagnostic only. At P95,
+validation TP/TN/FP/FN are 2,833/286,046/15,056/23,477; precision 0.158365,
+recall 0.107678, F1 0.128193, specificity 0.949997, FPR 0.050003, balanced
+accuracy 0.528837, and anomaly rate 5.4638%. The checkpoint and threshold hashes
+were recorded before loading test data and remained unchanged afterward.
+
+The one-time frozen test covers 326,426 windows: 300,631 normal and 25,795
+theft-labelled. TP/TN/FP/FN are 3,094/285,739/14,892/22,701; precision
+0.172023, recall 0.119946, F1 0.141340, specificity 0.950464, FPR 0.049536,
+balanced accuracy 0.535205, accuracy 0.884835, anomaly rate 5.5100%, ROC-AUC
+0.561077, and PR-AUC 0.113595. Validation-to-test behavior is broadly stable;
+the frozen threshold was not changed after test outcomes were observed.
+
+Test customer mean/max/P95 MSE aggregation gives ROC-AUC
+0.587743/0.580410/0.600611 and PR-AUC 0.155437/0.130475/0.171796. Mean
+anomalous-window fractions are 0.04791 for normal and 0.10876 for
+theft-labelled customers. These remain diagnostics; no customer decision
+threshold was created.
+
+Test missing-fraction Pearson/Spearman correlations with reconstruction MSE are
+-0.0330/-0.0597 overall, -0.0328/-0.0577 for normal, and -0.0482/-0.0807 for
+theft-labelled windows. They remain weak, although modestly more negative than
+stride 30's overall -0.0153/-0.0418.
+
+### Controlled stride comparison
+
+The customer split, preprocessing, StandardScaler, window length, usable rule,
+architecture, loss, optimizer, learning rate, batch size, early stopping, seed,
+P95 threshold method, and frozen-test method are fixed; only stride changes.
+Stride 15 lowers best validation MSE from 0.043589 to 0.041187 but does not
+improve window-level detection.
+
+| Frozen test metric | Stride 30 | Stride 15 | Difference 15−30 |
+|---|---:|---:|---:|
+| Precision | 0.173693 | 0.172023 | -0.001670 |
+| Recall | 0.121059 | 0.119946 | -0.001113 |
+| F1 | 0.142676 | 0.141340 | -0.001336 |
+| Specificity | 0.950607 | 0.950464 | -0.000143 |
+| FPR | 0.049393 | 0.049536 | +0.000143 |
+| Balanced accuracy | 0.535833 | 0.535205 | -0.000628 |
+| ROC-AUC | 0.561688 | 0.561077 | -0.000611 |
+| PR-AUC | 0.114411 | 0.113595 | -0.000816 |
+| Anomaly rate | 5.5054% | 5.5100% | +0.0046 pp |
+
+Customer P95 ROC-AUC/PR-AUC changes from 0.599251/0.168575 to
+0.600611/0.171796, a small improvement, while mean and maximum aggregation are
+slightly worse. Overall, stride 15 is effectively equivalent and slightly
+worse at the window level; it does not meaningfully beat stride 30.
+
+Stride 7 is not recommended next for this fully connected baseline. Stride 15
+increases windows/customer from 34 to 67 and usable training volume from
+708,308 to 1,520,861, materially increasing CPU time without improving core
+detection. Stride 7 would create 144 windows/customer—about 2.15 times the
+stride-15 volume. It remains unexecuted and can be reconsidered only with a
+model or hypothesis that can plausibly exploit denser overlap.

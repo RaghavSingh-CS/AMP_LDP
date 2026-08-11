@@ -12,6 +12,7 @@ preventing preprocessing leakage.
     data/processed/              Customer-level Stage 2 split outputs
     data/windows/                Reproducible Stage 3 window manifests
     data/windows/stride_30/usable/ Stage 3C baseline-eligible manifests
+    data/windows/stride_15/usable/ Stage 7 overlap-ablation manifests
     results/missingness_analysis/ Stage 3B quality evidence and recommendation
     docs/                        Master technical decision record
     src/preprocessing/           Reproducible preprocessing stages
@@ -31,6 +32,8 @@ preventing preprocessing leakage.
 - Stage 4 — Baseline Autoencoder: trained
 - Stage 5 — Validation threshold: frozen
 - Stage 6 — Frozen test evaluation: complete
+- Stage 7 — Stride-15 Autoencoder ablation: preparation and manual training complete
+- Stage 8 — Stride-15 threshold, frozen test, and controlled comparison: complete
 
 Stage 3B compares candidate missingness thresholds without changing the
 canonical manifests. See the
@@ -60,6 +63,15 @@ Stage 6 applies that frozen threshold once to the reserved test split without
 retraining or tuning. The final stride-30 Autoencoder baseline record is under
 `results/autoencoder/stride_30/test_evaluation/`.
 
+The stride-30 fully connected Autoencoder is the complete frozen baseline.
+The stride-15 Autoencoder has completed normal-only training, validation-only
+P95 threshold selection, and one-time frozen test evaluation under the same
+methodology. The controlled comparison is at
+`results/autoencoder/stride_comparison/stride_comparison_report.md`. Stride 15
+is effectively equivalent and slightly worse at the window level; lower
+reconstruction loss did not improve core anomaly discrimination. Stride 7 is
+not recommended next and remains unexecuted.
+
 Files under data/raw/ are immutable source data and must never be overwritten.
 
 Run the implemented stages from the repository root:
@@ -73,8 +85,12 @@ Run the implemented stages from the repository root:
     python -m src.analysis.analyze_autoencoder_threshold
     python -m src.evaluation.evaluate_autoencoder_test
 
-Planned comparative window runs, not yet executed:
+Stride-15 reproduction commands are:
 
-    python -m src.preprocessing.generate_windows --stride 15
-    python -m src.preprocessing.generate_windows --stride 7
+    python -m src.training.train_autoencoder --stride 15
+
+    python -m src.analysis.analyze_autoencoder_threshold --stride 15
+    python -m src.evaluation.evaluate_autoencoder_test --stride 15
+    python -m src.analysis.compare_autoencoder_strides
+Stride 7 remains optional, ungenerated, and not recommended for this baseline.
 

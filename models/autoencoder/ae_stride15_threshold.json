@@ -1,0 +1,63 @@
+{
+  "stage": "Stage 5 \u2014 Validation-Based Anomaly Threshold",
+  "model_checkpoint": "models\\autoencoder\\ae_stride15_baseline.pt",
+  "stride": 15,
+  "window_length": 30,
+  "threshold_value": 0.1524585030972959,
+  "threshold_selection_method": "normal_validation_95th_percentile",
+  "anomaly_rule": "reconstruction_mse > threshold_value",
+  "validation_metrics": {
+    "threshold": 0.1524585030972959,
+    "TP": 2833,
+    "TN": 286046,
+    "FP": 15056,
+    "FN": 23477,
+    "precision": 0.15836547599083237,
+    "recall": 0.10767768909160015,
+    "F1": 0.12819294554175434,
+    "specificity": 0.949997010979668,
+    "false_positive_rate": 0.050002989020331984,
+    "balanced_accuracy": 0.5288373500356341,
+    "accuracy": 0.882310361257376,
+    "predicted_anomaly_count": 17889,
+    "predicted_anomaly_percentage": 5.463758200676823
+  },
+  "validation_sample_counts": {
+    "normal_windows": 301102,
+    "theft_labelled_windows": 26310,
+    "total_windows": 327412
+  },
+  "seed": 42,
+  "model_context": {
+    "architecture": [
+      30,
+      16,
+      8,
+      4,
+      8,
+      16,
+      30
+    ],
+    "latent_dimension": 4,
+    "loss": "MSELoss",
+    "optimizer": "Adam",
+    "learning_rate": 0.001,
+    "best_epoch": 31,
+    "best_validation_mse": 0.04118696386392505
+  },
+  "selection_rationale": "The normal-validation 95th percentile fixes the validation normal-window false-positive rate near 5% without fitting the cutoff to noisy customer-level theft labels. It avoids the impractical false-alarm volume of the best-F1 candidate while retaining more theft-labelled windows than normal p99.",
+  "weak_supervision_note": "FLAG is customer-level; FLAG=1 windows are not confirmed theft events.",
+  "test_data_accessed": false,
+  "stage4_input_sha256": {
+    "models\\autoencoder\\ae_stride15_baseline.pt": "7df22d08a04aacba45fbab701dab517bf431892b61ea4fcb7d68f7d753cc6547",
+    "models\\autoencoder\\ae_stride15_baseline_config.json": "68ab502808d008ee43c6b2ee702b8ed8c074cf8c382ea0a0b6c406c625d79881",
+    "results\\autoencoder\\stride_15\\training_history.csv": "46226ba590d90eac3989ce0a48e579c588ca8321b0a823491fb759d962f16645",
+    "results\\autoencoder\\stride_15\\training_summary.json": "4fbba5292b35ed38de05cb21b49f1c17c2fac9ad5192663f0cbcfcb6801df0b4",
+    "results\\autoencoder\\stride_15\\training_curve.png": "f064f68c619a3685ebb60dedb907ba1a2da96bcbcb1945791d1e0d87ac62570d",
+    "results\\autoencoder\\stride_15\\val_reconstruction_errors.parquet": "24f7f3d7ec18608c09df127870f84149f1b7e00a448bd4d42ae53aef5e8a648a",
+    "results\\autoencoder\\stride_15\\validation_error_distribution.png": "a747b4a2c86f2c2a6c4b9ba54600ed0745254b7258be17f17cf672ea7f85514f",
+    "src\\data\\window_dataset.py": "ebc875d3aa6daf389e05a6d40c67c97b0f723f75bfaf8ac3230f905628f11d5a",
+    "src\\models\\autoencoder.py": "30abcff176386a61277471beae21cbc52a42c819b4236a9295b5ae99e318d105",
+    "src\\training\\train_autoencoder.py": "61864557052e44d686b6f1cc8f351e255396d3325a93fd3bc99ecf2268c394b1"
+  }
+}

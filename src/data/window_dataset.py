@@ -25,7 +25,7 @@ WINDOWS_DIR = PROJECT_ROOT / "data" / "windows"
 ID_COLUMN = "CONS_NO"
 LABEL_COLUMN = "FLAG"
 WINDOW_LENGTH = 30
-SUPPORTED_STRIDES = (30,)
+SUPPORTED_STRIDES = (30, 15)
 SPLIT_NAMES = ("train", "val", "test")
 METADATA_COLUMNS = (
     "window_id",

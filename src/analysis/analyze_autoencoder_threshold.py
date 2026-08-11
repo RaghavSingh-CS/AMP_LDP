@@ -6,6 +6,7 @@ uses the completed Stage 4 validation reconstruction-error artifact only.
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 from pathlib import Path
@@ -25,6 +26,7 @@ from src.models.autoencoder import Autoencoder, architecture_config, count_train
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 MODEL_DIR = PROJECT_ROOT / "models" / "autoencoder"
+STRIDE = 30
 RESULTS_DIR = PROJECT_ROOT / "results" / "autoencoder" / "stride_30"
 ANALYSIS_DIR = RESULTS_DIR / "threshold_analysis"
 
@@ -59,6 +61,49 @@ STAGE4_PATHS = (
 )
 EXPECTED_ARCHITECTURE = [30, 16, 8, 4, 8, 16, 30]
 NORMAL_PERCENTILES = (0.90, 0.95, 0.975, 0.99)
+
+def configure_stride(stride: int) -> None:
+    """Route Stage 5 to isolated artifacts for one prepared stride."""
+    global STRIDE, RESULTS_DIR, ANALYSIS_DIR
+    global CHECKPOINT_PATH, CONFIG_PATH, HISTORY_PATH, TRAINING_SUMMARY_PATH
+    global TRAINING_CURVE_PATH, ERRORS_PATH, ERROR_DISTRIBUTION_PATH
+    global THRESHOLD_PATH, METRICS_PATH, SUMMARY_PATH, REPORT_PATH
+    global PR_CURVE_PATH, TRADEOFF_PATH, CUSTOMER_DIAGNOSTICS_PATH
+    global MISSINGNESS_DIAGNOSTICS_PATH, STAGE4_PATHS
+
+    if stride not in (30, 15):
+        raise ValueError(f"Supported Autoencoder strides are 30 and 15; got {stride}")
+    STRIDE = stride
+    RESULTS_DIR = PROJECT_ROOT / "results" / "autoencoder" / f"stride_{stride}"
+    ANALYSIS_DIR = RESULTS_DIR / "threshold_analysis"
+    CHECKPOINT_PATH = MODEL_DIR / f"ae_stride{stride}_baseline.pt"
+    CONFIG_PATH = MODEL_DIR / f"ae_stride{stride}_baseline_config.json"
+    HISTORY_PATH = RESULTS_DIR / "training_history.csv"
+    TRAINING_SUMMARY_PATH = RESULTS_DIR / "training_summary.json"
+    TRAINING_CURVE_PATH = RESULTS_DIR / "training_curve.png"
+    ERRORS_PATH = RESULTS_DIR / "val_reconstruction_errors.parquet"
+    ERROR_DISTRIBUTION_PATH = RESULTS_DIR / "validation_error_distribution.png"
+    THRESHOLD_PATH = MODEL_DIR / f"ae_stride{stride}_threshold.json"
+    METRICS_PATH = ANALYSIS_DIR / "threshold_metrics.csv"
+    SUMMARY_PATH = ANALYSIS_DIR / "threshold_summary.json"
+    REPORT_PATH = ANALYSIS_DIR / "threshold_report.md"
+    PR_CURVE_PATH = ANALYSIS_DIR / "precision_recall_curve.png"
+    TRADEOFF_PATH = ANALYSIS_DIR / "threshold_tradeoff.png"
+    CUSTOMER_DIAGNOSTICS_PATH = ANALYSIS_DIR / "customer_level_diagnostics.csv"
+    MISSINGNESS_DIAGNOSTICS_PATH = ANALYSIS_DIR / "missingness_group_summary.csv"
+    STAGE4_PATHS = (
+        CHECKPOINT_PATH,
+        CONFIG_PATH,
+        HISTORY_PATH,
+        TRAINING_SUMMARY_PATH,
+        TRAINING_CURVE_PATH,
+        ERRORS_PATH,
+        ERROR_DISTRIBUTION_PATH,
+        PROJECT_ROOT / "src" / "data" / "window_dataset.py",
+        PROJECT_ROOT / "src" / "models" / "autoencoder.py",
+        PROJECT_ROOT / "src" / "training" / "train_autoencoder.py",
+    )
+
 
 
 def file_sha256(path: Path, chunk_size: int = 1024 * 1024) -> str:
@@ -106,12 +151,15 @@ def validate_stage4_artifacts() -> dict[str, object]:
         raise ValueError("Model configuration architecture is inconsistent")
     if count_trainable_parameters(model) != 1362:
         raise ValueError("Stage 4 checkpoint does not match the 1,362-parameter baseline")
-    if config["training_population"] != "usable stride-30 train windows with FLAG == 0 only":
+    if config["training_population"] != f"usable stride-{STRIDE} train windows with FLAG == 0 only":
         raise ValueError("Stage 4 training population policy is inconsistent")
     if config["early_stopping_population"] != (
-        "usable stride-30 validation windows with FLAG == 0 only"
+        f"usable stride-{STRIDE} validation windows with FLAG == 0 only"
     ):
         raise ValueError("Stage 4 validation population policy is inconsistent")
+    if int(config["stride"]) != STRIDE or int(checkpoint["stride"]) != STRIDE:
+        raise ValueError("Stage 4 artifacts do not match the requested stride")
+
     if config["early_stopping"]["monitor"] != "normal_validation_mse":
         raise ValueError("Stage 4 did not monitor normal validation MSE")
     if config["test_set_policy"] != "not loaded or used during Stage 4":
@@ -701,7 +749,7 @@ later sensitivity analysis.
 
 No Autoencoder retraining, test-data access, test scoring, final test evaluation,
 GAN work, or alternative-stride analysis was performed. The selected threshold
-is now frozen in `models/autoencoder/ae_stride30_threshold.json` for later use.
+is now frozen in `{THRESHOLD_PATH.relative_to(PROJECT_ROOT).as_posix()}` for later use.
 """
 
 
@@ -748,7 +796,7 @@ def write_outputs(
     threshold_artifact: dict[str, object] = {
         "stage": "Stage 5 — Validation-Based Anomaly Threshold",
         "model_checkpoint": str(CHECKPOINT_PATH.relative_to(PROJECT_ROOT)),
-        "stride": 30,
+        "stride": STRIDE,
         "window_length": 30,
         "threshold_value": selected_metrics["threshold"],
         "threshold_selection_method": "normal_validation_95th_percentile",
@@ -806,8 +854,19 @@ def write_outputs(
     save_threshold_tradeoff(errors, selected)
 
 
+def parse_args(arguments: Iterable[str] | None = None) -> argparse.Namespace:
+    """Select a prepared stride while keeping normal-validation P95 fixed."""
+    parser = argparse.ArgumentParser(
+        description="Select a normal-validation P95 threshold for a trained Autoencoder."
+    )
+    parser.add_argument("--stride", type=int, choices=(30, 15), default=30)
+    return parser.parse_args(arguments)
+
+
 def main() -> None:
     """Run the complete validation-only Stage 5 analysis."""
+    args = parse_args()
+    configure_stride(args.stride)
     hashes_before = stage4_hashes()
     stage4 = validate_stage4_artifacts()
     errors = load_validation_errors()

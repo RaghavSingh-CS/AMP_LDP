@@ -1,4 +1,4 @@
-"""Stage 3C: retain stride-30 windows with at least one observed reading.
+"""Stage 3C: retain supported-stride windows with observed readings.
 
 This stage filters only manifest rows. It does not materialize sequences,
 impute values, change labels, rebalance classes, or alter customer splits.
@@ -20,13 +20,13 @@ import pandas as pd
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = PROJECT_ROOT / "data"
 WINDOWS_DIR = DATA_DIR / "windows"
-ANALYSIS_DIR = PROJECT_ROOT / "results" / "missingness_analysis"
+ANALYSIS_ROOT = PROJECT_ROOT / "results" / "missingness_analysis"
 
 ID_COLUMN = "CONS_NO"
 LABEL_COLUMN = "FLAG"
 SPLIT_COLUMN = "split"
 WINDOW_LENGTH = 30
-SUPPORTED_STRIDES = (30,)
+SUPPORTED_STRIDES = (30, 15)
 DEFAULT_STRIDE = 30
 SPLIT_NAMES = ("train", "val", "test")
 
@@ -61,7 +61,10 @@ def protected_paths(stride: int) -> tuple[Path, ...]:
         stride_dir / f"{split_name}_windows.parquet"
         for split_name in SPLIT_NAMES
     ) + (stride_dir / "window_summary.json",)
-    analysis_paths = tuple(sorted(path for path in ANALYSIS_DIR.rglob("*") if path.is_file()))
+    analysis_dir = ANALYSIS_ROOT if stride == 30 else ANALYSIS_ROOT / f"stride_{stride}"
+    analysis_paths = tuple(
+        sorted(path for path in analysis_dir.rglob("*") if path.is_file())
+    )
     return PROTECTED_FIXED_PATHS + stage3_paths + analysis_paths
 
 
@@ -273,20 +276,20 @@ def save_json(payload: dict[str, object], path: Path) -> None:
 def parse_args() -> argparse.Namespace:
     """Parse the deliberately narrow Stage 3C configuration."""
     parser = argparse.ArgumentParser(
-        description="Retain stride-30 manifest rows with at least one observed reading."
+        description="Retain manifest rows with at least one observed reading."
     )
     parser.add_argument(
         "--stride",
         type=int,
         choices=SUPPORTED_STRIDES,
         default=DEFAULT_STRIDE,
-        help="Manifest stride to filter; Stage 3C currently supports only 30.",
+        help="Manifest stride to filter with the fixed missing_count < 30 rule.",
     )
     return parser.parse_args()
 
 
 def main() -> None:
-    """Filter all stride-30 manifests and write a validated audit summary."""
+    """Filter one supported stride and write a validated audit summary."""
     args = parse_args()
     stride = args.stride
     hashes_before = protected_hashes(stride)
@@ -322,11 +325,6 @@ def main() -> None:
         (record[ID_COLUMN], record[LABEL_COLUMN]) for record in overall_lost
     ):
         raise ValueError("Per-split and overall lost-customer records disagree")
-    if len(lost_customers) != 1 or lost_customers[0][LABEL_COLUMN] != 1:
-        raise ValueError(
-            "Stage 3B evidence expected exactly one theft customer to lose all windows"
-        )
-
     hashes_after = protected_hashes(stride)
     if hashes_before != hashes_after:
         changed = [

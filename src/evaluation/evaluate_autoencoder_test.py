@@ -80,6 +80,59 @@ STAGE5_OUTPUTS = (
     PROJECT_ROOT / "src" / "analysis" / "analyze_autoencoder_threshold.py",
 )
 
+def configure_stride(stride: int) -> None:
+    """Route frozen evaluation to isolated artifacts for one trained stride."""
+    global STRIDE, RESULTS_DIR, OUTPUT_DIR, CHECKPOINT_PATH, THRESHOLD_PATH
+    global STAGE3C_SUMMARY_PATH, TEST_MANIFEST_PATH
+    global VALIDATION_THRESHOLD_SUMMARY_PATH, ERRORS_PATH, METRICS_PATH
+    global REPORT_PATH, CONFUSION_PATH, ERROR_DISTRIBUTION_PATH
+    global VALIDATION_COMPARISON_PATH, CUSTOMER_DIAGNOSTICS_PATH
+    global CUSTOMER_ANOMALY_PATH, MISSINGNESS_PATH, TOP_CASES_PATH
+    global FINAL_SUMMARY_PATH, STAGE5_OUTPUTS
+
+    if stride not in (30, 15):
+        raise ValueError(f"Supported Autoencoder strides are 30 and 15; got {stride}")
+    STRIDE = stride
+    RESULTS_DIR = PROJECT_ROOT / "results" / "autoencoder" / f"stride_{stride}"
+    OUTPUT_DIR = RESULTS_DIR / "test_evaluation"
+    CHECKPOINT_PATH = MODEL_DIR / f"ae_stride{stride}_baseline.pt"
+    THRESHOLD_PATH = MODEL_DIR / f"ae_stride{stride}_threshold.json"
+    STAGE3C_SUMMARY_PATH = (
+        PROJECT_ROOT
+        / "data"
+        / "windows"
+        / f"stride_{stride}"
+        / "usable"
+        / "filter_summary.json"
+    )
+    TEST_MANIFEST_PATH = STAGE3C_SUMMARY_PATH.parent / "test_windows.parquet"
+    VALIDATION_THRESHOLD_SUMMARY_PATH = (
+        RESULTS_DIR / "threshold_analysis" / "threshold_summary.json"
+    )
+    ERRORS_PATH = OUTPUT_DIR / "test_reconstruction_errors.parquet"
+    METRICS_PATH = OUTPUT_DIR / "test_metrics.json"
+    REPORT_PATH = OUTPUT_DIR / "test_report.md"
+    CONFUSION_PATH = OUTPUT_DIR / "confusion_matrix.png"
+    ERROR_DISTRIBUTION_PATH = OUTPUT_DIR / "test_error_distribution.png"
+    VALIDATION_COMPARISON_PATH = OUTPUT_DIR / "validation_vs_test.csv"
+    CUSTOMER_DIAGNOSTICS_PATH = OUTPUT_DIR / "customer_level_test_diagnostics.csv"
+    CUSTOMER_ANOMALY_PATH = OUTPUT_DIR / "customer_anomaly_fraction_summary.csv"
+    MISSINGNESS_PATH = OUTPUT_DIR / "missingness_test_summary.csv"
+    TOP_CASES_PATH = OUTPUT_DIR / "top_test_error_cases.csv"
+    FINAL_SUMMARY_PATH = OUTPUT_DIR / "baseline_final_summary.json"
+    STAGE5_OUTPUTS = (
+        THRESHOLD_PATH,
+        RESULTS_DIR / "threshold_analysis" / "threshold_metrics.csv",
+        RESULTS_DIR / "threshold_analysis" / "threshold_summary.json",
+        RESULTS_DIR / "threshold_analysis" / "threshold_report.md",
+        RESULTS_DIR / "threshold_analysis" / "precision_recall_curve.png",
+        RESULTS_DIR / "threshold_analysis" / "threshold_tradeoff.png",
+        RESULTS_DIR / "threshold_analysis" / "customer_level_diagnostics.csv",
+        RESULTS_DIR / "threshold_analysis" / "missingness_group_summary.csv",
+        PROJECT_ROOT / "src" / "analysis" / "analyze_autoencoder_threshold.py",
+    )
+
+
 
 def file_sha256(path: Path, chunk_size: int = 1024 * 1024) -> str:
     """Return the SHA-256 hash of one protected artifact."""
@@ -111,7 +164,7 @@ def protected_paths() -> tuple[Path, ...]:
             PROJECT_ROOT
             / "data"
             / "windows"
-            / "stride_30"
+            / f"stride_{STRIDE}"
             / "usable"
             / f"{split}_windows.parquet"
             for split in ("train", "val", "test")
@@ -147,10 +200,10 @@ def load_frozen_threshold() -> tuple[float, dict[str, object]]:
         raise ValueError("Unexpected frozen-threshold selection method")
     if artifact["anomaly_rule"] != "reconstruction_mse > threshold_value":
         raise ValueError("Unexpected frozen anomaly comparison rule")
-    if Path(artifact["model_checkpoint"]) != Path(
-        "models/autoencoder/ae_stride30_baseline.pt"
-    ):
+    if Path(artifact["model_checkpoint"]) != Path(f"models/autoencoder/ae_stride{STRIDE}_baseline.pt"):
         raise ValueError("Threshold artifact references a different checkpoint")
+    if int(artifact["stride"]) != STRIDE:
+        raise ValueError("Threshold artifact stride differs from requested stride")
     return threshold, artifact
 
 
@@ -187,7 +240,8 @@ def load_test_dataset() -> tuple[ProcessedSplitData, WindowDataset, WindowDatase
     theft = WindowDataset(
         "test", 1, stride=STRIDE, store=store, include_metadata=True
     )
-    if len(normal) + len(theft) != 165020:
+    expected = int(load_json(STAGE3C_SUMMARY_PATH)["splits"]["test"]["retained_windows"])
+    if len(normal) + len(theft) != expected:
         raise ValueError("Usable test-window count differs from Stage 3C")
     if normal.flag != 0 or theft.flag != 1:
         raise ValueError("Test Dataset FLAG filters are inconsistent")
@@ -611,7 +665,7 @@ def build_report(
 ## Frozen evaluation policy
 
 The Stage 4 checkpoint was evaluated once using threshold `{threshold:.12g}`
-loaded from `models/autoencoder/ae_stride30_threshold.json`. The rule was
+loaded from `{THRESHOLD_PATH.relative_to(PROJECT_ROOT).as_posix()}`. The rule was
 `reconstruction_mse > threshold`. No retraining, threshold adjustment,
 architecture change, or test-driven selection occurred.
 
@@ -685,7 +739,7 @@ and theft-labelled {missingness['FLAG_1']['pearson']:.4f}/
 
 ## Interpretation and boundary
 
-This frozen fully connected stride-30 Autoencoder is classified after test
+This frozen fully connected stride-{STRIDE} Autoencoder is classified after test
 evaluation according to its ranking, F1, recall, false-positive rate, and
 validation/test consistency in `baseline_final_summary.json`. It establishes a
 rigorous baseline for future models. No stride comparison, GAN, ensemble,
@@ -744,7 +798,7 @@ def write_reports(
     save_json(metrics_payload, METRICS_PATH)
 
     final_summary: dict[str, object] = {
-        "artifact_role": "final stride-30 fully connected Autoencoder baseline performance record",
+        "artifact_role": f"final stride-{STRIDE} fully connected Autoencoder performance record",
         "model": {
             "architecture": EXPECTED_ARCHITECTURE,
             "latent_dimension": 4,
@@ -846,17 +900,19 @@ def positive_int(value: str) -> int:
 
 
 def parse_args(arguments: Iterable[str] | None = None) -> argparse.Namespace:
-    """Expose only inference batch size; all modeling decisions remain frozen."""
+    """Expose stride and batch size; all modeling decisions remain frozen."""
     parser = argparse.ArgumentParser(
-        description="Evaluate the frozen stride-30 Autoencoder on test exactly once."
+        description="Evaluate one frozen Autoencoder stride on test exactly once."
     )
     parser.add_argument("--batch-size", type=positive_int, default=DEFAULT_BATCH_SIZE)
+    parser.add_argument("--stride", type=int, choices=(30, 15), default=30)
     return parser.parse_args(arguments)
 
 
 def main() -> None:
     """Run Stage 6 frozen test inference and evaluation."""
     args = parse_args()
+    configure_stride(args.stride)
     hashes_before = protected_hashes()
     threshold, threshold_artifact = load_frozen_threshold()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

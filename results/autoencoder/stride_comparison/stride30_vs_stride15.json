@@ -1,0 +1,373 @@
+{
+  "stage": "Stage 8 \u2014 Controlled Stride Ablation",
+  "comparison": "stride 30 versus stride 15",
+  "design": {
+    "fixed": [
+      "customer split",
+      "cleaning and train-fitted StandardScaler",
+      "window length 30",
+      "missing_count < 30 usable-window rule",
+      "30-16-8-4-8-16-30 architecture and latent dimension 4",
+      "MSE loss and Adam optimizer",
+      "learning rate 0.001 and batch size 256",
+      "early stopping policy and seed 42",
+      "normal-validation P95 threshold method",
+      "one-time frozen-test evaluation method"
+    ],
+    "changed": "stride 30 to stride 15",
+    "weak_supervision": "FLAG is customer-level; window metrics do not measure confirmed theft events."
+  },
+  "rows": [
+    {
+      "category": "window_volume",
+      "metric": "usable_train_windows",
+      "stride_30": 768923.0,
+      "stride_15": 1520861.0,
+      "absolute_difference_stride15_minus_stride30": 751938.0,
+      "relative_difference_percent": 97.79106620558886,
+      "unit": "windows"
+    },
+    {
+      "category": "window_volume",
+      "metric": "usable_val_windows",
+      "stride_30": 165541.0,
+      "stride_15": 327412.0,
+      "absolute_difference_stride15_minus_stride30": 161871.0,
+      "relative_difference_percent": 97.78302656139567,
+      "unit": "windows"
+    },
+    {
+      "category": "window_volume",
+      "metric": "usable_test_windows",
+      "stride_30": 165020.0,
+      "stride_15": 326426.0,
+      "absolute_difference_stride15_minus_stride30": 161406.0,
+      "relative_difference_percent": 97.80996242879651,
+      "unit": "windows"
+    },
+    {
+      "category": "window_volume",
+      "metric": "windows_per_customer",
+      "stride_30": 34.0,
+      "stride_15": 67.0,
+      "absolute_difference_stride15_minus_stride30": 33.0,
+      "relative_difference_percent": 97.05882352941177,
+      "unit": "windows/customer"
+    },
+    {
+      "category": "training",
+      "metric": "epochs_executed",
+      "stride_30": 35.0,
+      "stride_15": 36.0,
+      "absolute_difference_stride15_minus_stride30": 1.0,
+      "relative_difference_percent": 2.857142857142857,
+      "unit": "epochs"
+    },
+    {
+      "category": "training",
+      "metric": "best_validation_mse",
+      "stride_30": 0.043589054377373454,
+      "stride_15": 0.04118696386392505,
+      "absolute_difference_stride15_minus_stride30": -0.0024020905134484044,
+      "relative_difference_percent": -5.510765369333867,
+      "unit": "MSE"
+    },
+    {
+      "category": "training",
+      "metric": "runtime_seconds",
+      "stride_30": 600.961045,
+      "stride_15": 1251.4918811000007,
+      "absolute_difference_stride15_minus_stride30": 650.5308361000007,
+      "relative_difference_percent": 108.24842001198274,
+      "unit": "seconds"
+    },
+    {
+      "category": "training",
+      "metric": "trainable_parameters",
+      "stride_30": 1362.0,
+      "stride_15": 1362.0,
+      "absolute_difference_stride15_minus_stride30": 0.0,
+      "relative_difference_percent": 0.0,
+      "unit": "parameters"
+    },
+    {
+      "category": "validation_p95",
+      "metric": "threshold",
+      "stride_30": 0.16436323150992393,
+      "stride_15": 0.1524585030972959,
+      "absolute_difference_stride15_minus_stride30": -0.011904728412628046,
+      "relative_difference_percent": -7.242938888013565,
+      "unit": "fraction"
+    },
+    {
+      "category": "validation_p95",
+      "metric": "precision",
+      "stride_30": 0.15999117290080547,
+      "stride_15": 0.15836547599083237,
+      "absolute_difference_stride15_minus_stride30": -0.0016256969099731067,
+      "relative_difference_percent": -1.0161166272473288,
+      "unit": "fraction"
+    },
+    {
+      "category": "validation_p95",
+      "metric": "recall",
+      "stride_30": 0.10906355772846935,
+      "stride_15": 0.10767768909160015,
+      "absolute_difference_stride15_minus_stride30": -0.0013858686368691947,
+      "relative_difference_percent": -1.2706981742879961,
+      "unit": "fraction"
+    },
+    {
+      "category": "validation_p95",
+      "metric": "F1",
+      "stride_30": 0.12970748725288486,
+      "stride_15": 0.12819294554175434,
+      "absolute_difference_stride15_minus_stride30": -0.0015145417111305237,
+      "relative_difference_percent": -1.167659433705388,
+      "unit": "fraction"
+    },
+    {
+      "category": "validation_p95",
+      "metric": "specificity",
+      "stride_30": 0.9499954021780539,
+      "stride_15": 0.949997010979668,
+      "absolute_difference_stride15_minus_stride30": 1.6088016141502237e-06,
+      "relative_difference_percent": 0.00016934835794591482,
+      "unit": "fraction"
+    },
+    {
+      "category": "validation_p95",
+      "metric": "false_positive_rate",
+      "stride_30": 0.05000459782194606,
+      "stride_15": 0.050002989020331984,
+      "absolute_difference_stride15_minus_stride30": -1.6088016140738959e-06,
+      "relative_difference_percent": -0.0032173073760185782,
+      "unit": "fraction"
+    },
+    {
+      "category": "validation_p95",
+      "metric": "balanced_accuracy",
+      "stride_30": 0.5295294799532616,
+      "stride_15": 0.5288373500356341,
+      "absolute_difference_stride15_minus_stride30": -0.0006921299176274598,
+      "relative_difference_percent": -0.1307065883637961,
+      "unit": "fraction"
+    },
+    {
+      "category": "validation_p95",
+      "metric": "predicted_anomaly_percentage",
+      "stride_30": 5.47477664143626,
+      "stride_15": 5.463758200676823,
+      "absolute_difference_stride15_minus_stride30": -0.01101844075943692,
+      "relative_difference_percent": -0.20125827008252758,
+      "unit": "percent"
+    },
+    {
+      "category": "validation_p95",
+      "metric": "ROC_AUC",
+      "stride_30": 0.5643104020251226,
+      "stride_15": 0.563469862211275,
+      "absolute_difference_stride15_minus_stride30": -0.0008405398138475739,
+      "relative_difference_percent": -0.1489499060855791,
+      "unit": "fraction"
+    },
+    {
+      "category": "validation_p95",
+      "metric": "PR_AUC",
+      "stride_30": 0.11024193103306401,
+      "stride_15": 0.10994547218190934,
+      "absolute_difference_stride15_minus_stride30": -0.00029645885115467396,
+      "relative_difference_percent": -0.26891659859056655,
+      "unit": "fraction"
+    },
+    {
+      "category": "frozen_test",
+      "metric": "precision",
+      "stride_30": 0.17369290038525043,
+      "stride_15": 0.1720226843100189,
+      "absolute_difference_stride15_minus_stride30": -0.0016702160752315176,
+      "relative_difference_percent": -0.9615914476222013,
+      "unit": "fraction"
+    },
+    {
+      "category": "frozen_test",
+      "metric": "recall",
+      "stride_30": 0.12105868814729574,
+      "stride_15": 0.11994572591587517,
+      "absolute_difference_stride15_minus_stride30": -0.0011129622314205723,
+      "relative_difference_percent": -0.9193575847000734,
+      "unit": "fraction"
+    },
+    {
+      "category": "frozen_test",
+      "metric": "F1",
+      "stride_30": 0.1426763110307414,
+      "stride_15": 0.14133985062013202,
+      "absolute_difference_stride15_minus_stride30": -0.0013364604106093914,
+      "relative_difference_percent": -0.9367079937477737,
+      "unit": "fraction"
+    },
+    {
+      "category": "frozen_test",
+      "metric": "specificity",
+      "stride_30": 0.9506069677928743,
+      "stride_15": 0.9504641903196942,
+      "absolute_difference_stride15_minus_stride30": -0.00014277747318014455,
+      "relative_difference_percent": -0.01501961147114735,
+      "unit": "fraction"
+    },
+    {
+      "category": "frozen_test",
+      "metric": "false_positive_rate",
+      "stride_30": 0.0493930322071257,
+      "stride_15": 0.049535809680305756,
+      "absolute_difference_stride15_minus_stride30": 0.00014277747318005435,
+      "relative_difference_percent": 0.2890639970863269,
+      "unit": "fraction"
+    },
+    {
+      "category": "frozen_test",
+      "metric": "balanced_accuracy",
+      "stride_30": 0.535832827970085,
+      "stride_15": 0.5352049581177847,
+      "absolute_difference_stride15_minus_stride30": -0.0006278698523003445,
+      "relative_difference_percent": -0.1171764437574545,
+      "unit": "fraction"
+    },
+    {
+      "category": "frozen_test",
+      "metric": "accuracy",
+      "stride_30": 0.8850805962913586,
+      "stride_15": 0.8848345413661902,
+      "absolute_difference_stride15_minus_stride30": -0.0002460549251683819,
+      "relative_difference_percent": -0.027800284651973477,
+      "unit": "fraction"
+    },
+    {
+      "category": "frozen_test",
+      "metric": "ROC_AUC",
+      "stride_30": 0.5616878545705716,
+      "stride_15": 0.5610771598825333,
+      "absolute_difference_stride15_minus_stride30": -0.0006106946880383157,
+      "relative_difference_percent": -0.1087249231168104,
+      "unit": "fraction"
+    },
+    {
+      "category": "frozen_test",
+      "metric": "PR_AUC",
+      "stride_30": 0.11441086650646873,
+      "stride_15": 0.11359460885056379,
+      "absolute_difference_stride15_minus_stride30": -0.0008162576559049423,
+      "relative_difference_percent": -0.7134441690980389,
+      "unit": "fraction"
+    },
+    {
+      "category": "frozen_test",
+      "metric": "predicted_anomaly_percentage",
+      "stride_30": 5.505393285662344,
+      "stride_15": 5.50997775912458,
+      "absolute_difference_stride15_minus_stride30": 0.004584473462236005,
+      "relative_difference_percent": 0.08327240624525982,
+      "unit": "percent"
+    },
+    {
+      "category": "customer_test",
+      "metric": "mean_mse_ROC_AUC",
+      "stride_30": 0.5910929465331806,
+      "stride_15": 0.5877427814525824,
+      "absolute_difference_stride15_minus_stride30": -0.0033501650805981553,
+      "relative_difference_percent": -0.5667746672071134,
+      "unit": "fraction"
+    },
+    {
+      "category": "customer_test",
+      "metric": "mean_mse_PR_AUC",
+      "stride_30": 0.157129338636314,
+      "stride_15": 0.1554371693003535,
+      "absolute_difference_stride15_minus_stride30": -0.0016921693359605028,
+      "relative_difference_percent": -1.0769276766811435,
+      "unit": "fraction"
+    },
+    {
+      "category": "customer_test",
+      "metric": "maximum_mse_ROC_AUC",
+      "stride_30": 0.587049709506383,
+      "stride_15": 0.5804103087470502,
+      "absolute_difference_stride15_minus_stride30": -0.006639400759332781,
+      "relative_difference_percent": -1.1309776074866775,
+      "unit": "fraction"
+    },
+    {
+      "category": "customer_test",
+      "metric": "maximum_mse_PR_AUC",
+      "stride_30": 0.13081333037213627,
+      "stride_15": 0.13047472458796533,
+      "absolute_difference_stride15_minus_stride30": -0.0003386057841709422,
+      "relative_difference_percent": -0.25884654355001924,
+      "unit": "fraction"
+    },
+    {
+      "category": "customer_test",
+      "metric": "p95_mse_ROC_AUC",
+      "stride_30": 0.5992509808999019,
+      "stride_15": 0.6006109441899372,
+      "absolute_difference_stride15_minus_stride30": 0.0013599632900352931,
+      "relative_difference_percent": 0.2269438571453018,
+      "unit": "fraction"
+    },
+    {
+      "category": "customer_test",
+      "metric": "p95_mse_PR_AUC",
+      "stride_30": 0.16857539852015607,
+      "stride_15": 0.17179582926829903,
+      "absolute_difference_stride15_minus_stride30": 0.0032204307481429606,
+      "relative_difference_percent": 1.910380029597203,
+      "unit": "fraction"
+    },
+    {
+      "category": "customer_test",
+      "metric": "normal_mean_anomalous_fraction",
+      "stride_30": 0.048158918471605854,
+      "stride_15": 0.047911222054069294,
+      "absolute_difference_stride15_minus_stride30": -0.0002476964175365595,
+      "relative_difference_percent": -0.5143313541864515,
+      "unit": "fraction"
+    },
+    {
+      "category": "customer_test",
+      "metric": "theft_mean_anomalous_fraction",
+      "stride_30": 0.1101738473438994,
+      "stride_15": 0.10876424136646852,
+      "absolute_difference_stride15_minus_stride30": -0.0014096059774308806,
+      "relative_difference_percent": -1.2794379169049994,
+      "unit": "fraction"
+    }
+  ],
+  "interpretation": "effectively equivalent; stride 15 slightly worse at window level",
+  "stride7_recommendation": {
+    "execute_next": false,
+    "windows_per_customer_if_run": 144,
+    "reason": "Higher overlap doubled stride-15 volume without improving core frozen-test metrics; additional CPU cost is not justified for this baseline."
+  },
+  "input_sha256": {
+    "data/windows/stride_30/window_summary.json": "cb843b0ce6b3ea428df7cf3d34256d941202e027e637cea5973e6de5045e1a68",
+    "data/windows/stride_30/usable/filter_summary.json": "aaf5e4101f14742c4a0b9021c08ac8fa0a1b7d52ffea263e38d1897763b48333",
+    "models/autoencoder/ae_stride30_baseline.pt": "421f1e2cdf96da1bd3231cd0baa750746d89757700d63ac428f9167f69237fa4",
+    "models/autoencoder/ae_stride30_baseline_config.json": "3408e00443df58a32f70520452266e1f3e5a2618974bf15bd913a24f595aa27d",
+    "models/autoencoder/ae_stride30_threshold.json": "50bdc17a266fd7208a1bf8a614b505edc68653b7484c7d0873d425eb639de96c",
+    "results/autoencoder/stride_30/training_summary.json": "54cb929b1ea8fcc2d72893c319c0f03f07a14a0c81e1cf522db91ec3d16df374",
+    "results/autoencoder/stride_30/threshold_analysis/threshold_summary.json": "e978552f5d3dbcf0c599fbc9cf86a43bc326692195bdc92ff4cc23c7a4fb5253",
+    "results/autoencoder/stride_30/test_evaluation/test_metrics.json": "67ef520752e3fb6a2774e63c36620014615869c8676a5ef501aa062e5862ba44",
+    "results/autoencoder/stride_30/test_evaluation/baseline_final_summary.json": "15f99b7b9b0788d892628230220fcc2e30b1202c866d4ad1432c0804345efcb1",
+    "data/windows/stride_15/window_summary.json": "7fbe6ce4374096fc0242d92ea38436c6fce999882b95bd5b551d3cc9da479504",
+    "data/windows/stride_15/usable/filter_summary.json": "71d7065a5b9ecf9524d7b322d292986757bed4c5debb78d4e6421a460c04ad03",
+    "models/autoencoder/ae_stride15_baseline.pt": "7df22d08a04aacba45fbab701dab517bf431892b61ea4fcb7d68f7d753cc6547",
+    "models/autoencoder/ae_stride15_baseline_config.json": "68ab502808d008ee43c6b2ee702b8ed8c074cf8c382ea0a0b6c406c625d79881",
+    "models/autoencoder/ae_stride15_threshold.json": "6166e63c36599e9eb17efb8f8d17df5cab146d2293cf1af93b312ee772ab8630",
+    "results/autoencoder/stride_15/training_summary.json": "4fbba5292b35ed38de05cb21b49f1c17c2fac9ad5192663f0cbcfcb6801df0b4",
+    "results/autoencoder/stride_15/threshold_analysis/threshold_summary.json": "28466edca911200349b1c83b960f0a64e3867ca6c556675d297c0a4fca3c6468",
+    "results/autoencoder/stride_15/test_evaluation/test_metrics.json": "fb204cc43dd159ecf4d691d3a6cc56fda78b923a07e7fc41590abe9ea66e6942",
+    "results/autoencoder/stride_15/test_evaluation/baseline_final_summary.json": "41b2430497eb0ab6ddbb592ab453778e1e7a2fd602f718c61f9a120b998f3eec"
+  },
+  "inputs_recalculated_or_modified": false
+}

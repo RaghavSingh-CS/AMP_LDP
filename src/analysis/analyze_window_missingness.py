@@ -8,6 +8,7 @@ consecutive-run levels, then writes reproducible analysis reports.
 from __future__ import annotations
 
 import hashlib
+import argparse
 import json
 from pathlib import Path
 
@@ -24,6 +25,8 @@ LABEL_COLUMN = "FLAG"
 SPLIT_COLUMN = "split"
 WINDOW_LENGTH = 30
 WINDOWS_PER_CUSTOMER = 34
+SUPPORTED_STRIDES = (30, 15)
+DEFAULT_STRIDE = 30
 SPLIT_NAMES = ("train", "val", "test")
 
 MANIFEST_PATHS = {
@@ -60,6 +63,43 @@ CANONICAL_PATHS = (
     MANIFEST_PATHS["test"],
     WINDOW_DIR / "window_summary.json",
 )
+
+def configure_stride(stride: int) -> None:
+    """Route one supported stride to isolated inputs and outputs."""
+    global WINDOW_DIR, OUTPUT_DIR, WINDOWS_PER_CUSTOMER
+    global MANIFEST_PATHS, CANONICAL_PATHS
+
+    if stride not in SUPPORTED_STRIDES:
+        raise ValueError(f"Supported strides: {SUPPORTED_STRIDES}; got {stride}")
+    window_dir = PROJECT_ROOT / "data" / "windows" / f"stride_{stride}"
+    summary_path = window_dir / "window_summary.json"
+    if not summary_path.is_file():
+        raise FileNotFoundError(f"Window summary not found: {summary_path}")
+    with summary_path.open("r", encoding="utf-8") as source:
+        summary = json.load(source)
+    configuration = summary["configuration"]
+    if int(configuration["stride"]) != stride:
+        raise ValueError("Window summary stride does not match the requested stride")
+    if int(configuration["window_length"]) != WINDOW_LENGTH:
+        raise ValueError("Window summary length differs from the fixed model input")
+
+    WINDOW_DIR = window_dir
+    OUTPUT_DIR = (
+        PROJECT_ROOT / "results" / "missingness_analysis"
+        if stride == 30
+        else PROJECT_ROOT / "results" / "missingness_analysis" / f"stride_{stride}"
+    )
+    WINDOWS_PER_CUSTOMER = int(configuration["windows_per_customer"])
+    MANIFEST_PATHS = {
+        split: WINDOW_DIR / f"{split}_windows.parquet" for split in SPLIT_NAMES
+    }
+    CANONICAL_PATHS = CANONICAL_PATHS[:11] + (
+        MANIFEST_PATHS["train"],
+        MANIFEST_PATHS["val"],
+        MANIFEST_PATHS["test"],
+        summary_path,
+    )
+
 
 ANALYSIS_COLUMNS = [
     ID_COLUMN,
@@ -121,7 +161,9 @@ def load_manifests() -> dict[str, pd.DataFrame]:
 
         customer_sizes = frame.groupby(ID_COLUMN, sort=False).size()
         if not customer_sizes.eq(WINDOWS_PER_CUSTOMER).all():
-            raise ValueError(f"{split} customers do not all have 34 windows")
+            raise ValueError(
+                f"{split} customers do not all have {WINDOWS_PER_CUSTOMER} windows"
+            )
         numbers = frame["window_number_within_customer"].to_numpy().reshape(
             len(customer_sizes), WINDOWS_PER_CUSTOMER
         )
@@ -617,7 +659,7 @@ def build_markdown_report(
 
 ## Scope
 
-This analysis evaluates the canonical stride-30 manifests without filtering or
+This analysis evaluates the canonical {WINDOW_DIR.name} manifests without filtering or
 rewriting them. A threshold of 0.25 means retain windows with
 missing_fraction <= 0.25. Comparisons use integer counts out of 30 to avoid
 floating-point boundary ambiguity. The special <1.00 rule retains every window
@@ -635,7 +677,7 @@ except those with 30/30 originally missing positions.
   ({theft_full.percentage_fully_missing:.2f}% of theft-customer windows).
 - Customers with at least one fully missing window:
   {int(all_customer_full.customers_with_at_least_one_fully_missing_window):,}.
-- Customers whose all 34 windows are fully missing:
+- Customers whose all {WINDOWS_PER_CUSTOMER} windows are fully missing:
   {int(all_customer_full.customers_all_windows_fully_missing):,}.
 - Longest consecutive fully missing run: {int(overall_run.maximum_run_maximum)}
   windows.
@@ -709,8 +751,21 @@ def write_text(text: str, path: Path) -> None:
             temporary.unlink()
 
 
+def parse_args(arguments: list[str] | None = None) -> argparse.Namespace:
+    """Select one supported manifest stride without changing analysis policy."""
+    parser = argparse.ArgumentParser(
+        description="Analyze temporal-window missingness without filtering manifests."
+    )
+    parser.add_argument(
+        "--stride", type=int, choices=SUPPORTED_STRIDES, default=DEFAULT_STRIDE
+    )
+    return parser.parse_args(arguments)
+
+
 def main() -> None:
     """Run Stage 3B analysis and write reports without changing manifests."""
+    args = parse_args()
+    configure_stride(args.stride)
     hashes_before = canonical_hashes()
     manifests = load_manifests()
     frames = scopes(manifests)
@@ -762,6 +817,17 @@ def main() -> None:
         run_summary,
         top_run_examples,
     )
+    if args.stride == 15:
+        marker = "## Evidence-based recommendation"
+        report = report[: report.index(marker)] + """## Fixed baseline quality rule
+
+The adopted rule remains `missing_count < 30`: remove only fully originally
+missing windows. This diagnostic does not select or reconsider a threshold.
+Retention, class composition, and customer coverage are reported above. More
+aggressive thresholds remain diagnostic only and are not candidates for this
+controlled ablation.
+"""
+
     write_text(report, OUTPUT_DIR / "report.md")
 
     analysis_json = {
@@ -772,6 +838,7 @@ def main() -> None:
                 "Retain missing_count <= maximum_allowed_missing_count; "
                 "<1.00 retains counts 0 through 29."
             ),
+            "stride": args.stride,
             "canonical_manifests_filtered_or_modified": False,
             "plots_created": False,
             "plots_note": (
@@ -794,7 +861,9 @@ def main() -> None:
         "top_fully_missing_run_examples": dataframe_records(top_run_examples),
         "canonical_sha256": hashes_before,
         "recommendation_status": (
-            "Proposed minimum rule pending review: remove only fully missing "
+            "Fixed baseline rule: remove only fully missing windows; diagnostic only."
+            if args.stride == 15
+            else "Proposed minimum rule pending review: remove only fully missing "
             "windows. No canonical filtering decision has been made."
         ),
     }
@@ -844,16 +913,20 @@ def main() -> None:
     print(
         "Fully missing customer impact: "
         f"at least one={int(full_customer_overall.customers_with_at_least_one_fully_missing_window):,}, "
-        f"all 34={int(full_customer_overall.customers_all_windows_fully_missing):,}"
+        f"all {WINDOWS_PER_CUSTOMER}="
+        f"{int(full_customer_overall.customers_all_windows_fully_missing):,}"
     )
     print(
         "Consecutive fully missing runs: "
         f"maximum={int(run_overall.maximum_run_maximum)} windows"
     )
-    print(
-        "Recommendation: proposed minimum rule is to remove only fully missing "
-        "windows; no canonical filtering decision was applied."
-    )
+    if args.stride == 15:
+        print("Policy: fixed missing_count < 30 rule; diagnostic analysis only.")
+    else:
+        print(
+            "Recommendation: proposed minimum rule is to remove only fully missing "
+            "windows; no canonical filtering decision was applied."
+        )
     for path in sorted(OUTPUT_DIR.iterdir()):
         if path.is_file():
             print(
