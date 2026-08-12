@@ -393,3 +393,162 @@ increases windows/customer from 34 to 67 and usable training volume from
 detection. Stride 7 would create 144 windows/customer—about 2.15 times the
 stride-15 volume. It remains unexecuted and can be reconsidered only with a
 model or hypothesis that can plausibly exploit denser overlap.
+
+## Stage 9 — 1D CNN Autoencoder
+
+Stage 9 introduces a compact 1D CNN Autoencoder as the next architecture
+experiment. The stride-15 FC ablation reduced reconstruction loss but did not
+improve frozen-test anomaly discrimination and approximately doubled training
+cost. Therefore the next controlled axis is architecture rather than additional
+window overlap. Window length returns to 30 and stride returns to 30 for lower
+cost and direct comparison with the frozen FC baseline.
+
+### Controlled design
+
+The Stage 1–3 preprocessing, customer split, train-fitted StandardScaler,
+30-position window length, stride 30 manifests, `missing_count < 30` usable rule,
+normal-only training, MSE loss, Adam optimizer, learning rate 0.001, batch size
+256, maximum 50 epochs, patience 5, minimum delta 1e-5, seed 42, and zero
+Windows DataLoader workers remain fixed. Only the model architecture changes
+from fully connected global mixing to convolutional local receptive fields and
+shared filters.
+
+The model consumes `(batch, 1, 30)`, where the single channel is scaled
+consumption. The existing model-agnostic `WindowDataset` continues to return
+`(batch, 30)` and the CNN training pipeline performs the channel reshape. No
+missingness mask is added as a channel. `FLAG`, `CONS_NO`, missing counts and
+fractions, dates, and window IDs remain excluded from model input.
+
+### Exact architecture
+
+| Stage | Operation | Output per example |
+|---|---|---|
+| Input | One scaled consumption channel | `(1, 30)` |
+| Encoder | Conv1d 1→8, kernel 3, stride 1, padding 1; ReLU | `(8, 30)` |
+| Encoder | MaxPool1d kernel 2, stride 2 | `(8, 15)` |
+| Encoder | Conv1d 8→16, kernel 3, stride 1, padding 1; ReLU | `(16, 15)` |
+| Encoder | MaxPool1d kernel 3, stride 3 | `(16, 5)` |
+| Bottleneck | Flatten 80; Linear 80→8; ReLU | `(8)` |
+| Decoder | Linear 8→80; ReLU; reshape | `(16, 5)` |
+| Decoder | ConvTranspose1d 16→8, kernel 3, stride 3; ReLU | `(8, 15)` |
+| Output | ConvTranspose1d 8→1, kernel 2, stride 2; linear output | `(1, 30)` |
+
+No decoder adjustment, cropping, padding, or output padding is required:
+`(5−1)×3+3=15` and `(15−1)×2+2=30`. The model has 2,209 trainable parameters.
+Its latent dimension is 8 rather than the FC baseline's 4 because convolutional
+feature compression to `(16,5)` occurs before the dense bottleneck. This is the
+initial CNN baseline, not a latent-dimension sweep.
+
+Convolutional filters provide a mechanism for local temporal pattern learning
+and weight sharing. They may represent local spikes, drops, flat regions,
+short-term transitions, or recurring motifs, but no such learned semantics are
+claimed before later filter inspection.
+
+### Training and evaluation boundary
+
+Training uses the 708,308 usable stride-30 `FLAG=0` train windows derived from
+the Stage 3C filter summary. Early stopping and best-checkpoint selection use
+only the 152,246 usable `FLAG=0` validation windows. Theft-labelled validation
+windows are scored only after training using the reloaded best checkpoint. The
+training script saves history, summary, curve, and per-window validation MSE,
+but it does not choose a threshold or load test data.
+
+The CNN threshold method is the 95th percentile of normal-validation
+reconstruction MSE. It is frozen before test evaluation under the same FC
+baseline methodology. Best-F1 remains diagnostic and does not replace P95 as
+the authoritative threshold.
+
+A synthetic `(256,1,30)` smoke batch encoded to `(256,8)` and reconstructed to
+`(256,1,30)`. A real normal-only train batch loaded as `(256,30)`, reshaped to
+`(256,1,30)`, produced finite input, output, MSE, and gradients, and completed
+one Adam step. The train split matrix occupied 117.0 MiB; one float32 input or
+output batch occupied 30 KiB. No full epoch, checkpoint, validation scoring,
+threshold selection, or test access occurred. CPU runtime will be the primary
+bottleneck because convolutional operations repeat across approximately 2,767
+training batches per epoch, but memory remains modest under lazy window slicing.
+
+Full CNN training was executed manually by the user:
+
+    python -m src.training.train_cnn_autoencoder --stride 30
+
+The CPU run used 708,308 normal training windows and 152,246 normal validation
+windows, executed 48 epochs, stopped early, and retained epoch 43 with normal
+validation MSE `0.03020924524280455`. Runtime was 1,945.98 seconds. The raw
+epoch-47 validation MSE was slightly lower but did not exceed the configured
+`1e-5` minimum-improvement requirement; epoch 43 is therefore the authoritative
+checkpoint. The checkpoint SHA-256 is
+`26f38e47ae30f1d51a1ec9ecb738588ecd67dbf0b522d92e3168d4f3c53a31ae`.
+No threshold was selected and test data was not used during training.
+
+## Stage 10 — CNN Threshold, Frozen Test, and FC Comparison
+
+Stage 10 verified the saved CNN training lineage, analyzed the 165,541 saved
+validation errors, froze a validation-only P95 threshold, evaluated the
+reserved test split under that fixed rule, and compared the CNN with the frozen
+stride-30 FC baseline. No CNN or FC retraining occurred.
+
+### Validation threshold
+
+Normal/theft-labelled validation mean MSE values are `0.030209`/`0.048112` and
+medians are `0.013406`/`0.015110`. Validation ROC-AUC is `0.555699` and PR-AUC
+is `0.101596`, showing substantial score overlap under customer-level weak
+labels. The authoritative normal-validation P95 threshold is
+`0.10475244373083115`, saved at
+`models/cnn_autoencoder/cnn_ae_stride30_threshold.json` with SHA-256
+`c027aa9eb6e8137247c6ebd0ff6a3aafe0a48f9ab99b04423abdb4df199c6ed5`.
+At this threshold, validation TP/TN/FP/FN are 1,241/144,633/7,613/12,054;
+precision is `0.140163`, recall `0.093343`, F1 `0.112059`, specificity
+`0.949995`, and anomaly rate `5.3485%`. Supervised best-F1 candidates were
+diagnostic only and did not alter P95.
+
+### Frozen test evaluation
+
+The frozen checkpoint and threshold hashes were recorded before test access and
+remained unchanged. The final test population contains 165,020 windows: 151,985
+normal and 13,035 theft-labelled. The fixed rule produced TP/TN/FP/FN of
+1,361/144,460/7,525/11,674; precision `0.153162`, recall `0.104411`, F1
+`0.124173`, specificity `0.950489`, FPR `0.049511`, balanced accuracy
+`0.527450`, ROC-AUC `0.555689`, PR-AUC `0.104788`, and anomaly rate `5.3848%`.
+Validation-to-test behavior is broadly stable.
+
+Customer p95-MSE aggregation has test ROC-AUC `0.579486` and PR-AUC
+`0.144033`; it remains diagnostic and no customer classifier was fitted. The
+overall reconstruction-MSE/missing-fraction Spearman correlation is `-0.052406`
+(`-0.050107` normal and `-0.078384` theft-labelled), so missingness remains a
+weak correlate rather than a basis for changing preprocessing.
+
+The initial test command completed scoring but encountered a cleanup-only API
+error before writing artifacts because `ProcessedSplitData` has no `close()`
+method. The corrected invocation wrote the frozen results and then encountered
+a report-formatting key mismatch after metrics and score artifacts had already
+been saved. The Markdown report was finalized from those saved metrics without
+another inference pass. These execution errors did not alter the checkpoint,
+threshold, predictions, or reported metrics.
+
+### FC versus CNN
+
+The comparison holds the split, preprocessing, 30-day stride-30 windows,
+normal-only training, MSE/Adam settings, P95 threshold method, and frozen-test
+policy fixed. The CNN reduced best normal-validation MSE by `30.70%`, but used
+2,209 versus 1,362 parameters (`1.62×`) and 1,945.98 versus 600.96 CPU seconds
+(`3.24×`). Its window-level discrimination is consistently weaker:
+
+| Frozen test metric | FC | CNN | CNN−FC |
+|---|---:|---:|---:|
+| Precision | 0.173693 | 0.153162 | -0.020531 |
+| Recall | 0.121059 | 0.104411 | -0.016647 |
+| F1 | 0.142676 | 0.124173 | -0.018503 |
+| Specificity | 0.950607 | 0.950489 | -0.000118 |
+| ROC-AUC | 0.561688 | 0.555689 | -0.005999 |
+| PR-AUC | 0.114411 | 0.104788 | -0.009623 |
+
+Lower reconstruction loss did not translate into better theft-label ranking or
+P95 operating-point performance. The fully connected Autoencoder therefore
+remains the preferred frozen baseline. Detailed artifacts are under
+`results/cnn_autoencoder/stride_30/` and
+`results/model_comparison/fc_vs_cnn/`.
+
+An LSTM Autoencoder is planned later using the same 30-day stride-30 setup. No
+LSTM implementation or result exists. The planned architecture comparison is
+FC Autoencoder versus CNN Autoencoder versus LSTM Autoencoder; the strongest
+validated architecture will guide later experiments.

@@ -1,0 +1,171 @@
+{
+  "stage": "Stage 10 \u2014 CNN Validation-Based Anomaly Threshold",
+  "model_checkpoint": "models/cnn_autoencoder/cnn_ae_stride30_baseline.pt",
+  "stride": 30,
+  "window_length": 30,
+  "threshold_value": 0.10475244373083115,
+  "threshold_selection_method": "normal_validation_95th_percentile",
+  "anomaly_rule": "reconstruction_mse > threshold_value",
+  "validation_metrics": {
+    "threshold": 0.10475244373083115,
+    "TP": 1241,
+    "TN": 144633,
+    "FP": 7613,
+    "FN": 12054,
+    "precision": 0.14016263835554552,
+    "recall": 0.0933433621662279,
+    "F1": 0.11205923517991782,
+    "specificity": 0.9499954021780539,
+    "false_positive_rate": 0.05000459782194606,
+    "balanced_accuracy": 0.5216693821721409,
+    "accuracy": 0.8811955950489607,
+    "predicted_anomaly_count": 8854,
+    "predicted_anomaly_percentage": 5.348523930627458
+  },
+  "validation_sample_counts": {
+    "normal_windows": 152246,
+    "theft_labelled_windows": 13295,
+    "total_windows": 165541
+  },
+  "model_context": {
+    "architecture": {
+      "type": "one_dimensional_convolutional_autoencoder",
+      "input_shape": [
+        1,
+        30
+      ],
+      "encoder": [
+        {
+          "layer": "Conv1d",
+          "in_channels": 1,
+          "out_channels": 8,
+          "kernel_size": 3,
+          "stride": 1,
+          "padding": 1,
+          "output_shape": [
+            8,
+            30
+          ]
+        },
+        {
+          "layer": "ReLU"
+        },
+        {
+          "layer": "MaxPool1d",
+          "kernel_size": 2,
+          "stride": 2,
+          "output_shape": [
+            8,
+            15
+          ]
+        },
+        {
+          "layer": "Conv1d",
+          "in_channels": 8,
+          "out_channels": 16,
+          "kernel_size": 3,
+          "stride": 1,
+          "padding": 1,
+          "output_shape": [
+            16,
+            15
+          ]
+        },
+        {
+          "layer": "ReLU"
+        },
+        {
+          "layer": "MaxPool1d",
+          "kernel_size": 3,
+          "stride": 3,
+          "output_shape": [
+            16,
+            5
+          ]
+        },
+        {
+          "layer": "Flatten",
+          "output_features": 80
+        },
+        {
+          "layer": "Linear",
+          "in_features": 80,
+          "out_features": 8
+        },
+        {
+          "layer": "ReLU"
+        }
+      ],
+      "latent_dimension": 8,
+      "decoder": [
+        {
+          "layer": "Linear",
+          "in_features": 8,
+          "out_features": 80
+        },
+        {
+          "layer": "ReLU"
+        },
+        {
+          "layer": "Reshape",
+          "output_shape": [
+            16,
+            5
+          ]
+        },
+        {
+          "layer": "ConvTranspose1d",
+          "in_channels": 16,
+          "out_channels": 8,
+          "kernel_size": 3,
+          "stride": 3,
+          "padding": 0,
+          "output_padding": 0,
+          "output_shape": [
+            8,
+            15
+          ]
+        },
+        {
+          "layer": "ReLU"
+        },
+        {
+          "layer": "ConvTranspose1d",
+          "in_channels": 8,
+          "out_channels": 1,
+          "kernel_size": 2,
+          "stride": 2,
+          "padding": 0,
+          "output_padding": 0,
+          "output_shape": [
+            1,
+            30
+          ]
+        }
+      ],
+      "output_activation": "Linear",
+      "shape_adjustment": "none; transposed-convolution arithmetic yields length 30 exactly"
+    },
+    "trainable_parameters": 2209,
+    "latent_dimension": 8,
+    "loss": "MSELoss",
+    "optimizer": "Adam",
+    "learning_rate": 0.001,
+    "best_epoch": 43,
+    "best_validation_mse": 0.03020924524280455
+  },
+  "selection_rationale": "The normal-validation 95th percentile fixes the validation normal-window false-positive rate near 5% without fitting the cutoff to noisy customer-level theft labels. It avoids the impractical false-alarm volume of the best-F1 candidate while retaining more theft-labelled windows than normal p99.",
+  "weak_supervision_note": "FLAG is customer-level; positive windows are not confirmed theft events.",
+  "test_data_accessed": false,
+  "cnn_training_input_sha256": {
+    "models/cnn_autoencoder/cnn_ae_stride30_baseline.pt": "26f38e47ae30f1d51a1ec9ecb738588ecd67dbf0b522d92e3168d4f3c53a31ae",
+    "models/cnn_autoencoder/cnn_ae_stride30_baseline_config.json": "6a940dba1180a9b615437eef64b10252e30538c8cae5a502c678fa1035c8f67c",
+    "results/cnn_autoencoder/stride_30/training_history.csv": "1914084230b8184f7ba9695c9ece060032eafdc7fd3a61545c1296d626a18b6c",
+    "results/cnn_autoencoder/stride_30/training_summary.json": "0da7c3b6a8f788f89847205f9b588b03432f6a431e85be2b12932edafe3726f7",
+    "results/cnn_autoencoder/stride_30/training_curve.png": "fcc65b84a6800fef8fa55ac8d021627a96175443b939bfce533c3368602687d9",
+    "results/cnn_autoencoder/stride_30/val_reconstruction_errors.parquet": "458e0ae31fd950b6086f242bf4b55d0336c5640207c70c9646d228e782c3321b",
+    "results/cnn_autoencoder/stride_30/validation_error_distribution.png": "dda6b825b210d57f02b361b3b2720eb767628d4a16c65c7b057fb8ccb620428e",
+    "src/models/cnn_autoencoder.py": "a9c6b404fdf761ac8b875a09e16e709e54f00f1a3b8f57f72f2268db3000fe63",
+    "src/training/train_cnn_autoencoder.py": "3114387e1eff2f6a7e17f0e4f3be6ef97c6ae8f9d7630523968a2c1dab679ec8"
+  }
+}

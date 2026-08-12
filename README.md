@@ -34,6 +34,10 @@ preventing preprocessing leakage.
 - Stage 6 — Frozen test evaluation: complete
 - Stage 7 — Stride-15 Autoencoder ablation: preparation and manual training complete
 - Stage 8 — Stride-15 threshold, frozen test, and controlled comparison: complete
+- Stage 9 — 1D CNN Autoencoder: implementation and manual training complete
+- Stage 10 — CNN threshold, frozen test, and FC comparison: complete
+- Stage 11 — LSTM Autoencoder: planned, not implemented
+
 
 Stage 3B compares candidate missingness thresholds without changing the
 canonical manifests. See the
@@ -72,6 +76,15 @@ is effectively equivalent and slightly worse at the window level; lower
 reconstruction loss did not improve core anomaly discrimination. Stride 7 is
 not recommended next and remains unexecuted.
 
+The compact stride-30 1D CNN Autoencoder has completed manual normal-only
+training, validation-only P95 threshold selection, and frozen test evaluation.
+Its best normal-validation MSE is `0.030209`, 30.70% below the FC model, but its
+frozen test ROC-AUC/PR-AUC/F1 are `0.555689`/`0.104788`/`0.124173`, all below
+the FC baseline's `0.561688`/`0.114411`/`0.142676`. The controlled comparison
+is at `results/model_comparison/fc_vs_cnn/fc_vs_cnn_report.md`; the FC model
+remains the preferred frozen baseline. An LSTM Autoencoder is planned next
+under the same stride-30 protocol; no LSTM implementation or result exists.
+
 Files under data/raw/ are immutable source data and must never be overwritten.
 
 Run the implemented stages from the repository root:
@@ -88,9 +101,16 @@ Run the implemented stages from the repository root:
 Stride-15 reproduction commands are:
 
     python -m src.training.train_autoencoder --stride 15
-
     python -m src.analysis.analyze_autoencoder_threshold --stride 15
     python -m src.evaluation.evaluate_autoencoder_test --stride 15
     python -m src.analysis.compare_autoencoder_strides
+
 Stride 7 remains optional, ungenerated, and not recommended for this baseline.
+
+CNN reproduction commands are:
+
+    python -m src.training.train_cnn_autoencoder --stride 30
+    python -m src.analysis.analyze_cnn_autoencoder_threshold
+    python -m src.evaluation.evaluate_cnn_autoencoder_test
+    python -m src.analysis.compare_fc_cnn
 

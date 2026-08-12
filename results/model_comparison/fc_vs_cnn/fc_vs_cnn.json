@@ -1,0 +1,231 @@
+{
+  "stage": "Stage 10 \u2014 Frozen FC versus CNN comparison",
+  "comparison_policy": "saved artifacts only; no retraining, threshold tuning, or test-driven selection",
+  "shared_data_and_protocol": {
+    "window_length": 30,
+    "stride": 30,
+    "training_normal_windows": 708308,
+    "validation_windows": 165541,
+    "test_windows": 165020,
+    "threshold_method": "normal_validation_95th_percentile"
+  },
+  "derived_comparison": {
+    "cnn_validation_mse_reduction_percent": 30.69534158445566,
+    "cnn_training_runtime_multiplier": 3.238105725638175,
+    "cnn_parameter_multiplier": 1.6218795888399413
+  },
+  "metrics": [
+    {
+      "metric": "trainable_parameters",
+      "fully_connected": 1362.0,
+      "cnn": 2209.0,
+      "cnn_minus_fully_connected": 847.0,
+      "cnn_relative_change_percent": 62.18795888399412
+    },
+    {
+      "metric": "epochs_executed",
+      "fully_connected": 35.0,
+      "cnn": 48.0,
+      "cnn_minus_fully_connected": 13.0,
+      "cnn_relative_change_percent": 37.142857142857146
+    },
+    {
+      "metric": "best_epoch",
+      "fully_connected": 30.0,
+      "cnn": 43.0,
+      "cnn_minus_fully_connected": 13.0,
+      "cnn_relative_change_percent": 43.333333333333336
+    },
+    {
+      "metric": "best_validation_mse",
+      "fully_connected": 0.043589054377373454,
+      "cnn": 0.03020924524280455,
+      "cnn_minus_fully_connected": -0.013379809134568904,
+      "cnn_relative_change_percent": -30.69534158445566
+    },
+    {
+      "metric": "training_runtime_seconds",
+      "fully_connected": 600.961045,
+      "cnn": 1945.975400700001,
+      "cnn_minus_fully_connected": 1345.014355700001,
+      "cnn_relative_change_percent": 223.8105725638175
+    },
+    {
+      "metric": "frozen_p95_threshold",
+      "fully_connected": 0.16436323150992393,
+      "cnn": 0.10475244373083115,
+      "cnn_minus_fully_connected": -0.05961078777909279,
+      "cnn_relative_change_percent": -36.26771464121135
+    },
+    {
+      "metric": "validation_precision",
+      "fully_connected": 0.15999117290080547,
+      "cnn": 0.14016263835554552,
+      "cnn_minus_fully_connected": -0.019828534545259957,
+      "cnn_relative_change_percent": -12.393517833357999
+    },
+    {
+      "metric": "validation_recall",
+      "fully_connected": 0.10906355772846935,
+      "cnn": 0.0933433621662279,
+      "cnn_minus_fully_connected": -0.01572019556224144,
+      "cnn_relative_change_percent": -14.413793103448272
+    },
+    {
+      "metric": "validation_F1",
+      "fully_connected": 0.12970748725288486,
+      "cnn": 0.11205923517991782,
+      "cnn_minus_fully_connected": -0.01764825207296704,
+      "cnn_relative_change_percent": -13.606193787841278
+    },
+    {
+      "metric": "validation_specificity",
+      "fully_connected": 0.9499954021780539,
+      "cnn": 0.9499954021780539,
+      "cnn_minus_fully_connected": 0.0,
+      "cnn_relative_change_percent": 0.0
+    },
+    {
+      "metric": "validation_false_positive_rate",
+      "fully_connected": 0.05000459782194606,
+      "cnn": 0.05000459782194606,
+      "cnn_minus_fully_connected": 0.0,
+      "cnn_relative_change_percent": 0.0
+    },
+    {
+      "metric": "validation_predicted_anomaly_percentage",
+      "fully_connected": 5.47477664143626,
+      "cnn": 5.348523930627458,
+      "cnn_minus_fully_connected": -0.12625271080880207,
+      "cnn_relative_change_percent": -2.30607966457022
+    },
+    {
+      "metric": "validation_ROC_AUC",
+      "fully_connected": 0.5643104020251226,
+      "cnn": 0.5556987264781685,
+      "cnn_minus_fully_connected": -0.008611675546954078,
+      "cnn_relative_change_percent": -1.5260529517176424
+    },
+    {
+      "metric": "validation_PR_AUC",
+      "fully_connected": 0.11024193103306401,
+      "cnn": 0.10159577957528981,
+      "cnn_minus_fully_connected": -0.008646151457774198,
+      "cnn_relative_change_percent": -7.842888252003699
+    },
+    {
+      "metric": "test_precision",
+      "fully_connected": 0.17369290038525043,
+      "cnn": 0.15316227774026558,
+      "cnn_minus_fully_connected": -0.02053062264498484,
+      "cnn_relative_change_percent": -11.82007013496117
+    },
+    {
+      "metric": "test_recall",
+      "fully_connected": 0.12105868814729574,
+      "cnn": 0.10441120061373226,
+      "cnn_minus_fully_connected": -0.016647487533563488,
+      "cnn_relative_change_percent": -13.751584283903679
+    },
+    {
+      "metric": "test_F1",
+      "fully_connected": 0.1426763110307414,
+      "cnn": 0.12417316728251447,
+      "cnn_minus_fully_connected": -0.01850314374822694,
+      "cnn_relative_change_percent": -12.968616594131174
+    },
+    {
+      "metric": "test_specificity",
+      "fully_connected": 0.9506069677928743,
+      "cnn": 0.9504885350528013,
+      "cnn_minus_fully_connected": -0.00011843274007306004,
+      "cnn_relative_change_percent": -0.012458644222652603
+    },
+    {
+      "metric": "test_false_positive_rate",
+      "fully_connected": 0.0493930322071257,
+      "cnn": 0.049511464947198734,
+      "cnn_minus_fully_connected": 0.00011843274007303228,
+      "cnn_relative_change_percent": 0.23977620887171724
+    },
+    {
+      "metric": "test_balanced_accuracy",
+      "fully_connected": 0.535832827970085,
+      "cnn": 0.5274498678332668,
+      "cnn_minus_fully_connected": -0.008382960136818274,
+      "cnn_relative_change_percent": -1.5644730407010983
+    },
+    {
+      "metric": "test_ROC_AUC",
+      "fully_connected": 0.5616878545705716,
+      "cnn": 0.5556892531954611,
+      "cnn_minus_fully_connected": -0.005998601375110435,
+      "cnn_relative_change_percent": -1.0679599578838248
+    },
+    {
+      "metric": "test_PR_AUC",
+      "fully_connected": 0.11441086650646873,
+      "cnn": 0.10478753699508099,
+      "cnn_minus_fully_connected": -0.009623329511387738,
+      "cnn_relative_change_percent": -8.411202366729423
+    },
+    {
+      "metric": "test_predicted_anomaly_percentage",
+      "fully_connected": 5.505393285662344,
+      "cnn": 5.384801842200945,
+      "cnn_minus_fully_connected": -0.12059144346139927,
+      "cnn_relative_change_percent": -2.190423775454057
+    },
+    {
+      "metric": "test_customer_mean_ROC_AUC",
+      "fully_connected": 0.5910929465331806,
+      "cnn": 0.5738502431463943,
+      "cnn_minus_fully_connected": -0.01724270338678624,
+      "cnn_relative_change_percent": -2.917088334062591
+    },
+    {
+      "metric": "test_customer_mean_PR_AUC",
+      "fully_connected": 0.157129338636314,
+      "cnn": 0.13750359828962516,
+      "cnn_minus_fully_connected": -0.019625740346688847,
+      "cnn_relative_change_percent": -12.490181984482152
+    },
+    {
+      "metric": "test_customer_maximum_ROC_AUC",
+      "fully_connected": 0.587049709506383,
+      "cnn": 0.562926426477887,
+      "cnn_minus_fully_connected": -0.02412328302849598,
+      "cnn_relative_change_percent": -4.1092402632785365
+    },
+    {
+      "metric": "test_customer_maximum_PR_AUC",
+      "fully_connected": 0.13081333037213627,
+      "cnn": 0.11662742021995305,
+      "cnn_minus_fully_connected": -0.01418591015218322,
+      "cnn_relative_change_percent": -10.844391861156126
+    },
+    {
+      "metric": "test_customer_p95_ROC_AUC",
+      "fully_connected": 0.5992509808999019,
+      "cnn": 0.5794863714891019,
+      "cnn_minus_fully_connected": -0.01976460941080005,
+      "cnn_relative_change_percent": -3.298218950116579
+    },
+    {
+      "metric": "test_customer_p95_PR_AUC",
+      "fully_connected": 0.16857539852015607,
+      "cnn": 0.14403285736276525,
+      "cnn_minus_fully_connected": -0.024542541157390824,
+      "cnn_relative_change_percent": -14.558791717438144
+    }
+  ],
+  "verdict": "CNN reconstructs normal validation windows better, but the frozen FC model is slightly stronger on every principal validation/test ranking and P95-threshold classification metric. The CNN does not improve theft detection enough to justify its larger parameter count and longer CPU training time as the preferred baseline.",
+  "preferred_frozen_baseline": "fully_connected_autoencoder",
+  "architecture_effect": {
+    "normal_reconstruction": "materially better",
+    "window_level_anomaly_discrimination": "worse",
+    "customer_level_anomaly_discrimination": "worse",
+    "overall_detection_classification": "worse"
+  },
+  "weak_supervision_caveat": "FLAG is customer-level; window positives are not confirmed theft events."
+}

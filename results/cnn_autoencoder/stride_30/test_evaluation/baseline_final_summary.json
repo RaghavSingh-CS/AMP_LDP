@@ -1,0 +1,164 @@
+{
+  "artifact_role": "final stride-30 CNN Autoencoder performance record",
+  "model": {
+    "architecture": {
+      "type": "one_dimensional_convolutional_autoencoder",
+      "input_shape": [
+        1,
+        30
+      ],
+      "encoder": [
+        {
+          "layer": "Conv1d",
+          "in_channels": 1,
+          "out_channels": 8,
+          "kernel_size": 3,
+          "stride": 1,
+          "padding": 1,
+          "output_shape": [
+            8,
+            30
+          ]
+        },
+        {
+          "layer": "ReLU"
+        },
+        {
+          "layer": "MaxPool1d",
+          "kernel_size": 2,
+          "stride": 2,
+          "output_shape": [
+            8,
+            15
+          ]
+        },
+        {
+          "layer": "Conv1d",
+          "in_channels": 8,
+          "out_channels": 16,
+          "kernel_size": 3,
+          "stride": 1,
+          "padding": 1,
+          "output_shape": [
+            16,
+            15
+          ]
+        },
+        {
+          "layer": "ReLU"
+        },
+        {
+          "layer": "MaxPool1d",
+          "kernel_size": 3,
+          "stride": 3,
+          "output_shape": [
+            16,
+            5
+          ]
+        },
+        {
+          "layer": "Flatten",
+          "output_features": 80
+        },
+        {
+          "layer": "Linear",
+          "in_features": 80,
+          "out_features": 8
+        },
+        {
+          "layer": "ReLU"
+        }
+      ],
+      "latent_dimension": 8,
+      "decoder": [
+        {
+          "layer": "Linear",
+          "in_features": 8,
+          "out_features": 80
+        },
+        {
+          "layer": "ReLU"
+        },
+        {
+          "layer": "Reshape",
+          "output_shape": [
+            16,
+            5
+          ]
+        },
+        {
+          "layer": "ConvTranspose1d",
+          "in_channels": 16,
+          "out_channels": 8,
+          "kernel_size": 3,
+          "stride": 3,
+          "padding": 0,
+          "output_padding": 0,
+          "output_shape": [
+            8,
+            15
+          ]
+        },
+        {
+          "layer": "ReLU"
+        },
+        {
+          "layer": "ConvTranspose1d",
+          "in_channels": 8,
+          "out_channels": 1,
+          "kernel_size": 2,
+          "stride": 2,
+          "padding": 0,
+          "output_padding": 0,
+          "output_shape": [
+            1,
+            30
+          ]
+        }
+      ],
+      "output_activation": "Linear",
+      "shape_adjustment": "none; transposed-convolution arithmetic yields length 30 exactly"
+    },
+    "trainable_parameters": 2209,
+    "checkpoint": "models/cnn_autoencoder/cnn_ae_stride30_baseline.pt",
+    "checkpoint_sha256": "26f38e47ae30f1d51a1ec9ecb738588ecd67dbf0b522d92e3168d4f3c53a31ae",
+    "best_epoch": 43,
+    "best_validation_mse": 0.03020924524280455
+  },
+  "threshold": {
+    "value": 0.10475244373083115,
+    "selection_method": "normal_validation_95th_percentile",
+    "artifact": "models/cnn_autoencoder/cnn_ae_stride30_threshold.json",
+    "artifact_sha256": "c027aa9eb6e8137247c6ebd0ff6a3aafe0a48f9ab99b04423abdb4df199c6ed5",
+    "rule": "reconstruction_mse > threshold"
+  },
+  "test_sample_counts": {
+    "normal_windows": 151985,
+    "theft_labelled_windows": 13035,
+    "total_windows": 165020
+  },
+  "test_metrics": {
+    "TP": 1361,
+    "TN": 144460,
+    "FP": 7525,
+    "FN": 11674,
+    "precision": 0.15316227774026558,
+    "recall": 0.10441120061373226,
+    "F1": 0.12417316728251447,
+    "specificity": 0.9504885350528013,
+    "false_positive_rate": 0.049511464947198734,
+    "balanced_accuracy": 0.5274498678332668,
+    "accuracy": 0.8836565264816386,
+    "ROC_AUC": 0.5556892531954611,
+    "PR_AUC": 0.10478753699508099,
+    "predicted_anomaly_percentage": 5.384801842200945
+  },
+  "validation_test_generalization": "broadly stable",
+  "weak_supervision_caveat": "FLAG is customer-level; window metrics are not confirmed theft-event metrics.",
+  "frozen_evaluation_guarantees": {
+    "checkpoint_unchanged": true,
+    "threshold_unchanged": true,
+    "retraining_performed": false,
+    "test_driven_tuning_performed": false
+  }
+}
