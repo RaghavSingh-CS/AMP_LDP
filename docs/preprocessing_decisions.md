@@ -548,7 +548,157 @@ remains the preferred frozen baseline. Detailed artifacts are under
 `results/cnn_autoencoder/stride_30/` and
 `results/model_comparison/fc_vs_cnn/`.
 
-An LSTM Autoencoder is planned later using the same 30-day stride-30 setup. No
-LSTM implementation or result exists. The planned architecture comparison is
-FC Autoencoder versus CNN Autoencoder versus LSTM Autoencoder; the strongest
-validated architecture will guide later experiments.
+## Stage 11 — LSTM Autoencoder
+
+### Decision and controlled purpose
+
+Implement an LSTM Autoencoder as the third controlled stride-30 architecture
+experiment. The FC Autoencoder remains stronger than the CNN on frozen anomaly
+detection even though the CNN lowered normal-validation reconstruction MSE by
+30.70%. Reconstruction quality alone therefore does not establish anomaly
+separation. The LSTM tests whether explicit recurrent, order-dependent sequence
+memory improves discrimination.
+
+The customer split, Stage 1 preprocessing, train-fitted StandardScaler,
+30-position window length, stride 30 manifests, `missing_count < 30` usable
+rule, normal-only training, MSE loss, Adam optimizer, learning rate 0.001,
+batch size 256, maximum 50 epochs, patience 5, minimum delta `1e-5`, seed 42,
+and zero DataLoader workers remain fixed. Only the architecture changes.
+Windows are not regenerated or rescaled.
+
+### Exact architecture
+
+The model consumes one scaled consumption value per timestep. The existing
+architecture-agnostic `WindowDataset` returns `(B, 30)` and the LSTM training
+pipeline reshapes it to `(B, 30, 1)`. `CONS_NO`, `FLAG`, missingness fields,
+dates, and window IDs remain excluded from model input.
+
+| Stage | Operation | Output per example |
+|---|---|---|
+| Input | 30 ordered timesteps, one value each | `(30, 1)` |
+| Encoder | One-layer LSTM, input size 1, hidden size 16, `batch_first=True` | final hidden `(16)` |
+| Latent | Linear `16 → 8`, ReLU | `(8)` |
+| Decoder input | Repeat the latent vector for all 30 timesteps | `(30, 8)` |
+| Decoder initial hidden | Linear `8 → 16`, ReLU | `(1, B, 16)` |
+| Decoder initial cell | Deterministic zeros | `(1, B, 16)` |
+| Decoder | One-layer LSTM, input size 8, hidden size 16, `batch_first=True` | `(30, 16)` |
+| Output | Per-timestep Linear `16 → 1`, no output activation | `(30, 1)` |
+
+No teacher forcing is used. The latent vector supplies every decoder timestep,
+while its learned projection initializes decoder hidden state; decoder cell
+state is always zero. The model has 3,177 trainable parameters. Latent dimension
+8 matches the CNN bottleneck as a reasonable architecture-scale control and is
+not the result of a sweep.
+
+The FC model primarily treats the window as a flat vector, the CNN adds local
+shared temporal filters, and the LSTM adds recurrent state and order-dependent
+memory. This may represent sequential evolution, persistent trends, gradual
+changes, or dependencies of later readings on earlier readings. No individual
+hidden-state semantics are claimed without a separate investigation.
+
+### Training and evaluation boundary
+
+Full training will use all 708,308 usable stride-30 `FLAG=0` training windows.
+Only the 152,246 usable `FLAG=0` validation windows may drive early stopping,
+best-epoch selection, and checkpoint selection. Theft-labelled validation
+windows are scored only after training with the reloaded best checkpoint.
+The training script will save the checkpoint and config under
+`models/lstm_autoencoder/`, with history, summary, curve, validation errors,
+and validation-error plot under `results/lstm_autoencoder/stride_30/`.
+
+The training stage does not select an anomaly threshold and never loads test
+data. A later stage must freeze the 95th percentile of normal-validation LSTM
+reconstruction error before one frozen test evaluation. The eventual controlled
+comparison is FC versus CNN versus LSTM under the same evaluation metrics;
+anomaly-detection performance, not reconstruction MSE alone, determines which
+architecture is carried forward.
+
+### Smoke-test and resource evidence
+
+A synthetic `(256, 30, 1)` batch encoded to `(256, 8)` and reconstructed to
+`(256, 30, 1)` with finite values. One real normal-only training batch loaded
+as `(256, 30)`, reshaped to `(256, 30, 1)`, produced a finite MSE, finite
+gradients for all 14 parameter tensors, and completed one Adam step. Its labels
+were exclusively `FLAG=0`. Only the train split was loaded; validation and test
+were not accessed. No epoch, checkpoint, threshold, or result artifact was
+created by the smoke test.
+
+The train split matrix occupies 117.0 MiB and one float32 256-window input batch
+occupies 30 KiB before or after the shape-only view. There are approximately
+2,767 training batches per epoch. Lazy window slicing avoids materializing a
+duplicated dense window matrix. CPU memory is modest, but LSTM recurrence is
+sequential across 30 timesteps and is expected to be slower per batch than the
+FC and CNN baselines; batch size remains fixed rather than being increased.
+
+Full LSTM training was executed manually by the user:
+
+    python -m src.training.train_lstm_autoencoder --stride 30
+
+The CPU run used 708,308 normal training windows and 152,246 normal validation
+windows. It executed all predefined 50 epochs; early stopping did not trigger.
+Epoch 50 is the best checkpoint with validation MSE `0.037662720912064844` and
+final training MSE `0.0368094745261073`; runtime was 2,674.76 seconds. The
+maximum remains fixed at 50 despite continued validation improvement, preserving
+the pre-registered controlled architecture comparison. No threshold was selected
+and test data was not used during training.
+
+## Stage 12 — LSTM Frozen Evaluation and Architecture Comparison
+
+Stage 12 verified the manual LSTM run, used only saved validation errors to
+freeze the normal-validation P95 threshold, then completed frozen test inference
+and a saved-artifact-only FC/CNN/LSTM comparison. No model was retrained or
+extended, and no test result influenced the threshold.
+
+### LSTM validation threshold
+
+The LSTM validation normal/theft-labelled mean MSE values are `0.037663` /
+`0.061816`, with medians `0.016616` / `0.019248`; score ranges overlap under
+customer-level weak labels. Validation ROC-AUC is `0.559887` and PR-AUC is
+`0.103233`. The frozen normal-validation P95 is `0.13370828330516815`, saved at
+`models/lstm_autoencoder/lstm_ae_stride30_threshold.json`. Its SHA-256 is
+`3205cef563253b89a9dcfca9f5df6758c847c1ad2110c7dd58f0fa6ffae3682b`; the
+checkpoint SHA-256 is
+`1e9ad7b9f778b240b9e2f26b64e68fe94241c99d16df81d319e618ed13927fa2`.
+At the frozen P95, validation precision/recall/F1 are `0.138509` / `0.092065` /
+`0.110609`, specificity/FPR are `0.949995` / `0.050005`, and the anomaly rate
+is `5.3383%`. Best-F1 and best-balanced-accuracy candidates are diagnostic only.
+
+### Frozen test and diagnostics
+
+On 165,020 frozen test windows (151,985 normal and 13,035 theft-labelled), the
+LSTM produced TP/TN/FP/FN `1,255/144,577/7,408/11,780`; precision `0.144869`,
+recall `0.096279`, F1 `0.115679`, specificity `0.951258`, FPR `0.048742`,
+balanced accuracy `0.523769`, ROC-AUC `0.557689`, PR-AUC `0.104403`, and anomaly
+rate `5.2497%`. Validation-to-test behavior is broadly stable.
+
+Customer mean/max/P95 MSE ROC-AUC values are `0.575256` / `0.564239` /
+`0.580588`; corresponding PR-AUC values are `0.138774` / `0.120780` /
+`0.148500`. No customer classifier or customer threshold was created. Overall
+MSE/missing-fraction Pearson/Spearman correlation is `-0.012434` / `-0.047798`,
+consistent with weak missingness association in FC/CNN analyses.
+
+### Controlled architecture decision
+
+All three models use the same split, preprocessing/scaler, 30-day stride-30
+usable windows, normal-only training, MSE/Adam settings, learning rate 0.001,
+batch 256, maximum 50 epochs, seed 42, normal-validation P95 selection, and
+frozen-test methodology. Architecture is the primary changed factor.
+
+| Model | Parameters | Best validation MSE | CPU seconds | Test ROC-AUC | Test PR-AUC | Test F1 | Customer P95 ROC-AUC / PR-AUC |
+|---|---:|---:|---:|---:|---:|---:|
+| FC | 1,362 | 0.043589 | 600.96 | **0.561688** | **0.114411** | **0.142676** | **0.599251 / 0.168575** |
+| CNN | 2,209 | **0.030209** | 1,945.98 | 0.555689 | 0.104788 | 0.124173 | 0.579486 / 0.144033 |
+| LSTM | 3,177 | 0.037663 | 2,674.76 | 0.557689 | 0.104403 | 0.115679 | 0.580588 / 0.148500 |
+
+CNN reconstructs normal windows best but worsens detection. LSTM reconstruction
+lies between FC and CNN, but it also does not improve window-level or
+customer-level discrimination over FC and costs `4.45×` FC CPU runtime. All
+three models are weak under customer-level `FLAG` supervision. FC remains the
+selected reconstruction-model baseline because it leads every principal frozen
+test and customer-ranking metric while being smallest and fastest. Detailed
+artifacts are under `results/lstm_autoencoder/stride_30/` and
+`results/model_comparison/fc_vs_cnn_vs_lstm/`.
+
+The next research stage should investigate one new pre-registered modeling
+hypothesis with the frozen FC baseline retained for comparison; this stage does
+not implement a GAN, ensemble, longer sequences, or hyperparameter search.

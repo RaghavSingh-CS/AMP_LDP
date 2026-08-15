@@ -36,7 +36,7 @@ preventing preprocessing leakage.
 - Stage 8 — Stride-15 threshold, frozen test, and controlled comparison: complete
 - Stage 9 — 1D CNN Autoencoder: implementation and manual training complete
 - Stage 10 — CNN threshold, frozen test, and FC comparison: complete
-- Stage 11 — LSTM Autoencoder: planned, not implemented
+- Stage 11–12 — LSTM Autoencoder: trained, thresholded, and frozen-test evaluated
 
 
 Stage 3B compares candidate missingness thresholds without changing the
@@ -82,8 +82,12 @@ Its best normal-validation MSE is `0.030209`, 30.70% below the FC model, but its
 frozen test ROC-AUC/PR-AUC/F1 are `0.555689`/`0.104788`/`0.124173`, all below
 the FC baseline's `0.561688`/`0.114411`/`0.142676`. The controlled comparison
 is at `results/model_comparison/fc_vs_cnn/fc_vs_cnn_report.md`; the FC model
-remains the preferred frozen baseline. An LSTM Autoencoder is planned next
-under the same stride-30 protocol; no LSTM implementation or result exists.
+remains the preferred frozen baseline after the three-way comparison. The LSTM
+completed normal-only training, validation P95 thresholding, and frozen test
+evaluation, but did not improve anomaly discrimination: its test
+ROC-AUC/PR-AUC/F1 are `0.557689`/`0.104403`/`0.115679`. The full controlled
+comparison is at
+`results/model_comparison/fc_vs_cnn_vs_lstm/architecture_comparison_report.md`.
 
 Files under data/raw/ are immutable source data and must never be overwritten.
 
@@ -113,4 +117,11 @@ CNN reproduction commands are:
     python -m src.analysis.analyze_cnn_autoencoder_threshold
     python -m src.evaluation.evaluate_cnn_autoencoder_test
     python -m src.analysis.compare_fc_cnn
+
+LSTM training must be run manually from the repository root:
+
+    python -m src.training.train_lstm_autoencoder --stride 30
+    python -m src.analysis.analyze_lstm_autoencoder_threshold
+    python -m src.evaluation.evaluate_lstm_autoencoder_test
+    python -m src.analysis.compare_fc_cnn_lstm
 

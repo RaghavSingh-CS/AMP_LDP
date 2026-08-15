@@ -1,0 +1,349 @@
+{
+  "stage": "Stage 12 \u2014 LSTM Validation Threshold",
+  "training_verification": {
+    "device": "cpu",
+    "training_normal_windows": 708308,
+    "validation_normal_windows": 152246,
+    "validation_theft_windows": 13295,
+    "epochs_executed": 50,
+    "best_epoch": 50,
+    "best_validation_mse": 0.037662720912064844,
+    "final_train_mse": 0.0368094745261073,
+    "runtime_seconds": 2674.758464999999,
+    "trainable_parameters": 3177
+  },
+  "validation_error_distributions": {
+    "FLAG_0_normal": {
+      "count": 152246,
+      "mean": 0.03766272075450729,
+      "median": 0.016615855507552624,
+      "standard_deviation": 0.09662067712872044,
+      "minimum": 5.0161070248577744e-05,
+      "p25": 0.0054849827429279685,
+      "p50": 0.016615855507552624,
+      "p75": 0.036467053927481174,
+      "p90": 0.079293392598629,
+      "p95": 0.13370828330516815,
+      "p99": 0.389543431997297,
+      "maximum": 14.104421615600586
+    },
+    "FLAG_1_theft_labelled": {
+      "count": 13295,
+      "mean": 0.061816429667042136,
+      "median": 0.01924832910299301,
+      "standard_deviation": 0.17827807389067807,
+      "minimum": 6.677634519292042e-05,
+      "p25": 0.009103659074753523,
+      "p50": 0.01924832910299301,
+      "p75": 0.044603342190384865,
+      "p90": 0.12243102043867116,
+      "p95": 0.24178034365177142,
+      "p99": 0.7763446986675259,
+      "maximum": 6.034637451171875
+    },
+    "theft_to_normal_median_ratio": 1.1584314207742006,
+    "theft_to_normal_mean_ratio": 1.6413160926416674,
+    "overlap": {
+      "score_ranges_overlap": true,
+      "theft_at_or_below_normal_median_proportion": 0.449417074088003,
+      "normal_above_theft_median_proportion": 0.4500676536657778
+    },
+    "theft_exceeding_normal_percentiles": {
+      "normal_p90": {
+        "threshold": 0.079293392598629,
+        "theft_windows_exceeding": 1993,
+        "theft_proportion_exceeding": 0.1499059796916134
+      },
+      "normal_p95": {
+        "threshold": 0.13370828330516815,
+        "theft_windows_exceeding": 1224,
+        "theft_proportion_exceeding": 0.09206468597216999
+      },
+      "normal_p97.5": {
+        "threshold": 0.21514660492539406,
+        "theft_windows_exceeding": 732,
+        "theft_proportion_exceeding": 0.0550582925911997
+      },
+      "normal_p99": {
+        "threshold": 0.389543431997297,
+        "theft_windows_exceeding": 402,
+        "theft_proportion_exceeding": 0.03023693117713426
+      }
+    }
+  },
+  "validation_ranking_metrics": {
+    "ROC_AUC": 0.5598871775073039,
+    "PR_AUC": 0.10323339353200564,
+    "theft_label_prevalence": 0.08031243015325508
+  },
+  "candidate_thresholds": [
+    {
+      "candidate": "normal_p90",
+      "selection_family": "normal_validation_percentile",
+      "normal_percentile": 0.9,
+      "threshold": 0.079293392598629,
+      "comparison_rule": "reconstruction_mse > threshold",
+      "TP": 1993,
+      "TN": 137021,
+      "FP": 15225,
+      "FN": 11302,
+      "precision": 0.11575095829945406,
+      "recall": 0.1499059796916134,
+      "F1": 0.13063284501687802,
+      "specificity": 0.8999973726731737,
+      "false_positive_rate": 0.10000262732682633,
+      "balanced_accuracy": 0.5249516761823936,
+      "accuracy": 0.8397557100657843,
+      "predicted_anomaly_count": 17218,
+      "predicted_anomaly_percentage": 10.401048682803655
+    },
+    {
+      "candidate": "normal_p95",
+      "selection_family": "normal_validation_percentile",
+      "normal_percentile": 0.95,
+      "threshold": 0.13370828330516815,
+      "comparison_rule": "reconstruction_mse > threshold",
+      "TP": 1224,
+      "TN": 144633,
+      "FP": 7613,
+      "FN": 12071,
+      "precision": 0.13850854362340162,
+      "recall": 0.09206468597216999,
+      "F1": 0.110609072835713,
+      "specificity": 0.9499954021780539,
+      "false_positive_rate": 0.05000459782194606,
+      "balanced_accuracy": 0.5210300440751119,
+      "accuracy": 0.8810929014564368,
+      "predicted_anomaly_count": 8837,
+      "predicted_anomaly_percentage": 5.338254571375067
+    },
+    {
+      "candidate": "normal_p97.5",
+      "selection_family": "normal_validation_percentile",
+      "normal_percentile": 0.975,
+      "threshold": 0.21514660492539406,
+      "comparison_rule": "reconstruction_mse > threshold",
+      "TP": 732,
+      "TN": 148439,
+      "FP": 3807,
+      "FN": 12563,
+      "precision": 0.1612690019828156,
+      "recall": 0.0550582925911997,
+      "F1": 0.08209038914433106,
+      "specificity": 0.974994416930494,
+      "false_positive_rate": 0.02500558306950593,
+      "balanced_accuracy": 0.5150263547608469,
+      "accuracy": 0.9011121111990383,
+      "predicted_anomaly_count": 4539,
+      "predicted_anomaly_percentage": 2.7419189203883025
+    },
+    {
+      "candidate": "normal_p99",
+      "selection_family": "normal_validation_percentile",
+      "normal_percentile": 0.99,
+      "threshold": 0.389543431997297,
+      "comparison_rule": "reconstruction_mse > threshold",
+      "TP": 402,
+      "TN": 150723,
+      "FP": 1523,
+      "FN": 12893,
+      "precision": 0.20883116883116884,
+      "recall": 0.03023693117713426,
+      "F1": 0.052825229960578195,
+      "specificity": 0.9899964531087845,
+      "false_positive_rate": 0.010003546891215532,
+      "balanced_accuracy": 0.5101166921429594,
+      "accuracy": 0.9129158335397273,
+      "predicted_anomaly_count": 1925,
+      "predicted_anomaly_percentage": 1.162853915344235
+    },
+    {
+      "candidate": "best_validation_f1",
+      "selection_family": "supervised_validation_labels",
+      "normal_percentile": null,
+      "threshold": 0.0035251318477094173,
+      "comparison_rule": "reconstruction_mse > threshold",
+      "TP": 11967,
+      "TN": 32677,
+      "FP": 119569,
+      "FN": 1328,
+      "precision": 0.09097889551149495,
+      "recall": 0.9001128243700639,
+      "F1": 0.16525467613977668,
+      "specificity": 0.21463289675919237,
+      "false_positive_rate": 0.7853671032408076,
+      "balanced_accuracy": 0.5573728605646281,
+      "accuracy": 0.2696854555668988,
+      "predicted_anomaly_count": 131536,
+      "predicted_anomaly_percentage": 79.45826109543859
+    },
+    {
+      "candidate": "best_validation_balanced_accuracy",
+      "selection_family": "supervised_validation_labels",
+      "normal_percentile": null,
+      "threshold": 0.002856574486941099,
+      "comparison_rule": "reconstruction_mse > threshold",
+      "TP": 12105,
+      "TN": 31127,
+      "FP": 121119,
+      "FN": 1190,
+      "precision": 0.09086200684561341,
+      "recall": 0.9104926664159458,
+      "F1": 0.16523454296029866,
+      "specificity": 0.2044520053072002,
+      "false_positive_rate": 0.7955479946927998,
+      "balanced_accuracy": 0.557472335861573,
+      "accuracy": 0.26115584658785435,
+      "predicted_anomaly_count": 133224,
+      "predicted_anomaly_percentage": 80.47794806120538
+    }
+  ],
+  "selected_threshold": {
+    "stage": "Stage 12 \u2014 LSTM Validation-Based Anomaly Threshold",
+    "model_checkpoint": "models/lstm_autoencoder/lstm_ae_stride30_baseline.pt",
+    "stride": 30,
+    "window_length": 30,
+    "threshold_value": 0.13370828330516815,
+    "threshold_selection_method": "normal_validation_95th_percentile",
+    "anomaly_rule": "reconstruction_mse > threshold_value",
+    "validation_metrics": {
+      "threshold": 0.13370828330516815,
+      "TP": 1224,
+      "TN": 144633,
+      "FP": 7613,
+      "FN": 12071,
+      "precision": 0.13850854362340162,
+      "recall": 0.09206468597216999,
+      "F1": 0.110609072835713,
+      "specificity": 0.9499954021780539,
+      "false_positive_rate": 0.05000459782194606,
+      "balanced_accuracy": 0.5210300440751119,
+      "accuracy": 0.8810929014564368,
+      "predicted_anomaly_count": 8837,
+      "predicted_anomaly_percentage": 5.338254571375067
+    },
+    "validation_sample_counts": {
+      "normal_windows": 152246,
+      "theft_labelled_windows": 13295,
+      "total_windows": 165541
+    },
+    "model_context": {
+      "architecture": {
+        "type": "lstm_autoencoder",
+        "input_shape": [
+          30,
+          1
+        ],
+        "encoder": {
+          "layer": "LSTM",
+          "input_size": 1,
+          "hidden_size": 16,
+          "num_layers": 1,
+          "batch_first": true,
+          "sequence_summary": "final encoder hidden state",
+          "output_shape": [
+            16
+          ]
+        },
+        "latent_projection": {
+          "layers": [
+            {
+              "layer": "Linear",
+              "in_features": 16,
+              "out_features": 8
+            },
+            {
+              "layer": "ReLU"
+            }
+          ],
+          "output_shape": [
+            8
+          ]
+        },
+        "latent_dimension": 8,
+        "decoder": {
+          "input_strategy": "repeat latent vector for all 30 timesteps",
+          "teacher_forcing": false,
+          "hidden_initialization": "ReLU(Linear(latent 8 -> hidden 16))",
+          "cell_initialization": "deterministic zeros",
+          "lstm": {
+            "input_size": 8,
+            "hidden_size": 16,
+            "num_layers": 1,
+            "batch_first": true
+          },
+          "output_projection": {
+            "layer": "Linear",
+            "in_features": 16,
+            "out_features": 1,
+            "activation": "none (linear)"
+          },
+          "output_shape": [
+            30,
+            1
+          ]
+        }
+      },
+      "trainable_parameters": 3177,
+      "latent_dimension": 8,
+      "loss": "MSELoss",
+      "optimizer": "Adam",
+      "learning_rate": 0.001,
+      "best_epoch": 50,
+      "best_validation_mse": 0.037662720912064844
+    },
+    "selection_rationale": "The normal-validation 95th percentile fixes the validation normal-window false-positive rate near 5% without fitting the cutoff to noisy customer-level theft labels. It avoids the impractical false-alarm volume of the best-F1 candidate while retaining more theft-labelled windows than normal p99.",
+    "weak_supervision_note": "FLAG is customer-level; positive windows are not confirmed theft events.",
+    "test_data_accessed": false,
+    "lstm_training_input_sha256": {
+      "models/lstm_autoencoder/lstm_ae_stride30_baseline.pt": "1e9ad7b9f778b240b9e2f26b64e68fe94241c99d16df81d319e618ed13927fa2",
+      "models/lstm_autoencoder/lstm_ae_stride30_baseline_config.json": "ebde5316f12c51a0338703d0a449e3bbd41e59fbc768bb6e52bae9442326e2da",
+      "results/lstm_autoencoder/stride_30/training_history.csv": "363fa29c909e05c91374af158d1bea5de5f459028f7b64820ff6cecb64c3cac1",
+      "results/lstm_autoencoder/stride_30/training_summary.json": "2c92ff88e6fab2940f1f2c86274fb20b1ef99b2a7f431a60bded9e11a2bc7c6f",
+      "results/lstm_autoencoder/stride_30/training_curve.png": "0b633ec4b716fadd3ac2656a4ec282cd82aef042aa6f808c86cbc05d6ccac882",
+      "results/lstm_autoencoder/stride_30/val_reconstruction_errors.parquet": "e13c5f90eb4714ef885b0bc2eb8a12e94f28d7997dfe30d5bfc147da08ff5b93",
+      "results/lstm_autoencoder/stride_30/validation_error_distribution.png": "e31578599e1361c49fd96faf1afc907316fd8930bf00e67c00cf0396ec2aad26",
+      "src/models/lstm_autoencoder.py": "973bbe75ef49d8212f9289e38fba2b7767c242a5fb8726e887e655d55883029f",
+      "src/training/train_lstm_autoencoder.py": "999cb48ed552b6c480320fa5773026fd1b716cf9f3d39060996dd8d339c82e1d"
+    }
+  },
+  "customer_level_diagnostic": {
+    "customer_counts": {
+      "FLAG_0": 5813,
+      "FLAG_1": 542
+    },
+    "aggregation_auc": {
+      "mean_mse": {
+        "ROC_AUC": 0.5622927805916628,
+        "PR_AUC": 0.12855582002095
+      },
+      "maximum_mse": {
+        "ROC_AUC": 0.5460837237823608,
+        "PR_AUC": 0.11416196776494571
+      },
+      "p95_mse": {
+        "ROC_AUC": 0.5646670555816173,
+        "PR_AUC": 0.13952726404388682
+      }
+    }
+  },
+  "missingness_diagnostic": {
+    "overall": {
+      "count": 165541,
+      "pearson": -0.009160687889871235,
+      "spearman": -0.048144857243135476
+    },
+    "FLAG_0": {
+      "count": 152246,
+      "pearson": -0.008370162760552597,
+      "spearman": -0.04738771763490119
+    },
+    "FLAG_1": {
+      "count": 13295,
+      "pearson": -0.02138843681278363,
+      "spearman": -0.06069694659089504
+    }
+  },
+  "test_data_accessed": false,
+  "lstm_training_artifacts_unchanged": true
+}

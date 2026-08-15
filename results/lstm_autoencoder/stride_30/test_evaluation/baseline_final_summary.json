@@ -1,0 +1,102 @@
+{
+  "artifact_role": "final stride-30 LSTM Autoencoder performance record",
+  "model": {
+    "architecture": {
+      "type": "lstm_autoencoder",
+      "input_shape": [
+        30,
+        1
+      ],
+      "encoder": {
+        "layer": "LSTM",
+        "input_size": 1,
+        "hidden_size": 16,
+        "num_layers": 1,
+        "batch_first": true,
+        "sequence_summary": "final encoder hidden state",
+        "output_shape": [
+          16
+        ]
+      },
+      "latent_projection": {
+        "layers": [
+          {
+            "layer": "Linear",
+            "in_features": 16,
+            "out_features": 8
+          },
+          {
+            "layer": "ReLU"
+          }
+        ],
+        "output_shape": [
+          8
+        ]
+      },
+      "latent_dimension": 8,
+      "decoder": {
+        "input_strategy": "repeat latent vector for all 30 timesteps",
+        "teacher_forcing": false,
+        "hidden_initialization": "ReLU(Linear(latent 8 -> hidden 16))",
+        "cell_initialization": "deterministic zeros",
+        "lstm": {
+          "input_size": 8,
+          "hidden_size": 16,
+          "num_layers": 1,
+          "batch_first": true
+        },
+        "output_projection": {
+          "layer": "Linear",
+          "in_features": 16,
+          "out_features": 1,
+          "activation": "none (linear)"
+        },
+        "output_shape": [
+          30,
+          1
+        ]
+      }
+    },
+    "trainable_parameters": 3177,
+    "checkpoint": "models/lstm_autoencoder/lstm_ae_stride30_baseline.pt",
+    "checkpoint_sha256": "1e9ad7b9f778b240b9e2f26b64e68fe94241c99d16df81d319e618ed13927fa2",
+    "best_epoch": 50,
+    "best_validation_mse": 0.037662720912064844
+  },
+  "threshold": {
+    "value": 0.13370828330516815,
+    "selection_method": "normal_validation_95th_percentile",
+    "artifact": "models/lstm_autoencoder/lstm_ae_stride30_threshold.json",
+    "artifact_sha256": "3205cef563253b89a9dcfca9f5df6758c847c1ad2110c7dd58f0fa6ffae3682b",
+    "rule": "reconstruction_mse > threshold"
+  },
+  "test_sample_counts": {
+    "normal_windows": 151985,
+    "theft_labelled_windows": 13035,
+    "total_windows": 165020
+  },
+  "test_metrics": {
+    "TP": 1255,
+    "TN": 144577,
+    "FP": 7408,
+    "FN": 11780,
+    "precision": 0.14486898303128246,
+    "recall": 0.09627924817798235,
+    "F1": 0.11567886441146648,
+    "specificity": 0.951258347863276,
+    "false_positive_rate": 0.04874165213672402,
+    "balanced_accuracy": 0.5237687980206291,
+    "accuracy": 0.8837231850684766,
+    "ROC_AUC": 0.5576891212249548,
+    "PR_AUC": 0.10440257344002239,
+    "predicted_anomaly_percentage": 5.24966670706581
+  },
+  "validation_test_generalization": "broadly stable",
+  "weak_supervision_caveat": "FLAG is customer-level; window metrics are not confirmed theft-event metrics.",
+  "frozen_evaluation_guarantees": {
+    "checkpoint_unchanged": true,
+    "threshold_unchanged": true,
+    "retraining_performed": false,
+    "test_driven_tuning_performed": false
+  }
+}

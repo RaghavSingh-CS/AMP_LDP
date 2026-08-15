@@ -1,0 +1,42 @@
+{
+  "stage": "Stage 11 \u2014 LSTM Autoencoder",
+  "device": "cpu",
+  "training_normal_window_count": 708308,
+  "validation_normal_window_count": 152246,
+  "validation_theft_window_count": 13295,
+  "batch_size": 256,
+  "learning_rate": 0.001,
+  "epochs_executed": 50,
+  "best_epoch": 50,
+  "best_validation_mse": 0.037662720912064844,
+  "early_stopping_occurred": false,
+  "runtime_seconds": 2674.758464999999,
+  "reconstruction_error_summary": {
+    "FLAG_0": {
+      "count": 152246,
+      "mean": 0.03766272075450729,
+      "median": 0.016615855507552624,
+      "standard_deviation": 0.09662067712872044,
+      "p75": 0.036467053927481174,
+      "p90": 0.079293392598629,
+      "p95": 0.13370828330516815,
+      "p99": 0.389543431997297,
+      "maximum": 14.104421615600586
+    },
+    "FLAG_1": {
+      "count": 13295,
+      "mean": 0.061816429667042136,
+      "median": 0.01924832910299301,
+      "standard_deviation": 0.17827807389067807,
+      "p75": 0.044603342190384865,
+      "p90": 0.12243102043867116,
+      "p95": 0.24178034365177142,
+      "p99": 0.7763446986675259,
+      "maximum": 6.034637451171875
+    },
+    "theft_to_normal_median_ratio": 1.1584314207742006,
+    "theft_minus_normal_median": 0.0026324735954403877
+  },
+  "anomaly_threshold_selected": false,
+  "test_set_used": false
+}

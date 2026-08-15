@@ -1,0 +1,109 @@
+{
+  "stage": "Stage 12 \u2014 LSTM Validation-Based Anomaly Threshold",
+  "model_checkpoint": "models/lstm_autoencoder/lstm_ae_stride30_baseline.pt",
+  "stride": 30,
+  "window_length": 30,
+  "threshold_value": 0.13370828330516815,
+  "threshold_selection_method": "normal_validation_95th_percentile",
+  "anomaly_rule": "reconstruction_mse > threshold_value",
+  "validation_metrics": {
+    "threshold": 0.13370828330516815,
+    "TP": 1224,
+    "TN": 144633,
+    "FP": 7613,
+    "FN": 12071,
+    "precision": 0.13850854362340162,
+    "recall": 0.09206468597216999,
+    "F1": 0.110609072835713,
+    "specificity": 0.9499954021780539,
+    "false_positive_rate": 0.05000459782194606,
+    "balanced_accuracy": 0.5210300440751119,
+    "accuracy": 0.8810929014564368,
+    "predicted_anomaly_count": 8837,
+    "predicted_anomaly_percentage": 5.338254571375067
+  },
+  "validation_sample_counts": {
+    "normal_windows": 152246,
+    "theft_labelled_windows": 13295,
+    "total_windows": 165541
+  },
+  "model_context": {
+    "architecture": {
+      "type": "lstm_autoencoder",
+      "input_shape": [
+        30,
+        1
+      ],
+      "encoder": {
+        "layer": "LSTM",
+        "input_size": 1,
+        "hidden_size": 16,
+        "num_layers": 1,
+        "batch_first": true,
+        "sequence_summary": "final encoder hidden state",
+        "output_shape": [
+          16
+        ]
+      },
+      "latent_projection": {
+        "layers": [
+          {
+            "layer": "Linear",
+            "in_features": 16,
+            "out_features": 8
+          },
+          {
+            "layer": "ReLU"
+          }
+        ],
+        "output_shape": [
+          8
+        ]
+      },
+      "latent_dimension": 8,
+      "decoder": {
+        "input_strategy": "repeat latent vector for all 30 timesteps",
+        "teacher_forcing": false,
+        "hidden_initialization": "ReLU(Linear(latent 8 -> hidden 16))",
+        "cell_initialization": "deterministic zeros",
+        "lstm": {
+          "input_size": 8,
+          "hidden_size": 16,
+          "num_layers": 1,
+          "batch_first": true
+        },
+        "output_projection": {
+          "layer": "Linear",
+          "in_features": 16,
+          "out_features": 1,
+          "activation": "none (linear)"
+        },
+        "output_shape": [
+          30,
+          1
+        ]
+      }
+    },
+    "trainable_parameters": 3177,
+    "latent_dimension": 8,
+    "loss": "MSELoss",
+    "optimizer": "Adam",
+    "learning_rate": 0.001,
+    "best_epoch": 50,
+    "best_validation_mse": 0.037662720912064844
+  },
+  "selection_rationale": "The normal-validation 95th percentile fixes the validation normal-window false-positive rate near 5% without fitting the cutoff to noisy customer-level theft labels. It avoids the impractical false-alarm volume of the best-F1 candidate while retaining more theft-labelled windows than normal p99.",
+  "weak_supervision_note": "FLAG is customer-level; positive windows are not confirmed theft events.",
+  "test_data_accessed": false,
+  "lstm_training_input_sha256": {
+    "models/lstm_autoencoder/lstm_ae_stride30_baseline.pt": "1e9ad7b9f778b240b9e2f26b64e68fe94241c99d16df81d319e618ed13927fa2",
+    "models/lstm_autoencoder/lstm_ae_stride30_baseline_config.json": "ebde5316f12c51a0338703d0a449e3bbd41e59fbc768bb6e52bae9442326e2da",
+    "results/lstm_autoencoder/stride_30/training_history.csv": "363fa29c909e05c91374af158d1bea5de5f459028f7b64820ff6cecb64c3cac1",
+    "results/lstm_autoencoder/stride_30/training_summary.json": "2c92ff88e6fab2940f1f2c86274fb20b1ef99b2a7f431a60bded9e11a2bc7c6f",
+    "results/lstm_autoencoder/stride_30/training_curve.png": "0b633ec4b716fadd3ac2656a4ec282cd82aef042aa6f808c86cbc05d6ccac882",
+    "results/lstm_autoencoder/stride_30/val_reconstruction_errors.parquet": "e13c5f90eb4714ef885b0bc2eb8a12e94f28d7997dfe30d5bfc147da08ff5b93",
+    "results/lstm_autoencoder/stride_30/validation_error_distribution.png": "e31578599e1361c49fd96faf1afc907316fd8930bf00e67c00cf0396ec2aad26",
+    "src/models/lstm_autoencoder.py": "973bbe75ef49d8212f9289e38fba2b7767c242a5fb8726e887e655d55883029f",
+    "src/training/train_lstm_autoencoder.py": "999cb48ed552b6c480320fa5773026fd1b716cf9f3d39060996dd8d339c82e1d"
+  }
+}

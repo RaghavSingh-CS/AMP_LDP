@@ -1,0 +1,241 @@
+{
+  "stage": "Stage 12 \u2014 Frozen LSTM Test Evaluation",
+  "frozen_threshold": 0.13370828330516815,
+  "threshold_source": "models/lstm_autoencoder/lstm_ae_stride30_threshold.json",
+  "anomaly_rule": "reconstruction_mse > frozen_threshold",
+  "window_level_test_metrics": {
+    "threshold": 0.13370828330516815,
+    "comparison_rule": "reconstruction_mse > threshold",
+    "TP": 1255,
+    "TN": 144577,
+    "FP": 7408,
+    "FN": 11780,
+    "precision": 0.14486898303128246,
+    "recall": 0.09627924817798235,
+    "F1": 0.11567886441146648,
+    "specificity": 0.951258347863276,
+    "false_positive_rate": 0.04874165213672402,
+    "balanced_accuracy": 0.5237687980206291,
+    "accuracy": 0.8837231850684766,
+    "predicted_anomaly_count": 8663,
+    "predicted_anomaly_percentage": 5.24966670706581,
+    "ROC_AUC": 0.5576891212249548,
+    "PR_AUC": 0.10440257344002239,
+    "theft_label_prevalence": 0.07899042540298146
+  },
+  "error_distributions": {
+    "FLAG_0_normal": {
+      "count": 151985,
+      "mean": 0.03653218140329197,
+      "median": 0.016470355913043022,
+      "standard_deviation": 0.08205476186175166,
+      "minimum": 4.808869198313914e-05,
+      "p25": 0.005679379217326641,
+      "p50": 0.016470355913043022,
+      "p75": 0.036347467452287674,
+      "p90": 0.07903626859188081,
+      "p95": 0.13153447508811936,
+      "p99": 0.3623547446727757,
+      "maximum": 6.385624408721924
+    },
+    "FLAG_1_theft_labelled": {
+      "count": 13035,
+      "mean": 0.06145862331930948,
+      "median": 0.019303949549794197,
+      "standard_deviation": 0.15959830864361224,
+      "minimum": 6.611640856135637e-05,
+      "p25": 0.00874623004347086,
+      "p50": 0.019303949549794197,
+      "p75": 0.045185673981904984,
+      "p90": 0.12764261066913613,
+      "p95": 0.26065240204334245,
+      "p99": 0.7577612864971155,
+      "maximum": 4.239175796508789
+    },
+    "theft_to_normal_median_ratio": 1.172042040360963,
+    "theft_to_normal_mean_ratio": 1.6823146321552904,
+    "theft_exceedance": {
+      "frozen_threshold": {
+        "threshold": 0.13370828330516815,
+        "theft_windows_exceeding": 1255,
+        "theft_proportion_exceeding": 0.09627924817798235,
+        "diagnostic_only": false
+      },
+      "normal_test_p90": {
+        "threshold": 0.07903626859188081,
+        "theft_windows_exceeding": 1988,
+        "theft_proportion_exceeding": 0.15251246643651706,
+        "diagnostic_only": true
+      },
+      "normal_test_p95": {
+        "threshold": 0.13153447508811936,
+        "theft_windows_exceeding": 1274,
+        "theft_proportion_exceeding": 0.09773686229382432,
+        "diagnostic_only": true
+      },
+      "normal_test_p99": {
+        "threshold": 0.3623547446727757,
+        "theft_windows_exceeding": 447,
+        "theft_proportion_exceeding": 0.03429228998849252,
+        "diagnostic_only": true
+      }
+    }
+  },
+  "validation_vs_test": {
+    "classification": "broadly stable",
+    "metrics": [
+      {
+        "metric": "precision",
+        "validation": 0.13850854362340162,
+        "test": 0.14486898303128246,
+        "signed_difference_test_minus_validation": 0.006360439407880836,
+        "absolute_difference": 0.006360439407880836
+      },
+      {
+        "metric": "recall",
+        "validation": 0.09206468597216999,
+        "test": 0.09627924817798235,
+        "signed_difference_test_minus_validation": 0.004214562205812358,
+        "absolute_difference": 0.004214562205812358
+      },
+      {
+        "metric": "F1",
+        "validation": 0.110609072835713,
+        "test": 0.11567886441146648,
+        "signed_difference_test_minus_validation": 0.005069791575753477,
+        "absolute_difference": 0.005069791575753477
+      },
+      {
+        "metric": "specificity",
+        "validation": 0.9499954021780539,
+        "test": 0.951258347863276,
+        "signed_difference_test_minus_validation": 0.0012629456852221166,
+        "absolute_difference": 0.0012629456852221166
+      },
+      {
+        "metric": "false_positive_rate",
+        "validation": 0.05000459782194606,
+        "test": 0.04874165213672402,
+        "signed_difference_test_minus_validation": -0.0012629456852220403,
+        "absolute_difference": 0.0012629456852220403
+      },
+      {
+        "metric": "ROC_AUC",
+        "validation": 0.5598871775073039,
+        "test": 0.5576891212249548,
+        "signed_difference_test_minus_validation": -0.002198056282349037,
+        "absolute_difference": 0.002198056282349037
+      },
+      {
+        "metric": "PR_AUC",
+        "validation": 0.10323339353200564,
+        "test": 0.10440257344002239,
+        "signed_difference_test_minus_validation": 0.0011691799080167514,
+        "absolute_difference": 0.0011691799080167514
+      },
+      {
+        "metric": "predicted_anomaly_percentage",
+        "validation": 5.338254571375067,
+        "test": 5.24966670706581,
+        "signed_difference_test_minus_validation": -0.08858786430925747,
+        "absolute_difference": 0.08858786430925747
+      }
+    ]
+  },
+  "customer_level_diagnostic": {
+    "customer_counts": {
+      "FLAG_0": 5814,
+      "FLAG_1": 542
+    },
+    "aggregation_auc": {
+      "mean_mse": {
+        "ROC_AUC": 0.5752557448175101,
+        "PR_AUC": 0.13877416893247335
+      },
+      "maximum_mse": {
+        "ROC_AUC": 0.5642392646836685,
+        "PR_AUC": 0.12077984958978978
+      },
+      "p95_mse": {
+        "ROC_AUC": 0.5805884955134382,
+        "PR_AUC": 0.14849988386580246
+      }
+    },
+    "frozen_window_threshold_customer_summary": {
+      "normal_mean_anomalous_fraction": 0.04715845652286406,
+      "theft_mean_anomalous_fraction": 0.0888804784848967,
+      "customer_classifier_created": false
+    }
+  },
+  "missingness_diagnostic": {
+    "overall": {
+      "count": 165020,
+      "pearson": -0.012433642856088927,
+      "spearman": -0.04779784170909426
+    },
+    "FLAG_0": {
+      "count": 151985,
+      "pearson": -0.010889001544738375,
+      "spearman": -0.046465062893615766
+    },
+    "FLAG_1": {
+      "count": 13035,
+      "pearson": -0.02852326174228738,
+      "spearman": -0.06322952700245095
+    }
+  },
+  "weak_supervision_note": "FLAG is customer-level; positive windows are not confirmed theft events.",
+  "retraining_performed": false,
+  "threshold_modified": false,
+  "test_driven_tuning_performed": false,
+  "protected_pretest_sha256": {
+    "models/lstm_autoencoder/lstm_ae_stride30_baseline.pt": "1e9ad7b9f778b240b9e2f26b64e68fe94241c99d16df81d319e618ed13927fa2",
+    "models/lstm_autoencoder/lstm_ae_stride30_baseline_config.json": "ebde5316f12c51a0338703d0a449e3bbd41e59fbc768bb6e52bae9442326e2da",
+    "results/lstm_autoencoder/stride_30/training_history.csv": "363fa29c909e05c91374af158d1bea5de5f459028f7b64820ff6cecb64c3cac1",
+    "results/lstm_autoencoder/stride_30/training_summary.json": "2c92ff88e6fab2940f1f2c86274fb20b1ef99b2a7f431a60bded9e11a2bc7c6f",
+    "results/lstm_autoencoder/stride_30/training_curve.png": "0b633ec4b716fadd3ac2656a4ec282cd82aef042aa6f808c86cbc05d6ccac882",
+    "results/lstm_autoencoder/stride_30/val_reconstruction_errors.parquet": "e13c5f90eb4714ef885b0bc2eb8a12e94f28d7997dfe30d5bfc147da08ff5b93",
+    "results/lstm_autoencoder/stride_30/validation_error_distribution.png": "e31578599e1361c49fd96faf1afc907316fd8930bf00e67c00cf0396ec2aad26",
+    "src/models/lstm_autoencoder.py": "973bbe75ef49d8212f9289e38fba2b7767c242a5fb8726e887e655d55883029f",
+    "src/training/train_lstm_autoencoder.py": "999cb48ed552b6c480320fa5773026fd1b716cf9f3d39060996dd8d339c82e1d",
+    "models/lstm_autoencoder/lstm_ae_stride30_threshold.json": "3205cef563253b89a9dcfca9f5df6758c847c1ad2110c7dd58f0fa6ffae3682b",
+    "results/lstm_autoencoder/stride_30/threshold_analysis/threshold_metrics.csv": "bc935211e6c4ee0a1ed115728c530502b0a64ca3981de4d33a8aa840c0ae8cf1",
+    "results/lstm_autoencoder/stride_30/threshold_analysis/threshold_summary.json": "a3074bb251b844558cfb58d0dd19130d9ce1562c0a1cda0a6310eaafa8b54679",
+    "results/lstm_autoencoder/stride_30/threshold_analysis/threshold_report.md": "bef0f268e17f176fb891d854ffb2eee42054225aee68104dd4204080258fccde",
+    "results/lstm_autoencoder/stride_30/threshold_analysis/precision_recall_curve.png": "9ad3b5c5d20e00025427a679254756195e9de3e2a4520b9ee865b7ab0d841426",
+    "results/lstm_autoencoder/stride_30/threshold_analysis/threshold_tradeoff.png": "6d8c426cd3beab7280456a6a114397197b1dcf68a2201ab0e7ae8de3707e6415",
+    "results/lstm_autoencoder/stride_30/threshold_analysis/customer_level_diagnostics.csv": "fff42a1d3eb11f74fc20ef775b2cb5a38dfc5c30d735a74f269fefbe6dcbfdd2",
+    "results/lstm_autoencoder/stride_30/threshold_analysis/missingness_group_summary.csv": "cbccec1775571185514b8076de884f736b46280b3d810c94ed771b55e097971a",
+    "data/raw/data set.csv": "99ba49d416238b400771b97aea71975706ce94989dd5440202402441cbcc4579",
+    "data/interim/cleaned_data.parquet": "2d2fa195e705886fc0bd9db29db04e46bc15403da5aa021e77b3c15354676435",
+    "data/interim/missing_mask.parquet": "f1990841c684ba110d9adb74ccfb04516d98e999a1d0fe59aa91e998833fd679",
+    "data/processed/train.parquet": "867e0f188c736c248c4777d2dd4b52c0c20a5518882c8e8aa558dc1c6fed819e",
+    "data/processed/val.parquet": "4885e2f40dc7df96adb1e8c365398ace4e132be5a27e3d8359bc7f717a837633",
+    "data/processed/test.parquet": "da4cfc4ee72ced02760c720bad8cfc26d14ec4cfe07c83dde9ad4b1caf2cfd0e",
+    "data/processed/train_mask.parquet": "af628a9b7f996d3cde7ab1ff824b6eda5440058588ba208733dbc4988bab0128",
+    "data/processed/val_mask.parquet": "2cee14c341ef88b79f6bc5548778101958d499e23a5ec34db77f419cd5054065",
+    "data/processed/test_mask.parquet": "315be291c798f26e1db79256c5ba45b00571270f1ad1a0b5f2f52b0a68552327",
+    "data/processed/split_manifest.parquet": "6ad1132bbaef0c6f6ccc5bdc973844b805c4291612ac7170ec165f273835959c",
+    "models/preprocessing/scaler.joblib": "34bbc0491465fb5ba627df70ee95706e71bc92fa21c6fa8a32048048a855d0bc",
+    "data/windows/stride_30/train_windows.parquet": "dd5d6c360e656093fb62cdff8c4a71e18b93e86614ac8dfbd2b34cdc32d3da85",
+    "data/windows/stride_30/val_windows.parquet": "a747a292a78a09dd1182da55e83d4f50aaf745e83b5362677dd442650770a9cd",
+    "data/windows/stride_30/test_windows.parquet": "5c2ef6ecc326b24286d90f8f410cd66a6f58fde086ddf9cae8ffe6d0746cf01b",
+    "data/windows/stride_30/window_summary.json": "cb843b0ce6b3ea428df7cf3d34256d941202e027e637cea5973e6de5045e1a68",
+    "results/missingness_analysis/class_missingness_summary.csv": "bbedbf5d07504ed3a1b866443dadd95f45b7cfeda3a42e63a8db492003dc460a",
+    "results/missingness_analysis/customer_retention_by_threshold.csv": "60924ec6b5b8d8dd4825096f66c184ed6056100fbed2eeaefcc5d0ab7264ca8e",
+    "results/missingness_analysis/fully_missing_count_distribution.csv": "6d3d68318d87d7e28b6c5e64c57cb221fea46f9c53c62f85f530f084ea4991b8",
+    "results/missingness_analysis/fully_missing_customer_summary.csv": "487431120eef29f6f0600f7dc965bc6b6a003af455e39a89f36a5bf344163354",
+    "results/missingness_analysis/fully_missing_run_distribution.csv": "ab00137a6498859360349d65e3b01b1e1f1d6ce3b8ec2911c6f6b74f8eecdca6",
+    "results/missingness_analysis/fully_missing_run_summary.csv": "696f069a1421fc467d4f56f94231215d7cfa1fc513ee1c48bcdfd80c2d2e9e42",
+    "results/missingness_analysis/fully_missing_window_summary.csv": "cfe06926e6a3c395f51ba8fcc1dcdcc2c4a335fbfbd7ea810285e7011e432348",
+    "results/missingness_analysis/missingness_analysis.json": "48b81dd50da7dce72d1a79d210bafdb5dfae9e7884374c086d9723a7b123b02b",
+    "results/missingness_analysis/report.md": "e3d9cf8a9a1b8ff4adfc5daa4f53d25dc20d4421c1278285916b7e50de3ac869",
+    "results/missingness_analysis/threshold_comparison.csv": "2b6d877f6c5fb440d459c2d2701920e7a23d0b3b533e9142a97d311505275037",
+    "results/missingness_analysis/top_fully_missing_runs.csv": "e1c71291a36998fbcd9f8284ee7ff010b3df71df1dc5d30b4a95bc3b89e7c4e4",
+    "results/missingness_analysis/window_position_missingness.csv": "6bbef13892d27e2b59acbe3b3a2924b14f567c5a7c9742cb63534df8a7d2e4ad",
+    "data/windows/stride_30/usable/train_windows.parquet": "71d04ea00e4e3884892514f10c47ac268d9b9837be204c1dd870c12532895482",
+    "data/windows/stride_30/usable/val_windows.parquet": "8d0d5563ba010dde0897df1e7f62acc7f702c19074eb4d56af33107507b31f58",
+    "data/windows/stride_30/usable/test_windows.parquet": "237672636f627b8e550baac1cb64b328a29a4a4f356d745a30f84bb3df03c1c2",
+    "data/windows/stride_30/usable/filter_summary.json": "aaf5e4101f14742c4a0b9021c08ac8fa0a1b7d52ffea263e38d1897763b48333"
+  }
+}
