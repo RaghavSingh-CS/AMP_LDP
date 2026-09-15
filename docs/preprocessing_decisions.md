@@ -1562,3 +1562,78 @@ post-hoc restoration/removal occurred. Full evidence is under
 **CONFIRMATION NOT ACCESSED DURING STAGE 22.**
 
 **FINAL_TEST NOT ACCESSED DURING STAGE 22.**
+
+## Stage 23A — Research freeze and final evaluation protocol
+
+Stage 23A closes governance around the completed development matrix. It is a
+design-only stage: no model was trained or evaluated, `CONFIRMATION` row-level
+data was not accessed, and `FINAL_TEST` features, labels, predictions, and
+metrics were not accessed. The audit began at clean commit
+`6af8a2e633be571891954a509f1428d2037fea63` and verified the Stage 17A role
+manifest, protected split/preprocessing artifacts, exact Stage 16 feature
+schema, Stage 17B HGB model/configuration, and committed Stage 17C–22 decisions.
+
+The final method is **FINAL_FULL_48 HGB**: customer is both the fitting and
+prediction unit; the exact ordered 48 Stage 16 features remain unchanged; and
+the classifier is the unweighted `HistGradientBoostingClassifier` with
+`learning_rate=0.1`, `max_iter=100`, `max_leaf_nodes=15`,
+`min_samples_leaf=100`, `l2_regularization=1.0`, `early_stopping=False`, and
+`random_state=42`. Stage 22's 26-feature representation is rejected because
+its paired mean ROC-AUC/AP losses were `-0.012108`/`-0.021840`, with both 95%
+intervals below zero. Stage 21 found no material reason to replace HGB.
+
+The final refit population is `DEV_TRAIN + DEV_VAL`: 29,655 customers with an
+established usable representation. The single original-train customer without
+usable windows is excluded and reported. `CONFIRMATION` is excluded to preserve
+the independently reportable Stage 17C result; `FINAL_TEST` is excluded from
+all fitting and reference computation. The four Stage 16 persistence-reference
+q90 thresholds are recomputed without labels from all usable final-training
+windows, using the same mathematical definitions, then applied unchanged to
+both final-training and final-evaluation matrices. No other feature semantic,
+name, order, preprocessing, chronology, or eligibility rule may change.
+
+The numeric Stage 17B threshold `0.20070617709942135` is preserved without
+re-derivation after final refitting. It is a secondary development-derived
+operating point; because combined-development refitting may change calibration,
+threshold metrics carry that transfer limitation. Primary Stage 23B metrics are
+customer ROC-AUC and Average Precision. Secondary metrics are precision,
+recall, F1, and TN/FP/FN/TP; counts and prevalence are descriptive. ROC-AUC and
+AP receive 2,000-customer seed-42 percentile bootstrap 95% intervals, discarding
+single-class samples and continuing until 2,000 valid replicates.
+
+The population designated `FINAL_TEST` was historically accessed at Stage 13
+for the obsolete balanced window-HGB baseline (customer ROC-AUC/AP
+`0.702314`/`0.219317`). Stages 14–22 did not use that result to select or tune
+the current method, so it does not make the later frozen-pipeline evaluation
+meaningless, but it precludes a pristine or never-seen test claim. The paper
+must call it the **final evaluation cohort with disclosed historical baseline
+access**, report Stage 13 separately as historical exploratory evidence, and
+identify Stage 23B as the one frozen final-pipeline evaluation.
+
+The final method is sealed in
+`results/supervised/stage_23a/final_method.json` at SHA-256
+`c68512ad348d01dfc2dddf43e49301ec964d83de44746a428841edb2b1632113`.
+The authoritative Stage 23B protocol is
+`results/supervised/stage_23a/final_evaluation_protocol.json` at SHA-256
+`dbaa2035586c3e9f8f4ed2654d5a129acb2d767d14ded5b168dfc740d8943993`.
+It fixes execution order, output paths, historical-access disclosure,
+prohibited adaptations, and abort conditions. Stage 23B requires zero new
+methodological choices.
+
+The frozen paper contribution is that, within SGCC, interpretable customer-
+level longitudinal behavioural profiling aligned with customer-level ground
+truth produces substantially stronger, replicated, and confirmed theft
+discrimination than the evaluated reconstruction and historical window
+formulations, while robustness and controlled ablations delimit rather than
+overstate the explanation. No unique causal mechanism, temporal label-noise
+correction, state-of-the-art status, GAN/SMOTE necessity, or external
+generalization is claimed.
+
+**AMP MODEL DEVELOPMENT IS CLOSED AFTER STAGE 22.** Stage 23A is governance/
+design; Stage 23B is final evaluation. There is no return to model development
+based on Stage 23B results. Any later modelling is a separate follow-up study
+and cannot alter the frozen reported experiment.
+
+**CONFIRMATION ROW-LEVEL DATA NOT ACCESSED DURING STAGE 23A.**
+
+**FINAL_TEST DATA, PREDICTIONS, AND METRICS NOT ACCESSED DURING STAGE 23A.**

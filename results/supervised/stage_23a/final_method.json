@@ -1,0 +1,163 @@
+{
+  "method_id": "AMP_FINAL_FULL_48_HGB",
+  "status": "FROZEN_FOR_STAGE_23B",
+  "source_commit": "6af8a2e633be571891954a509f1428d2037fea63",
+  "prediction_unit": "CUSTOMER",
+  "training_unit": "CUSTOMER",
+  "final_training_population": {
+    "included_research_roles": [
+      "DEV_TRAIN",
+      "DEV_VAL"
+    ],
+    "included_original_split": "train",
+    "customers_with_usable_representation": 29655,
+    "excluded_research_roles": [
+      "CONFIRMATION",
+      "FINAL_TEST"
+    ],
+    "unavailable_customer_policy": "Exclude the one original-train customer without any established usable stride-30 window and report the exclusion.",
+    "rationale": "Preserve CONFIRMATION as independently reportable evidence rather than consuming it for final refitting."
+  },
+  "preprocessing": {
+    "processed_consumption_space": "Existing Stage 1 customer-wise imputation/log1p output transformed by the Stage 2 StandardScaler fitted only on the original train population.",
+    "scaler_path": "models/preprocessing/scaler.joblib",
+    "scaler_sha256": "34bbc0491465fb5ba627df70ee95706e71bc92fa21c6fa8a32048048a855d0bc",
+    "window_definition": "Established usable non-overlapping 30-day stride-30 windows with missing_fraction < 1.0.",
+    "new_preprocessing_choice_permitted": false
+  },
+  "feature_schema": {
+    "identifier": "STAGE16_FINAL_FULL_48",
+    "source_path": "results/supervised/stage_16/preregistered_config.json",
+    "source_sha256": "a722299d6207fce06180f71bf96717ce58948e127a85440e04f721c1616fcdf3",
+    "feature_count": 48,
+    "ordered_names": [
+      "mean__customer_median",
+      "mean__customer_q10",
+      "mean__customer_q90",
+      "median__customer_median",
+      "median__customer_q10",
+      "median__customer_q90",
+      "minimum__customer_median",
+      "minimum__customer_q10",
+      "minimum__customer_q90",
+      "maximum__customer_median",
+      "maximum__customer_q10",
+      "maximum__customer_q90",
+      "q10__customer_median",
+      "q10__customer_q10",
+      "q10__customer_q90",
+      "q90__customer_median",
+      "q90__customer_q10",
+      "q90__customer_q90",
+      "standard_deviation__customer_median",
+      "standard_deviation__customer_q90",
+      "range__customer_median",
+      "range__customer_q90",
+      "interquartile_range__customer_median",
+      "interquartile_range__customer_q90",
+      "mean_absolute_deviation__customer_median",
+      "mean_absolute_deviation__customer_q90",
+      "mean_absolute_consecutive_change__customer_median",
+      "mean_absolute_consecutive_change__customer_q90",
+      "maximum_absolute_consecutive_change__customer_median",
+      "maximum_absolute_consecutive_change__customer_q90",
+      "first_to_last_change__customer_mean",
+      "first_to_last_change__customer_standard_deviation",
+      "absolute_first_to_last_change__customer_mean",
+      "absolute_first_to_last_change__customer_standard_deviation",
+      "linear_slope__customer_mean",
+      "linear_slope__customer_standard_deviation",
+      "second_half_minus_first_half_mean__customer_mean",
+      "second_half_minus_first_half_mean__customer_standard_deviation",
+      "fraction_below_minus_one__customer_mean",
+      "fraction_below_minus_one__customer_q90",
+      "maximum__training_q90_exceedance_fraction",
+      "standard_deviation__training_q90_exceedance_fraction",
+      "mean_absolute_consecutive_change__training_q90_exceedance_fraction",
+      "maximum_absolute_consecutive_change__training_q90_exceedance_fraction",
+      "mean__late_third_minus_early_third",
+      "maximum__late_third_minus_early_third",
+      "standard_deviation__late_third_minus_early_third",
+      "mean_absolute_consecutive_change__late_third_minus_early_third"
+    ],
+    "semantic_revision_permitted": false
+  },
+  "train_reference_recomputation": {
+    "population": "Every usable stride-30 window belonging to the final training roles DEV_TRAIN and DEV_VAL only.",
+    "label_use": false,
+    "persistence_source_features": [
+      "maximum",
+      "standard_deviation",
+      "mean_absolute_consecutive_change",
+      "maximum_absolute_consecutive_change"
+    ],
+    "operation": "For each source feature, calculate its linear-interpolation 90th percentile across final-training windows; customer persistence is the fraction of that customer's windows strictly above the corresponding threshold.",
+    "application": "Use the frozen final-training thresholds unchanged when constructing both final-training and FINAL_TEST customer matrices.",
+    "chronology": "Preserve Stage 16 early/late-third definitions and established window_number_within_customer ordering; no date or window index enters the predictor matrix.",
+    "FINAL_TEST_contribution_to_references": false
+  },
+  "classifier": {
+    "family": "sklearn.ensemble.HistGradientBoostingClassifier",
+    "parameters": {
+      "learning_rate": 0.1,
+      "max_iter": 100,
+      "max_leaf_nodes": 15,
+      "min_samples_leaf": 100,
+      "l2_regularization": 1.0,
+      "class_weight": null,
+      "early_stopping": false,
+      "random_state": 42
+    },
+    "sample_weight": null,
+    "fit_count": 1
+  },
+  "threshold": {
+    "value": 0.20070617709942135,
+    "source": "Frozen Stage 17B threshold selected by the established positive-class F1 rule on DEV_VAL predictions from the DEV_TRAIN-fitted model.",
+    "source_artifact": "results/supervised/stage_17b/validation_decision.json",
+    "source_artifact_sha256": "11e15f18e2521ffed8e7dbaacee469284ee356acedea1d8f34ffcf48785a68fa",
+    "recomputed_after_final_refit": false,
+    "FINAL_TEST_used": false,
+    "interpretation": "Secondary operating point only. Refitting on the combined development population can alter probability calibration, so threshold metrics must be interpreted with this transfer limitation."
+  },
+  "evaluation": {
+    "population": "FINAL_TEST customers with the established usable representation",
+    "expected_customer_count": 6356,
+    "expected_theft_count_from_committed_aggregate_audit": 542,
+    "primary_metrics": [
+      "ROC_AUC",
+      "PR_AUC_average_precision"
+    ],
+    "secondary_metrics": [
+      "precision",
+      "recall",
+      "F1",
+      "TN",
+      "FP",
+      "FN",
+      "TP"
+    ],
+    "descriptive_metrics": [
+      "customer_count",
+      "theft_count",
+      "theft_prevalence"
+    ],
+    "evaluation_count": 1
+  },
+  "uncertainty": {
+    "unit": "FINAL_TEST customer",
+    "resamples": 2000,
+    "seed": 42,
+    "metrics": [
+      "ROC_AUC",
+      "PR_AUC_average_precision"
+    ],
+    "interval": "2.5th and 97.5th percentile",
+    "single_class_policy": "Discard the sample deterministically and continue until 2,000 valid replicates; report attempts and discards."
+  },
+  "random_seeds": {
+    "model": 42,
+    "bootstrap": 42
+  },
+  "methodological_choices_remaining_for_stage_23b": 0
+}

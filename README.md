@@ -294,3 +294,34 @@ See `results/supervised/stage_22/stage_22_report.md`.
     python -m src.analysis.run_stage22_compact_representation --prepare
     python -m src.analysis.run_stage22_compact_representation --evaluate
 
+Stage 23A freezes the research contribution and the complete Stage 23B final-
+evaluation protocol without fitting or evaluating a model. The final method is
+the exact Stage 16 `FINAL_FULL_48` direct-customer representation with the
+unweighted Stage 17B HistGradientBoosting configuration. Its one final refit
+uses the 29,655 representation-available `DEV_TRAIN + DEV_VAL` customers;
+`CONFIRMATION` remains excluded to preserve Stage 17C as independent evidence.
+The four label-free persistence q90 references are recomputed from final-
+training windows only, and the Stage 17B threshold
+`0.20070617709942135` remains fixed as a secondary operating point.
+
+The authoritative specification is
+`results/supervised/stage_23a/final_evaluation_protocol.json`, SHA-256
+`dbaa2035586c3e9f8f4ed2654d5a129acb2d767d14ded5b168dfc740d8943993`.
+It pre-registers primary customer ROC-AUC/AP, secondary fixed-threshold metrics,
+2,000 seed-42 customer bootstrap replicates, execution order, artifact paths,
+prohibited adaptations, and mandatory abort conditions. Stage 23B requires
+zero methodological choices.
+
+The cohort now called `FINAL_TEST` had disclosed historical Stage 13 access for
+an obsolete window baseline; it must therefore be described as the **final
+evaluation cohort with disclosed historical baseline access**, not a pristine
+or never-seen test set. Stage 13 and Stage 23B results must be reported as
+historical exploratory baseline evidence and frozen final-pipeline evaluation,
+respectively. No row-level `CONFIRMATION` or `FINAL_TEST` data was accessed in
+Stage 23A. Full freeze rationale, evidence chain, claims matrix, and final method
+are under `results/supervised/stage_23a/`.
+
+**AMP MODEL DEVELOPMENT IS CLOSED AFTER STAGE 22.** Stage 23B cannot trigger
+further tuning or method revision; future modelling is a separate follow-up
+study.
+

@@ -1,0 +1,167 @@
+{
+  "protocol_id": "AMP_STAGE_23B_FINAL_EVALUATION_V1",
+  "status": "FROZEN_BEFORE_STAGE_23B",
+  "frozen_at_source_commit": "6af8a2e633be571891954a509f1428d2037fea63",
+  "stage_23a_scope": "Governance and protocol design only; no model training, scoring, or new metric calculation.",
+  "sealed_inputs": {
+    "final_method_path": "results/supervised/stage_23a/final_method.json",
+    "final_method_sha256": "c68512ad348d01dfc2dddf43e49301ec964d83de44746a428841edb2b1632113",
+    "stage_17a_governance_manifest_path": "results/governance/stage_17a/research_protocol_manifest.csv",
+    "stage_17a_governance_manifest_sha256": "dae7dba53260a3af6b8e2ddd904b5c7867c3321f27cdff5af5e4060b97c348c0",
+    "historical_split_manifest_sha256": "6ad1132bbaef0c6f6ccc5bdc973844b805c4291612ac7170ec165f273835959c",
+    "stage_16_feature_specification_path": "results/supervised/stage_16/preregistered_config.json",
+    "stage_16_feature_specification_sha256": "a722299d6207fce06180f71bf96717ce58948e127a85440e04f721c1616fcdf3",
+    "stage_17b_configuration_sha256": "605eb1f482123a24a14c0929c951f400c37b3fbc2d2bb2e4d46d2ce834698046",
+    "stage_17b_model_sha256": "67ed869858185d8f71d99b3dce8b358c43793178185e5aa50e6997d11b56974b",
+    "stage_17b_validation_decision_sha256": "11e15f18e2521ffed8e7dbaacee469284ee356acedea1d8f34ffcf48785a68fa",
+    "preprocessing_scaler_sha256": "34bbc0491465fb5ba627df70ee95706e71bc92fa21c6fa8a32048048a855d0bc"
+  },
+  "research_freeze": {
+    "final_representation": "FINAL_FULL_48",
+    "feature_count": 48,
+    "feature_order_and_semantics": "Exactly those in the sealed final_method.json and Stage 16 specification; no substitution, removal, addition, or reordering.",
+    "final_classifier": "Unweighted sklearn HistGradientBoostingClassifier with the exact sealed Stage 17B configuration.",
+    "prediction_unit": "CUSTOMER",
+    "selection_status": "No representation, model-family, hyperparameter, loss, aggregation, or threshold selection remains.",
+    "confirmation_role": "Independent support already obtained at Stage 17C; it is excluded from final fitting to preserve that evidential role.",
+    "final_test_role": "One final application of the frozen final pipeline, subject to the historical-access disclosure in this protocol."
+  },
+  "execution_order": [
+    "Verify a clean repository and exact hashes for this protocol, final_method.json, governance manifest, split manifest, Stage 16 specification, Stage 17B configuration/model/decision, and preprocessing scaler.",
+    "Verify DEV_TRAIN, DEV_VAL, CONFIRMATION, and FINAL_TEST membership against the sealed manifest without loading FINAL_TEST features or labels.",
+    "Build the final-training customer representation from DEV_TRAIN plus DEV_VAL only, preserving all sealed preprocessing, usable-window, feature-order, and customer-exclusion rules.",
+    "Recompute only the four label-free Stage 16 training-reference q90 values from all usable DEV_TRAIN plus DEV_VAL windows and freeze them before opening FINAL_TEST.",
+    "Fit exactly one unweighted HGB model with the sealed parameters to the 29,655 representation-available final-training customers.",
+    "Write and hash the fitted model and final-training references; verify the fixed threshold value is unchanged.",
+    "Only after all preceding steps pass, load FINAL_TEST features and labels once, construct the exact representation using frozen final-training references, and score each eligible customer once.",
+    "Compute the pre-specified descriptive, primary, secondary, and bootstrap outputs once without adaptation.",
+    "Write the immutable predictions, metrics, uncertainty, execution audit, and report; perform artifact assertions and disclose historical FINAL_TEST access."
+  ],
+  "data_roles": {
+    "final_fit": [
+      "DEV_TRAIN",
+      "DEV_VAL"
+    ],
+    "final_fit_expected_eligible_customers": 29655,
+    "confirmation": "EXCLUDED_FROM_FINAL_FIT_AND_NOT_ACCESSED_IN_STAGE_23B",
+    "final_evaluation": "FINAL_TEST_ONLY_AFTER_MODEL_AND_REFERENCES_ARE_FROZEN",
+    "final_test_expected_eligible_customers_from_committed_audit": 6356,
+    "final_test_expected_theft_customers_from_committed_audit": 542,
+    "one_original_train_customer_without_usable_windows": "EXCLUDE_AND_REPORT"
+  },
+  "training_reference_recomputation": {
+    "allowed": true,
+    "reason": "Stage 16 persistence summaries are defined relative to training-window distributions and therefore must be recomputed after the pre-specified expansion from DEV_TRAIN to DEV_TRAIN plus DEV_VAL.",
+    "population": "All usable stride-30 windows from DEV_TRAIN plus DEV_VAL only.",
+    "label_use": false,
+    "quantile": 0.9,
+    "interpolation": "linear",
+    "comparison": "strictly_greater_than",
+    "source_features": [
+      "maximum",
+      "standard_deviation",
+      "mean_absolute_consecutive_change",
+      "maximum_absolute_consecutive_change"
+    ],
+    "other_feature_redefinition_permitted": false,
+    "final_test_contribution": false
+  },
+  "classifier": {
+    "class": "sklearn.ensemble.HistGradientBoostingClassifier",
+    "parameters": {
+      "learning_rate": 0.1,
+      "max_iter": 100,
+      "max_leaf_nodes": 15,
+      "min_samples_leaf": 100,
+      "l2_regularization": 1.0,
+      "class_weight": null,
+      "early_stopping": false,
+      "random_state": 42
+    },
+    "sample_weight": null,
+    "fit_count": 1
+  },
+  "threshold": {
+    "value": 0.20070617709942135,
+    "source": "Stage 17B DEV_VAL positive-class maximum-F1 operating point",
+    "rederive_after_refit": false,
+    "use_final_test_to_select_or_calibrate": false,
+    "status": "FIXED_SECONDARY_OPERATING_POINT",
+    "interpretive_limit": "The combined-development refit can change probability calibration; threshold metrics are secondary and must be reported with this transfer limitation."
+  },
+  "metrics": {
+    "primary": [
+      "ROC_AUC",
+      "PR_AUC_average_precision"
+    ],
+    "secondary_at_fixed_threshold": [
+      "precision",
+      "recall",
+      "F1",
+      "TN",
+      "FP",
+      "FN",
+      "TP"
+    ],
+    "descriptive": [
+      "customer_count",
+      "theft_count",
+      "theft_prevalence"
+    ],
+    "metric_selection_after_final_test": false
+  },
+  "uncertainty": {
+    "method": "customer-level nonparametric percentile bootstrap",
+    "resamples": 2000,
+    "seed": 42,
+    "confidence_level": 0.95,
+    "metrics": [
+      "ROC_AUC",
+      "PR_AUC_average_precision"
+    ],
+    "single_class_policy": "Discard deterministically and continue until 2,000 valid replicates; report attempts and discards."
+  },
+  "historical_final_test_access": {
+    "pristine_never_seen_test_claim_permitted": false,
+    "access_stage": "Stage 13",
+    "accessed_pipeline": "Historical balanced window-level supervised HGB with customer aggregation",
+    "committed_customer_metrics": {
+      "ROC_AUC": 0.7023135402,
+      "PR_AUC_average_precision": 0.219316597
+    },
+    "influence_on_final_full_48_hgb": "The Stage 13 FINAL_TEST result was not used in Stages 14-22 to select the direct-customer FULL_48 representation, Stage 17B HGB configuration, or fixed threshold.",
+    "required_paper_terminology": "final evaluation cohort with disclosed historical baseline access",
+    "required_reporting": "Report the Stage 13 result separately as historical exploratory window-baseline evidence and Stage 23B as the single frozen final-pipeline evaluation; do not present the cohort as pristine, untouched, or never seen."
+  },
+  "prohibited_actions": [
+    "Use CONFIRMATION in final fitting, reference computation, calibration, thresholding, or Stage 23B reporting calculations.",
+    "Inspect FINAL_TEST features, labels, predictions, subgroup results, or metrics before the final model and training references are sealed.",
+    "Change preprocessing, usable-window criteria, feature definitions, feature order, representation, model family, hyperparameters, sample weights, threshold, metric set, or uncertainty method.",
+    "Refit more than once or rerun after observing FINAL_TEST outcomes, except to reproduce byte-identical outputs after a documented infrastructure-only failure that occurred before any outcome was viewed.",
+    "Perform subgroup exploration, threshold tuning, calibration, ensembling, error-driven feature work, or model comparison on FINAL_TEST.",
+    "Suppress, replace, or selectively report any pre-specified metric."
+  ],
+  "abort_conditions": [
+    "Repository is dirty before execution or the Stage 23A protocol commit cannot be identified.",
+    "Any sealed artifact hash or ordered feature schema does not match.",
+    "Split membership overlaps, counts are incompatible with the sealed manifests, or protected roles cannot be isolated exactly.",
+    "Final-training eligible customer count is not 29,655 or the single established unusable original-train customer cannot be accounted for.",
+    "The implementation requires a methodological choice not explicitly fixed by final_method.json and this protocol.",
+    "The HGB implementation cannot accept the exact sealed configuration or produces a non-finite training prediction/probability.",
+    "The final model or training-reference artifacts are not written and hashed before FINAL_TEST is opened.",
+    "FINAL_TEST eligible customer or theft counts differ from 6,356 or 542 without a fully resolved, protocol-compatible explanation established before metric interpretation.",
+    "Any FINAL_TEST customer is duplicated, omitted contrary to the established usable-window rule, or receives more than one final prediction.",
+    "Any adaptive action is proposed after FINAL_TEST outcomes become visible."
+  ],
+  "required_stage_23b_outputs": {
+    "model": "models/supervised/stage_23b/final_full_48_hgb.joblib",
+    "training_references": "results/supervised/stage_23b/final_training_references.json",
+    "predictions": "results/supervised/stage_23b/final_test_customer_predictions.csv",
+    "metrics_json": "results/supervised/stage_23b/final_test_metrics.json",
+    "metrics_csv": "results/supervised/stage_23b/final_test_metrics.csv",
+    "bootstrap": "results/supervised/stage_23b/final_test_bootstrap.csv",
+    "execution_audit": "results/supervised/stage_23b/execution_audit.json",
+    "report": "results/supervised/stage_23b/final_evaluation_report.md"
+  },
+  "methodological_choices_remaining_for_stage_23b": 0
+}
