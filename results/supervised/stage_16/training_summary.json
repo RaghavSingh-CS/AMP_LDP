@@ -1,0 +1,224 @@
+{
+  "stage": "Stage 16 \u2014 validation-only training summary",
+  "preregistration_sha256": "a722299d6207fce06180f71bf96717ce58948e127a85440e04f721c1616fcdf3",
+  "feature_count": 48,
+  "feature_names_in_order": [
+    "mean__customer_median",
+    "mean__customer_q10",
+    "mean__customer_q90",
+    "median__customer_median",
+    "median__customer_q10",
+    "median__customer_q90",
+    "minimum__customer_median",
+    "minimum__customer_q10",
+    "minimum__customer_q90",
+    "maximum__customer_median",
+    "maximum__customer_q10",
+    "maximum__customer_q90",
+    "q10__customer_median",
+    "q10__customer_q10",
+    "q10__customer_q90",
+    "q90__customer_median",
+    "q90__customer_q10",
+    "q90__customer_q90",
+    "standard_deviation__customer_median",
+    "standard_deviation__customer_q90",
+    "range__customer_median",
+    "range__customer_q90",
+    "interquartile_range__customer_median",
+    "interquartile_range__customer_q90",
+    "mean_absolute_deviation__customer_median",
+    "mean_absolute_deviation__customer_q90",
+    "mean_absolute_consecutive_change__customer_median",
+    "mean_absolute_consecutive_change__customer_q90",
+    "maximum_absolute_consecutive_change__customer_median",
+    "maximum_absolute_consecutive_change__customer_q90",
+    "first_to_last_change__customer_mean",
+    "first_to_last_change__customer_standard_deviation",
+    "absolute_first_to_last_change__customer_mean",
+    "absolute_first_to_last_change__customer_standard_deviation",
+    "linear_slope__customer_mean",
+    "linear_slope__customer_standard_deviation",
+    "second_half_minus_first_half_mean__customer_mean",
+    "second_half_minus_first_half_mean__customer_standard_deviation",
+    "fraction_below_minus_one__customer_mean",
+    "fraction_below_minus_one__customer_q90",
+    "maximum__training_q90_exceedance_fraction",
+    "standard_deviation__training_q90_exceedance_fraction",
+    "mean_absolute_consecutive_change__training_q90_exceedance_fraction",
+    "maximum_absolute_consecutive_change__training_q90_exceedance_fraction",
+    "mean__late_third_minus_early_third",
+    "maximum__late_third_minus_early_third",
+    "standard_deviation__late_third_minus_early_third",
+    "mean_absolute_consecutive_change__late_third_minus_early_third"
+  ],
+  "train_derived_persistence_q90_thresholds": {
+    "maximum": 1.5178718566894533,
+    "standard_deviation": 0.43910054564476053,
+    "mean_absolute_consecutive_change": 0.2782135248184205,
+    "maximum_absolute_consecutive_change": 1.181627273559571
+  },
+  "split_integrity": {
+    "authoritative_manifest": "data\\processed\\split_manifest.parquet",
+    "manifest_sha256": "6ad1132bbaef0c6f6ccc5bdc973844b805c4291612ac7170ec165f273835959c",
+    "authoritative_customer_counts_without_loading_test_labels": {
+      "train": 29656,
+      "val": 6355,
+      "test": 6356
+    },
+    "customer_overlaps": {
+      "train_val": 0,
+      "train_test": 0,
+      "val_test": 0
+    },
+    "usable_window_counts": {
+      "train": 768923,
+      "validation": 165541
+    },
+    "customers_with_usable_windows": {
+      "train": 29655,
+      "validation": 6355
+    },
+    "customers_excluded_for_zero_usable_windows": {
+      "train": 1,
+      "validation": 0
+    },
+    "loaded_splits": [
+      "train",
+      "val"
+    ],
+    "test_features_loaded": false,
+    "test_labels_loaded": false,
+    "test_predictions_loaded_or_inspected": false,
+    "historical_test_metrics_loaded_or_used": false
+  },
+  "customer_dataset": {
+    "train": {
+      "customers": 29655,
+      "normal_customers": 27128,
+      "theft_customers": 2527,
+      "theft_prevalence": 0.08521328612375653
+    },
+    "validation": {
+      "customers": 6355,
+      "normal_customers": 5813,
+      "theft_customers": 542,
+      "theft_prevalence": 0.08528717545239968
+    }
+  },
+  "usable_window_count_summaries": {
+    "train": {
+      "customer_count": 29655,
+      "mean": 25.928949586916204,
+      "standard_deviation": 9.957301011086267,
+      "minimum": 1,
+      "p01": 10.0,
+      "p05": 10.0,
+      "p10": 10.0,
+      "p25": 14.0,
+      "median": 32.0,
+      "p75": 34.0,
+      "p90": 34.0,
+      "p95": 34.0,
+      "p99": 34.0,
+      "maximum": 34
+    },
+    "validation": {
+      "customer_count": 6355,
+      "mean": 26.048937844217154,
+      "standard_deviation": 9.93463911473187,
+      "minimum": 1,
+      "p01": 10.0,
+      "p05": 10.0,
+      "p10": 10.0,
+      "p25": 15.0,
+      "median": 32.0,
+      "p75": 34.0,
+      "p90": 34.0,
+      "p95": 34.0,
+      "p99": 34.0,
+      "maximum": 34
+    }
+  },
+  "feature_sanity": {
+    "train_shape": [
+      29655,
+      48
+    ],
+    "validation_shape": [
+      6355,
+      48
+    ],
+    "train_nonfinite_values": 0,
+    "validation_nonfinite_values": 0,
+    "effectively_constant_training_features": [],
+    "absolute_spearman_ge_0_95_pair_count": 35
+  },
+  "stage14_baseline_reproduction": {
+    "model_artifact": "models\\supervised\\stage_14\\hist_gradient_boosting_unweighted_summary_only.joblib",
+    "model_sha256": "ccf6d976ad146bcf338f491a13817b785a6f4551965be687a0bafe5d50a08919",
+    "saved_probability_artifact": "results\\supervised\\stage_14\\validation_customer_probabilities.csv",
+    "max_absolute_customer_probability_difference": 9.71445146547012e-17,
+    "labels_match": true,
+    "metric_differences_stage16_reproduction_minus_stage14": {
+      "ROC_AUC": 0.0,
+      "PR_AUC_average_precision": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "F1": 5.551115123125783e-17,
+      "threshold": 5.551115123125783e-17
+    },
+    "all_metrics_reproduced_within_1e-12": true
+  },
+  "models": [
+    {
+      "model": "direct_customer_logistic",
+      "family": "logistic",
+      "fit_runtime_seconds": 0.4308030999964103,
+      "artifact": "models\\supervised\\stage_16\\direct_customer_logistic.joblib",
+      "artifact_sha256": "771558f2ca5000819a2b27f81f1c195a8ecd8e9e9f17c6dd5f4f8e14d819a6b0"
+    },
+    {
+      "model": "direct_customer_hist_gradient_boosting",
+      "family": "hist_gradient_boosting",
+      "fit_runtime_seconds": 1.1985215000022436,
+      "artifact": "models\\supervised\\stage_16\\direct_customer_hist_gradient_boosting.joblib",
+      "artifact_sha256": "d34280bed0b0952dec41add61def97ea0a68e9e635e69269ad84aa9c05c76642"
+    }
+  ],
+  "test_access": {
+    "authoritative_manifest": "data\\processed\\split_manifest.parquet",
+    "manifest_sha256": "6ad1132bbaef0c6f6ccc5bdc973844b805c4291612ac7170ec165f273835959c",
+    "authoritative_customer_counts_without_loading_test_labels": {
+      "train": 29656,
+      "val": 6355,
+      "test": 6356
+    },
+    "customer_overlaps": {
+      "train_val": 0,
+      "train_test": 0,
+      "val_test": 0
+    },
+    "usable_window_counts": {
+      "train": 768923,
+      "validation": 165541
+    },
+    "customers_with_usable_windows": {
+      "train": 29655,
+      "validation": 6355
+    },
+    "customers_excluded_for_zero_usable_windows": {
+      "train": 1,
+      "validation": 0
+    },
+    "loaded_splits": [
+      "train",
+      "val"
+    ],
+    "test_features_loaded": false,
+    "test_labels_loaded": false,
+    "test_predictions_loaded_or_inspected": false,
+    "historical_test_metrics_loaded_or_used": false,
+    "explicit_statement": "TEST NOT ACCESSED DURING STAGE 16"
+  }
+}

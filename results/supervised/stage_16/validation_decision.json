@@ -1,0 +1,29 @@
+{
+  "stage": "Stage 16 \u2014 validation-only formulation decision",
+  "primary_candidate_selection": "Choose the direct customer model with higher validation customer ROC-AUC, breaking a tie by average precision. This compares model family only; the direct customer formulation is the primary object of study.",
+  "decision_policy": {
+    "A": "Adopt direct customer-level modeling if its ROC-AUC delta and average-precision delta are both positive and both paired 95% bootstrap intervals exclude zero.",
+    "B": "Treat the formulations as statistically tied if neither formulation has both metric deltas in the same direction with both paired intervals excluding zero.",
+    "C": "Retain window modeling plus mean aggregation if both direct-model metric deltas are negative and both paired intervals exclude zero."
+  },
+  "selected_direct_model": "direct_customer_hist_gradient_boosting",
+  "selected_model_artifact": "models\\supervised\\stage_16\\direct_customer_hist_gradient_boosting.joblib",
+  "selected_model_sha256": "d34280bed0b0952dec41add61def97ea0a68e9e635e69269ad84aa9c05c76642",
+  "selected_customer_threshold": 0.22075028883495906,
+  "selected_customer_ROC_AUC": 0.7932103447991303,
+  "selected_customer_PR_AUC_average_precision": 0.37627819883774777,
+  "selected_customer_F1": 0.4026340545625588,
+  "baseline_customer_ROC_AUC": 0.7386969212028264,
+  "baseline_customer_PR_AUC_average_precision": 0.2613198493570088,
+  "baseline_customer_F1": 0.30324909747292417,
+  "deltas_direct_minus_baseline": {
+    "ROC_AUC": 0.054513423596303956,
+    "PR_AUC_average_precision": 0.11495834948073896,
+    "F1": 0.09938495708963463
+  },
+  "decision": "A",
+  "decision_label": "direct customer-level modeling",
+  "frozen_next_supervised_baseline": true,
+  "test_evaluation_performed": false,
+  "test_policy": "CLOSED; TEST NOT ACCESSED DURING STAGE 16"
+}

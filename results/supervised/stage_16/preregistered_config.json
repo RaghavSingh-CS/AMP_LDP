@@ -1,0 +1,118 @@
+{
+  "stage": "Stage 16 — direct customer-level behavioural aggregation",
+  "created_before_stage_16_validation_scoring": true,
+  "research_question": "Does fitting directly on compact customer aggregates of the frozen 17 Stage 14 window summaries outperform fitting the frozen Stage 14 window HGB and averaging its probabilities per customer?",
+  "unit_of_analysis": "One row per customer with at least one established usable stride-30 window.",
+  "input_scope": "Features are deterministic aggregates only of the frozen 17 Stage 14 behavioural summaries. Identifiers, labels, split fields, window counts, missingness metadata, prior predictions, and reconstruction outputs are excluded from the model matrix.",
+  "feature_count": 48,
+  "feature_construction": {
+    "level_features": {
+      "source_features": ["mean", "median", "minimum", "maximum", "q10", "q90"],
+      "aggregates": ["median", "q10", "q90"],
+      "count": 18,
+      "purpose": "Represent each customer's typical and lower/upper-tail consumption levels robustly across usable windows."
+    },
+    "variability_features": {
+      "source_features": ["standard_deviation", "range", "interquartile_range", "mean_absolute_deviation", "mean_absolute_consecutive_change", "maximum_absolute_consecutive_change"],
+      "aggregates": ["median", "q90"],
+      "count": 12,
+      "purpose": "Represent typical and high-variability behaviour without expanding every source feature by every possible statistic."
+    },
+    "direction_features": {
+      "source_features": ["first_to_last_change", "absolute_first_to_last_change", "linear_slope", "second_half_minus_first_half_mean"],
+      "aggregates": ["mean", "standard_deviation"],
+      "count": 8,
+      "purpose": "Represent persistent direction and inconsistency of within-window change."
+    },
+    "low_consumption_features": {
+      "source_features": ["fraction_below_minus_one"],
+      "aggregates": ["mean", "q90"],
+      "count": 2,
+      "purpose": "Represent typical and upper-tail persistence of relatively low standardized consumption."
+    },
+    "persistence_features": {
+      "source_features": ["maximum", "standard_deviation", "mean_absolute_consecutive_change", "maximum_absolute_consecutive_change"],
+      "aggregate": "fraction of a customer's windows strictly above the source feature's 90th percentile across training windows",
+      "threshold_fit_scope": "train windows only; labels are not used",
+      "count": 4,
+      "purpose": "Distinguish isolated extremes from repeatedly extreme behaviour."
+    },
+    "chronology_features": {
+      "source_features": ["mean", "maximum", "standard_deviation", "mean_absolute_consecutive_change"],
+      "aggregate": "mean over the latest k windows minus mean over the earliest k windows after sorting by established window_number_within_customer, where k=max(1, ceil(n_windows/3)); overlap is permitted for short histories",
+      "count": 4,
+      "purpose": "Represent broad early-to-late change without dates or window position entering as predictors."
+    }
+  },
+  "feature_names_in_order": [
+    "mean__customer_median", "mean__customer_q10", "mean__customer_q90",
+    "median__customer_median", "median__customer_q10", "median__customer_q90",
+    "minimum__customer_median", "minimum__customer_q10", "minimum__customer_q90",
+    "maximum__customer_median", "maximum__customer_q10", "maximum__customer_q90",
+    "q10__customer_median", "q10__customer_q10", "q10__customer_q90",
+    "q90__customer_median", "q90__customer_q10", "q90__customer_q90",
+    "standard_deviation__customer_median", "standard_deviation__customer_q90",
+    "range__customer_median", "range__customer_q90",
+    "interquartile_range__customer_median", "interquartile_range__customer_q90",
+    "mean_absolute_deviation__customer_median", "mean_absolute_deviation__customer_q90",
+    "mean_absolute_consecutive_change__customer_median", "mean_absolute_consecutive_change__customer_q90",
+    "maximum_absolute_consecutive_change__customer_median", "maximum_absolute_consecutive_change__customer_q90",
+    "first_to_last_change__customer_mean", "first_to_last_change__customer_standard_deviation",
+    "absolute_first_to_last_change__customer_mean", "absolute_first_to_last_change__customer_standard_deviation",
+    "linear_slope__customer_mean", "linear_slope__customer_standard_deviation",
+    "second_half_minus_first_half_mean__customer_mean", "second_half_minus_first_half_mean__customer_standard_deviation",
+    "fraction_below_minus_one__customer_mean", "fraction_below_minus_one__customer_q90",
+    "maximum__training_q90_exceedance_fraction", "standard_deviation__training_q90_exceedance_fraction",
+    "mean_absolute_consecutive_change__training_q90_exceedance_fraction", "maximum_absolute_consecutive_change__training_q90_exceedance_fraction",
+    "mean__late_third_minus_early_third", "maximum__late_third_minus_early_third",
+    "standard_deviation__late_third_minus_early_third", "mean_absolute_consecutive_change__late_third_minus_early_third"
+  ],
+  "models": {
+    "logistic_regression": {
+      "C": 1.0,
+      "solver": "lbfgs",
+      "max_iter": 300,
+      "class_weight": null,
+      "standardization": "StandardScaler fitted on training customers only"
+    },
+    "hist_gradient_boosting": {
+      "learning_rate": 0.1,
+      "max_iter": 100,
+      "max_leaf_nodes": 15,
+      "min_samples_leaf": 100,
+      "l2_regularization": 1.0,
+      "class_weight": null,
+      "early_stopping": false,
+      "random_state": 42
+    }
+  },
+  "primary_candidate_selection": "Choose the direct customer model with higher validation customer ROC-AUC, breaking a tie by average precision. This compares model family only; the direct customer formulation is the primary object of study.",
+  "threshold_policy": "For each direct customer model, maximize positive-class F1 on validation and use the deterministic highest-threshold tie break established in Stage 13.",
+  "baseline": "Frozen Stage 14 unweighted SUMMARY_ONLY HGB fitted to windows, followed by arithmetic mean probability per customer.",
+  "paired_bootstrap": {
+    "resamples": 2000,
+    "seed": 42,
+    "unit": "validation customer",
+    "interval": "2.5th and 97.5th percentiles of paired direct-minus-baseline metric differences",
+    "degenerate_resamples": "Resample again until both classes are present"
+  },
+  "importance_policy": "For the selected direct model, independently permute each customer feature across validation customers for five repeats with seed 42 and report mean decrease in ROC-AUC and average precision.",
+  "redundancy_policy": "Report constant features, absolute Spearman pairs >=0.95 on training customers, and selected-model permutation importance; do not remove or refit features after validation inspection.",
+  "decision_policy": {
+    "A": "Adopt direct customer-level modeling if its ROC-AUC delta and average-precision delta are both positive and both paired 95% bootstrap intervals exclude zero.",
+    "B": "Treat the formulations as statistically tied if neither formulation has both metric deltas in the same direction with both paired intervals excluding zero.",
+    "C": "Retain window modeling plus mean aggregation if both direct-model metric deltas are negative and both paired intervals exclude zero."
+  },
+  "customer_coverage_policy": "Customers with zero established usable windows cannot have these aggregates and are excluded transparently. Usable-window count is reported only as an audit distribution, never used as a feature.",
+  "leakage_exclusions": [
+    "FLAG and any label-derived feature",
+    "CONS_NO and window/customer identifiers",
+    "split indicators",
+    "dates and raw window number as model inputs",
+    "usable-window count and all missingness metadata",
+    "Stage 13–15 predictions and all reconstruction-model outputs",
+    "test features, test predictions, test labels, and historical test metrics"
+  ],
+  "test_policy": "CLOSED. Stage 16 code and execution may load train and validation only; no test artifact may be read or evaluated.",
+  "feature_revision_policy": "No feature may be added, removed, or redefined after validation scoring unless a documented implementation bug is found."
+}

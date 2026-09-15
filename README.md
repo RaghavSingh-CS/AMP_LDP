@@ -40,6 +40,7 @@ preventing preprocessing leakage.
 - Stage 13 — Leakage-safe supervised signal diagnostic: complete
 - Stage 14 — Behavioural representation analysis: complete (validation only; test closed)
 - Stage 15 — Frozen-FC hybrid ablation: complete (FC rejected; test closed)
+- Stage 16 — Direct customer-level behavioural modeling: complete (direct HGB adopted; test closed)
 
 
 Stage 3B compares candidate missingness thresholds without changing the
@@ -165,4 +166,17 @@ summaries, so the FC branch is rejected from the current detector. Test was not
 accessed. See `results/supervised/stage_15/stage_15_report.md`.
 
     python -m src.analysis.run_stage15_hybrid_ablation
+
+Stage 16 pre-registers 48 interpretable customer aggregates derived only from
+the frozen 17 Stage 14 window summaries, then compares direct customer logistic
+regression and HistGradientBoosting with the frozen Stage 14 window-HGB → mean
+customer probability baseline. Direct customer HGB reaches validation customer
+ROC-AUC/AP/F1 `0.793210`/`0.376278`/`0.402634`, with exact gains
+`+0.054513`/`+0.114958`/`+0.099385`. Paired 2,000-customer bootstrap 95%
+intervals are `[+0.037960, +0.070310]` for ROC-AUC and
+`[+0.082130, +0.150546]` for AP. Decision A adopts and freezes direct customer
+HGB as the next supervised baseline. Test was not accessed. See
+`results/supervised/stage_16/stage_16_report.md`.
+
+    python -m src.analysis.run_stage16_customer_aggregation
 

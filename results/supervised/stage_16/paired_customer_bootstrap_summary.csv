@@ -1,0 +1,3 @@
+metric,resamples,seed,accepted_resamples,sampling_attempts,bootstrap_mean_delta,bootstrap_standard_deviation,percentile_95_CI_lower,percentile_95_CI_upper,fraction_above_zero,fraction_below_zero
+ROC_AUC,2000,42,2000,2000,0.0545727400041003,0.008462336507302529,0.03795959239567927,0.07031023311672308,1.0,0.0
+PR_AUC_average_precision,2000,42,2000,2000,0.11532493542339545,0.017527800720446213,0.08213020604530394,0.15054551483210016,1.0,0.0

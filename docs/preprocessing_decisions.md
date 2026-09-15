@@ -847,3 +847,100 @@ direct customer-level model using compact temporal aggregates of the frozen 17
 window summaries improves over mean aggregation of window probabilities. Stage
 16 is not executed. **TEST NOT ACCESSED DURING STAGE 15.** Full evidence is
 under `results/supervised/stage_15/`.
+
+## Stage 16 — Direct Customer-Level Behavioural Modeling
+
+Stage 16 tests whether the learning unit should match the SGCC label unit. The
+existing supervised formulation propagates each customer's `FLAG` to every
+usable 30-day window even though the label does not establish that theft was
+active in each window. The controlled comparison is therefore frozen Stage 14
+summary-only HGB fitted to windows and averaged by customer versus a model
+fitted directly to one aggregate row per customer. This is a formulation test,
+not an architecture search. Test remains closed.
+
+Before validation scoring, Stage 16 pre-registered exactly 48 predictors derived
+only from the frozen 17 Stage 14 summaries. The complete construction is:
+
+- for `mean`, `median`, `minimum`, `maximum`, `q10`, and `q90`, customer median,
+  q10, and q90 (18 features);
+- for `standard_deviation`, `range`, `interquartile_range`,
+  `mean_absolute_deviation`, `mean_absolute_consecutive_change`, and
+  `maximum_absolute_consecutive_change`, customer median and q90 (12);
+- for `first_to_last_change`, `absolute_first_to_last_change`, `linear_slope`,
+  and `second_half_minus_first_half_mean`, customer mean and population standard
+  deviation (eight);
+- for `fraction_below_minus_one`, customer mean and q90 (two);
+- for `maximum`, `standard_deviation`, `mean_absolute_consecutive_change`, and
+  `maximum_absolute_consecutive_change`, the fraction of a customer's windows
+  strictly exceeding that feature's training-window q90 (four); and
+- for `mean`, `maximum`, `standard_deviation`, and
+  `mean_absolute_consecutive_change`, latest-third mean minus earliest-third
+  mean after reliable window-number sorting, using
+  `k=max(1, ceil(usable_windows/3))` at each end (four).
+
+The immutable ordered names and definitions are in
+`results/supervised/stage_16/preregistered_config.json`. Labels, IDs, split
+metadata, dates and raw window position, usable-window count, missingness
+metadata, prior predictions, reconstruction features, and test-derived values
+are excluded. Persistence thresholds are fitted on training windows only.
+
+The authoritative split still contains 29,656 train, 6,355 validation, and
+6,356 test customers with zero overlap. The established manifests supply
+768,923 train and 165,541 validation windows. One training customer has no
+usable window and cannot form an aggregate row, so it is explicitly excluded;
+no validation customer is excluded. The direct datasets contain 29,655 train
+customers (2,527 theft; prevalence `0.085213286124`) and 6,355 validation
+customers (542 theft; prevalence `0.085287175452`). Usable-window counts range
+from 1 to 34 in both splits; train/validation means are
+`25.928950`/`26.048938`, and both medians are 32. Counts are audit metadata only,
+not predictors.
+
+The frozen Stage 14 model hash remains
+`ccf6d976ad146bcf338f491a13817b785a6f4551965be687a0bafe5d50a08919`.
+Re-applying it reproduces saved validation customer probabilities to maximum
+absolute difference `9.71e-17` and all reported metrics within `1e-12`. Its
+customer ROC-AUC/AP/F1 remain `0.738697`/`0.261320`/`0.303249`.
+
+With fixed unweighted configurations, direct customer logistic regression
+reaches ROC-AUC/AP/F1 `0.744490`/`0.269984`/`0.326023`. Direct customer HGB
+reaches `0.793210`/`0.376278`/`0.402634`, with precision `0.410749`, recall
+`0.394834`, and confusion counts TN/FP/FN/TP `5506/307/328/214` at the
+validation-F1-maximizing threshold `0.220750288835`. Exact direct-HGB minus
+Stage-14 deltas are `+0.054513423596` ROC-AUC, `+0.114958349481` AP, and
+`+0.099384957090` F1. Threshold-dependent results inherit validation threshold
+selection and are secondary to the ranking comparison.
+
+A paired 2,000-replicate customer bootstrap with seed 42 puts the ROC-AUC delta
+at mean `+0.054573`, 95% percentile interval
+`[+0.037960, +0.070310]`, with 100% of replicates above zero. The AP delta is
+mean `+0.115325`, interval `[+0.082130, +0.150546]`, also 100% above zero.
+
+Five-repeat validation permutation importance is led by customer q90 of window
+maximum, early-to-late change in window mean, persistence above training q90
+for window maximum, customer q10 of window median, and mean low-consumption
+fraction. Upper-tail consecutive changes, variation in slope, and early-to-late
+maximum also contribute. Thus overall level, lower and upper quantiles,
+persistent abrupt changes, and across-window consistency all carry signal. The
+48 columns contain 35 training pairs with absolute Spearman correlation at
+least 0.95, including mean/median level aggregates and alternative variability
+summaries, so individual importance is conditional and distributed. No training
+feature is constant. These are SGCC-label associations, not causal mechanisms.
+
+The outcome is **A — direct customer formulation clearly better**. Both ranking
+gains are sizeable and their paired intervals exclude zero, while F1 also
+improves. This is consistent with the hypothesis that assigning a customer label
+to every window introduces harmful instance-label noise, but performance cannot
+isolate that cause because aggregation also changes representation and sample
+size. The methodological alignment and validation evidence justify making the
+customer the fundamental AMP prediction unit and freezing direct customer HGB
+as the next supervised baseline.
+
+For a paper, this supports a measured formulation insight: aligning prediction
+with the customer-level label improves validation discrimination in this SGCC
+workflow. It is not proof of a universal label-noise mechanism or deployment
+readiness, and the repeated use of validation across stages must be disclosed.
+The recommended Stage 17 question is: **Does the frozen direct-customer HGB
+retain its advantage over the frozen Stage 14 window-to-customer baseline across
+pre-specified customer history-length and consumption-level strata?** Stage 17
+is not executed. **TEST NOT ACCESSED DURING STAGE 16.** Full evidence is under
+`results/supervised/stage_16/`.
