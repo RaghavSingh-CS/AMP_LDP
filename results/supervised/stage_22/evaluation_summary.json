@@ -1,0 +1,27 @@
+{
+  "preregistration_sha256": "2b47224cbadfeaebd2a5f27b747e80fe512735ce1185323b92e4ce57dd376f27",
+  "DEV_TRAIN_shape_FULL_48": [
+    23724,
+    48
+  ],
+  "DEV_VAL_shape_FULL_48": [
+    5931,
+    48
+  ],
+  "DEV_TRAIN_shape_COMPACT": [
+    23724,
+    26
+  ],
+  "DEV_VAL_shape_COMPACT": [
+    5931,
+    26
+  ],
+  "bootstrap_attempts": 2000,
+  "bootstrap_valid_replicates": 2000,
+  "loaded_model_data_source": "original train only",
+  "loaded_model_roles": [
+    "DEV_TRAIN",
+    "DEV_VAL"
+  ],
+  "closed_roles_loaded_into_matrices": []
+}

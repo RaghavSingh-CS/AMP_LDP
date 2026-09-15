@@ -1510,3 +1510,55 @@ evidence is under `results/supervised/stage_21/`.
 **CONFIRMATION NOT ACCESSED DURING STAGE 21.**
 
 **FINAL_TEST NOT ACCESSED DURING STAGE 21.**
+
+## Stage 22 — Pre-registered compact representation and research freeze
+
+Stage 22 was the final authorized development experiment. Before any compact
+DEV_VAL scoring, it froze a deterministic label-free subset derived only from
+23,724 DEV_TRAIN customer feature rows. Within each of the six Stage 19 semantic
+families, feature pairs with absolute Spearman correlation at least `0.95` were
+connected into graph components; the first feature in frozen Stage 16 order was
+retained from each component. Labels, importance, DEV_VAL metrics, cross-family
+correlations, and protected populations were excluded from selection.
+
+The rule retained 26 of 48 features, a 45.83% reduction, with retained family
+counts of 3 level/distribution, 7 variability/abrupt-change, 6 directional/
+temporal-change, 2 low-consumption, 4 persistence/exceedance, and 4 longitudinal-
+contrast features. All six families remained represented, so the pre-scoring
+substantial-compaction gate passed.
+
+The FULL_48 HGB reproduced the frozen Stage 17B probabilities to maximum
+absolute difference `9.71e-17` and exactly reproduced ROC-AUC/AP
+`0.788831`/`0.359795` before COMPACT was fitted. With the same HGB configuration
+and unchanged threshold, COMPACT produced ROC-AUC/AP
+`0.776787`/`0.337326`. COMPACT minus FULL_48 was
+`-0.012044` ROC-AUC and `-0.022468` AP, missing both pre-registered point-
+retention margins.
+
+In 2,000 paired seed-42 DEV_VAL customer bootstrap replicates, mean ROC-AUC
+delta was `-0.012108` with 95% interval
+`[-0.019878, -0.004148]` and 99.95% below zero. Mean AP delta was
+`-0.021840` with interval `[-0.035788, -0.007972]` and 99.9% below zero.
+The evidence therefore supports Decision **C — REDUNDANCY IS NOT SAFELY
+REMOVABLE**: high within-family correlation does not imply that these predictors
+can be removed without predictive loss.
+
+Although COMPACT reduced serialized size from 274,208 to 230,240 bytes and fit
+time from 1.553 to 0.733 seconds, both models retained 100 trees and 1,500 leaves,
+and the discrimination loss is not justified by the simplification. The final-
+method recommendation is **FINAL_FULL_48**, which also remains the only method
+with existing strong confirmation evidence.
+
+The AMP research matrix is now frozen. No Stage 23 model development is
+recommended. The next work is a formal research-freeze/final-evaluation protocol,
+followed by the authorized one-time final evaluation, results consolidation, and
+paper/dashboard work.
+
+No adaptive feature selection, label-based selection, importance selection,
+DEV_VAL-guided subset change, threshold change, hyperparameter tuning, or
+post-hoc restoration/removal occurred. Full evidence is under
+`results/supervised/stage_22/`.
+
+**CONFIRMATION NOT ACCESSED DURING STAGE 22.**
+
+**FINAL_TEST NOT ACCESSED DURING STAGE 22.**

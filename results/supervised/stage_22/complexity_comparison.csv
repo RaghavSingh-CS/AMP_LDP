@@ -1,0 +1,3 @@
+model,feature_count,reduction_fraction,serialized_bytes,fit_seconds,inference_seconds,tree_count,leaf_count
+FULL_48,48,0.0,274208,1.553145099998801,0.016014299995731562,100,1500
+COMPACT,26,0.45833333333333337,230240,0.7328875000093831,0.020921999996062368,100,1500

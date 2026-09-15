@@ -278,3 +278,19 @@ experiment. `CONFIRMATION` and `FINAL_TEST` were not accessed. See
     python -m src.analysis.run_stage21_supervised_benchmark --prepare
     python -m src.analysis.run_stage21_supervised_benchmark --evaluate
 
+Stage 22 performs the final authorized development experiment: deterministic,
+label-free, within-family correlation compaction of the frozen 48 customer
+features. Using only DEV_TRAIN Spearman correlations at `|rho| >= 0.95`, the
+first feature in frozen Stage 16 order is retained from each connected component.
+The sealed rule keeps 26 features (45.83% reduction) and preserves all six
+families, but ROC-AUC/AP fall from `0.788831`/`0.359795` to
+`0.776787`/`0.337326`. Paired intervals support a real loss, producing Decision
+C: correlation redundancy is not safely removable. `FINAL_FULL_48` remains the
+recommended method because it performs better and already has confirmation
+evidence. The AMP development research matrix is now frozen; no Stage 23 model
+development is recommended. `CONFIRMATION` and `FINAL_TEST` were not accessed.
+See `results/supervised/stage_22/stage_22_report.md`.
+
+    python -m src.analysis.run_stage22_compact_representation --prepare
+    python -m src.analysis.run_stage22_compact_representation --evaluate
+

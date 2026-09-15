@@ -1,0 +1,20 @@
+{
+  "models": [
+    {
+      "model": "FULL_48",
+      "path": "models/supervised/stage_22/full_48.joblib",
+      "sha256": "42a0192d3ed2c8d577c354bfc5efefceea2bc730e65398e345905ab88a887adb",
+      "serialized_bytes": 274208,
+      "tree_count": 100,
+      "leaf_count": 1500
+    },
+    {
+      "model": "COMPACT",
+      "path": "models/supervised/stage_22/compact.joblib",
+      "sha256": "e2060b1bff59caee90fa0a0f27efec1630eb92c93560abcf96026281add16ad4",
+      "serialized_bytes": 230240,
+      "tree_count": 100,
+      "leaf_count": 1500
+    }
+  ]
+}

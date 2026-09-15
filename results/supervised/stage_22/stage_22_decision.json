@@ -1,0 +1,41 @@
+{
+  "stage": "Stage 22 compact representation decision",
+  "decision": "C",
+  "decision_label": "REDUNDANCY IS NOT SAFELY REMOVABLE",
+  "decision_policy": {
+    "D": "More than 36 features retained; stop before DEV_VAL scoring.",
+    "A": "At most 36 features retained, both point deltas satisfy margins, and both bootstrap lower bounds are at or above the corresponding negative margin.",
+    "C": "For either metric, its point delta and bootstrap upper bound are both below its negative margin, or both point metrics miss their margins.",
+    "B": "Substantial compaction succeeds but neither A nor C applies; performance retention has a modest/uncertain tradeoff.",
+    "evaluation_order": [
+      "D",
+      "A",
+      "C",
+      "B"
+    ]
+  },
+  "evidence": {
+    "point_estimate_retention": false,
+    "bootstrap_interval_retention": false,
+    "clear_material_degradation": true,
+    "all_six_families_represented": true,
+    "final_compact_worthwhile_rule_satisfied": false
+  },
+  "feature_reduction_fraction": 0.45833333333333337,
+  "final_method_recommendation": "FINAL_FULL_48",
+  "final_method_policy": {
+    "FINAL_COMPACT": "Only if Decision A, every family remains represented, reduction >= 40%, ROC point delta >= -0.005, and AP point delta >= -0.01.",
+    "FINAL_FULL_48": "Otherwise retain FULL_48 because it already owns confirmation evidence and COMPACT does not."
+  },
+  "final_method_rationale": "FULL_48 retains the existing strong confirmation evidence, and COMPACT did not satisfy every conservative condition required to justify replacing it.",
+  "paper_interpretation": "Correlation redundancy did not imply safe predictive removability: the deterministic compact representation materially degraded discrimination.",
+  "research_matrix_freeze_recommended": true,
+  "stage23_model_development_recommended": false,
+  "adaptive_feature_selection": false,
+  "labels_used_for_selection": false,
+  "DEV_VAL_used_for_selection": false,
+  "feature_importance_used_for_selection": false,
+  "threshold_or_hyperparameter_tuning": false,
+  "confirmation_accessed": false,
+  "final_test_accessed": false
+}

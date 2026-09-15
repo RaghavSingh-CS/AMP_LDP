@@ -1,0 +1,232 @@
+{
+  "stage": "Stage 22 \u2014 pre-registered compact representation",
+  "base_head_before_stage": "aeba8ee1e07ef36883bbe17b836f370b19ca5f8d",
+  "created_before_any_COMPACT_DEV_VAL_scoring": true,
+  "research_question": "Can the frozen 48-feature customer representation be substantially simplified using label-free DEV_TRAIN redundancy while retaining essentially the same DEV_VAL discrimination?",
+  "audit": {
+    "path": "results/supervised/stage_22/pre_stage_audit.json",
+    "sha256": "8623bf5567b36b6a77d37acbc0eeee3e68c98b85c2a0487ba76e4389342b2800"
+  },
+  "frozen_inputs": {
+    "stage17a_manifest": {
+      "path": "results/governance/stage_17a/research_protocol_manifest.csv",
+      "sha256": "dae7dba53260a3af6b8e2ddd904b5c7867c3321f27cdff5af5e4060b97c348c0"
+    },
+    "historical_split": {
+      "path": "data/processed/split_manifest.parquet",
+      "sha256": "6ad1132bbaef0c6f6ccc5bdc973844b805c4291612ac7170ec165f273835959c"
+    },
+    "stage16_feature_specification": {
+      "path": "results/supervised/stage_16/preregistered_config.json",
+      "sha256": "a722299d6207fce06180f71bf96717ce58948e127a85440e04f721c1616fcdf3"
+    },
+    "stage17b_configuration": {
+      "path": "results/supervised/stage_17b/preregistered_benchmark_config.json",
+      "sha256": "605eb1f482123a24a14c0929c951f400c37b3fbc2d2bb2e4d46d2ce834698046"
+    },
+    "stage17b_training_summary": {
+      "path": "results/supervised/stage_17b/training_summary.json",
+      "sha256": "560e8602ce0d572a2e305efcebe525ef3f1174aad0e6f5a3209c2b33fff4865a"
+    },
+    "stage17b_decision": {
+      "path": "results/supervised/stage_17b/validation_decision.json",
+      "sha256": "11e15f18e2521ffed8e7dbaacee469284ee356acedea1d8f34ffcf48785a68fa"
+    },
+    "stage17b_model": {
+      "path": "models/supervised/stage_17b/hist_gradient_boosting.joblib",
+      "sha256": "67ed869858185d8f71d99b3dce8b358c43793178185e5aa50e6997d11b56974b"
+    },
+    "stage17b_predictions": {
+      "path": "results/supervised/stage_17b/dev_val_customer_probabilities.csv",
+      "sha256": "d98a7551a763a5f1e78193786012d86a96c593a73d770fa625a0e09aaac71aea"
+    },
+    "stage19_family_mapping": {
+      "path": "results/supervised/stage_19/feature_family_mapping.csv",
+      "sha256": "7ddec4b0c015b14ec647f3142d7bf9b1d14dda31bf3a2ea1d9351dfee5ec43ff"
+    },
+    "stage21_decision": {
+      "path": "results/supervised/stage_21/stage_21_decision.json",
+      "sha256": "e78d43a9462b69bc416ac1c09d1c8956a8a40a1177470a27fa0396f9101ca020"
+    },
+    "stage19_decision": {
+      "path": "results/supervised/stage_19/family_ablation_decision.json",
+      "sha256": "ef6d9830c5b7bb191fdfc6be97f1ba47381d579677dc24e322eef8751ae92ee6"
+    },
+    "stage19_redundancy": {
+      "path": "results/supervised/stage_19/stage16_redundancy_by_family_pair.csv",
+      "sha256": "5ed9d11bb757afdeb5a8a4dc01c1048276dfa79bbadacb79ca951645ecb59086"
+    }
+  },
+  "compaction_algorithm": {
+    "scope": "Within each of the six frozen Stage 19 semantic families independently",
+    "fit_population": "DEV_TRAIN customer feature values only",
+    "correlation": "absolute Spearman",
+    "threshold": 0.95,
+    "edge_rule": "Connect two within-family features when absolute Spearman rho >= 0.95",
+    "component_rule": "Undirected graph connected components in frozen family/feature order",
+    "representative_rule": "Retain the first feature in exact frozen Stage 16 order from each component",
+    "labels_used": false,
+    "importance_or_performance_used": false,
+    "cross_family_pruning": false
+  },
+  "analysis_artifacts": {
+    "correlation": {
+      "path": "results/supervised/stage_22/dev_train_spearman_correlation.csv",
+      "sha256": "f78ec0129d9eabb13d78cf2b71a09345998188fa425962d6450221a93351bd89"
+    },
+    "redundant_pairs": {
+      "path": "results/supervised/stage_22/within_family_redundant_pairs.csv",
+      "sha256": "5e3c7c60666747d65afe2ad05ff7c56b727cab26d389d8c5cb8b390b9e39877b"
+    },
+    "components": {
+      "path": "results/supervised/stage_22/within_family_components.csv",
+      "sha256": "85187936901d7277194886f3a3906413fc1cb94bf4a494b1063b38150c39f515"
+    },
+    "feature_manifest": {
+      "path": "results/supervised/stage_22/compact_feature_manifest.csv",
+      "sha256": "82a9ef79e9f298c17a32f50356fc6427fa60a8c44bd73695ea1ba1d9e0d06c06"
+    },
+    "family_summary": {
+      "path": "results/supervised/stage_22/family_retention_summary.csv",
+      "sha256": "87b37438503080736fb268ed79606f6b7acc2789e08876e9664ec4d1a9e5181b"
+    }
+  },
+  "frozen_subset": {
+    "original_feature_count": 48,
+    "retained_feature_count": 26,
+    "dropped_feature_count": 22,
+    "reduction_fraction": 0.45833333333333337,
+    "retained_features_in_frozen_order": [
+      "mean__customer_median",
+      "mean__customer_q10",
+      "mean__customer_q90",
+      "standard_deviation__customer_median",
+      "standard_deviation__customer_q90",
+      "interquartile_range__customer_median",
+      "interquartile_range__customer_q90",
+      "mean_absolute_consecutive_change__customer_median",
+      "mean_absolute_consecutive_change__customer_q90",
+      "maximum_absolute_consecutive_change__customer_q90",
+      "first_to_last_change__customer_mean",
+      "first_to_last_change__customer_standard_deviation",
+      "absolute_first_to_last_change__customer_mean",
+      "linear_slope__customer_mean",
+      "linear_slope__customer_standard_deviation",
+      "second_half_minus_first_half_mean__customer_mean",
+      "fraction_below_minus_one__customer_mean",
+      "fraction_below_minus_one__customer_q90",
+      "maximum__training_q90_exceedance_fraction",
+      "standard_deviation__training_q90_exceedance_fraction",
+      "mean_absolute_consecutive_change__training_q90_exceedance_fraction",
+      "maximum_absolute_consecutive_change__training_q90_exceedance_fraction",
+      "mean__late_third_minus_early_third",
+      "maximum__late_third_minus_early_third",
+      "standard_deviation__late_third_minus_early_third",
+      "mean_absolute_consecutive_change__late_third_minus_early_third"
+    ],
+    "dropped_features_in_frozen_order": [
+      "median__customer_median",
+      "median__customer_q10",
+      "median__customer_q90",
+      "minimum__customer_median",
+      "minimum__customer_q10",
+      "minimum__customer_q90",
+      "maximum__customer_median",
+      "maximum__customer_q10",
+      "maximum__customer_q90",
+      "q10__customer_median",
+      "q10__customer_q10",
+      "q10__customer_q90",
+      "q90__customer_median",
+      "q90__customer_q10",
+      "q90__customer_q90",
+      "range__customer_median",
+      "range__customer_q90",
+      "mean_absolute_deviation__customer_median",
+      "mean_absolute_deviation__customer_q90",
+      "maximum_absolute_consecutive_change__customer_median",
+      "absolute_first_to_last_change__customer_standard_deviation",
+      "second_half_minus_first_half_mean__customer_standard_deviation"
+    ],
+    "all_six_families_represented": true
+  },
+  "compaction_success_gate": {
+    "minimum_reduction_fraction": 0.25,
+    "maximum_retained_features": 36,
+    "passed_before_DEV_VAL_scoring": true,
+    "failure_action": "Decision D and stop before compact DEV_VAL scoring; do not change threshold or subset."
+  },
+  "model": {
+    "implementation": "sklearn HistGradientBoostingClassifier",
+    "parameters": {
+      "learning_rate": 0.1,
+      "max_iter": 100,
+      "max_leaf_nodes": 15,
+      "min_samples_leaf": 100,
+      "l2_regularization": 1.0,
+      "class_weight": null,
+      "early_stopping": false,
+      "random_state": 42
+    },
+    "experiments": [
+      "FULL_48",
+      "COMPACT"
+    ],
+    "same_configuration": true
+  },
+  "reproduction_gate": {
+    "expected_FULL_48_ROC_AUC": 0.7888308218953116,
+    "expected_FULL_48_AP": 0.35979459032174654,
+    "maximum_absolute_probability_or_metric_difference": 1e-12,
+    "action_on_failure": "Abort before COMPACT fit or interpretation."
+  },
+  "metrics": {
+    "primary": [
+      "ROC_AUC",
+      "PR_AUC_average_precision"
+    ],
+    "secondary": [
+      "precision",
+      "recall",
+      "F1",
+      "TN",
+      "FP",
+      "FN",
+      "TP"
+    ],
+    "threshold": 0.20070617709942135,
+    "threshold_rule": "Use the unchanged Stage 17B threshold for both models; descriptive only.",
+    "delta_direction": "COMPACT minus FULL_48"
+  },
+  "retention": {
+    "ROC_AUC_degradation_margin": 0.01,
+    "AP_degradation_margin": 0.02,
+    "point_estimate_rule": "ROC delta >= -0.01 and AP delta >= -0.02",
+    "bootstrap": {
+      "resamples": 2000,
+      "seed": 42,
+      "unit": "paired DEV_VAL customer",
+      "interval": "2.5th and 97.5th percentiles",
+      "single_class_policy": "discard and continue deterministically"
+    }
+  },
+  "decision_policy": {
+    "D": "More than 36 features retained; stop before DEV_VAL scoring.",
+    "A": "At most 36 features retained, both point deltas satisfy margins, and both bootstrap lower bounds are at or above the corresponding negative margin.",
+    "C": "For either metric, its point delta and bootstrap upper bound are both below its negative margin, or both point metrics miss their margins.",
+    "B": "Substantial compaction succeeds but neither A nor C applies; performance retention has a modest/uncertain tradeoff.",
+    "evaluation_order": [
+      "D",
+      "A",
+      "C",
+      "B"
+    ]
+  },
+  "final_method_policy": {
+    "FINAL_COMPACT": "Only if Decision A, every family remains represented, reduction >= 40%, ROC point delta >= -0.005, and AP point delta >= -0.01.",
+    "FINAL_FULL_48": "Otherwise retain FULL_48 because it already owns confirmation evidence and COMPACT does not."
+  },
+  "prohibited_adaptations": [
+    "No confirmation/final-test access, labels, importance, DEV_VAL metrics, individual feature tests, RFE, MI, L1, PCA, changed threshold, cross-family pruning, alternative subset, hyperparameter tuning, GAN, SMOTE, classifier change, or post-hoc feature change."
+  ]
+}

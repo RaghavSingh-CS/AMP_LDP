@@ -1,0 +1,7 @@
+family,original_feature_count,component_count,retained_feature_count,dropped_feature_count,family_remains_represented
+LEVEL_DISTRIBUTION,18,3,3,15,True
+VARIABILITY_ABRUPT_CHANGE,12,7,7,5,True
+DIRECTIONAL_TEMPORAL_CHANGE,8,6,6,2,True
+LOW_CONSUMPTION_BEHAVIOUR,2,2,2,0,True
+PERSISTENCE_EXCEEDANCE,4,4,4,0,True
+LONGITUDINAL_CONTRAST,4,4,4,0,True

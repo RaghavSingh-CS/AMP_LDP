@@ -1,0 +1,13 @@
+{
+  "preregistration_path": "results/supervised/stage_22/preregistered_compact_representation.json",
+  "preregistration_sha256": "2b47224cbadfeaebd2a5f27b747e80fe512735ce1185323b92e4ce57dd376f27",
+  "audit_sha256": "8623bf5567b36b6a77d37acbc0eeee3e68c98b85c2a0487ba76e4389342b2800",
+  "analysis_artifact_hashes": {
+    "correlation": "f78ec0129d9eabb13d78cf2b71a09345998188fa425962d6450221a93351bd89",
+    "redundant_pairs": "5e3c7c60666747d65afe2ad05ff7c56b727cab26d389d8c5cb8b390b9e39877b",
+    "components": "85187936901d7277194886f3a3906413fc1cb94bf4a494b1063b38150c39f515",
+    "feature_manifest": "82a9ef79e9f298c17a32f50356fc6427fa60a8c44bd73695ea1ba1d9e0d06c06",
+    "family_summary": "87b37438503080736fb268ed79606f6b7acc2789e08876e9664ec4d1a9e5181b"
+  },
+  "frozen_before_COMPACT_DEV_VAL_scoring": true
+}
