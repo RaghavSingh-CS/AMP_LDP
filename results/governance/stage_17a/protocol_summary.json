@@ -1,0 +1,126 @@
+{
+  "stage": "Stage 17A \u2014 development and confirmation protocol governance",
+  "created_without_model_training_or_performance_evaluation": true,
+  "historical_split": {
+    "path": "data/processed/split_manifest.parquet",
+    "sha256": "6ad1132bbaef0c6f6ccc5bdc973844b805c4291612ac7170ec165f273835959c",
+    "overwritten": false
+  },
+  "historical_aggregate_audit": {
+    "path": "results/supervised/stage_13/split_audit.json",
+    "sha256": "eb42b8c312af36b18a52ea31f5eec4f2b385c730d2f9a5d33137343cc4ede072",
+    "purpose": "Existing aggregate confirmation/final class and representation-availability counts; no row-level test label access"
+  },
+  "manifest": {
+    "path": "results/governance/stage_17a/research_protocol_manifest.csv",
+    "sha256": "dae7dba53260a3af6b8e2ddd904b5c7867c3321f27cdff5af5e4060b97c348c0",
+    "columns": [
+      "CONS_NO",
+      "original_split",
+      "research_role",
+      "stage16_representation_available"
+    ],
+    "contains_labels": false,
+    "contains_features": false
+  },
+  "split_procedure": {
+    "eligible_population": "Original-train customers with at least one established usable Stage 3C stride-30 window",
+    "eligible_customer_count": 29655,
+    "sort_before_split": "ascending CONS_NO with stable mergesort",
+    "algorithm": "sklearn.model_selection.train_test_split",
+    "test_size_for_DEV_VAL": 0.2,
+    "shuffle": true,
+    "stratify": "train-only customer FLAG",
+    "random_state": 42,
+    "seed_selection": "fixed by repository convention; not screened or optimized",
+    "unavailable_customer_policy": "Retain in governance manifest as DEV_TRAIN with stage16_representation_available=false; exclude transparently from representation fitting/evaluation",
+    "unavailable_original_train_customer_ids": [
+      "B08E0670C8A6933E5EC44715F7A80E9D"
+    ]
+  },
+  "role_counts": {
+    "DEV_TRAIN": {
+      "customers": 23725,
+      "normal_customers": 21702,
+      "theft_customers": 2023,
+      "theft_prevalence": 0.08526870389884089,
+      "customers_with_stage16_representation": 23724,
+      "customers_without_stage16_representation": 1
+    },
+    "DEV_VAL": {
+      "customers": 5931,
+      "normal_customers": 5426,
+      "theft_customers": 505,
+      "theft_prevalence": 0.0851458438711853,
+      "customers_with_stage16_representation": 5931,
+      "customers_without_stage16_representation": 0
+    },
+    "CONFIRMATION": {
+      "customers": 6355,
+      "normal_customers": 5813,
+      "theft_customers": 542,
+      "theft_prevalence": 0.08528717545239968,
+      "customers_with_stage16_representation": 6355,
+      "customers_without_stage16_representation": 0,
+      "class_count_source": "results/supervised/stage_13/split_audit.json"
+    },
+    "FINAL_TEST": {
+      "customers": 6356,
+      "normal_customers": 5814,
+      "theft_customers": 542,
+      "theft_prevalence": 0.08527375707992448,
+      "customers_with_stage16_representation": 6356,
+      "customers_without_stage16_representation": 0,
+      "class_count_source": "results/supervised/stage_13/split_audit.json"
+    }
+  },
+  "verification": {
+    "role_pairwise_overlap_counts": {
+      "DEV_TRAIN__DEV_VAL": 0,
+      "DEV_TRAIN__CONFIRMATION": 0,
+      "DEV_TRAIN__FINAL_TEST": 0,
+      "DEV_VAL__CONFIRMATION": 0,
+      "DEV_VAL__FINAL_TEST": 0,
+      "CONFIRMATION__FINAL_TEST": 0
+    },
+    "all_pairwise_overlaps_zero": true,
+    "role_union_customer_count": 42367,
+    "authoritative_customer_count": 42367,
+    "union_matches_authoritative_population": true,
+    "assignment_assertions": {
+      "all_original_validation_are_CONFIRMATION": true,
+      "all_original_test_are_FINAL_TEST": true,
+      "DEV_TRAIN_only_original_train": true,
+      "DEV_VAL_only_original_train": true
+    }
+  },
+  "historical_validation_reuse": {
+    "statistically_pristine": false,
+    "disclosure": "Original validation influenced Stage 13 model selection, Stage 14 representation selection, Stage 15 hybrid assessment, and Stage 16 formulation selection.",
+    "future_role": "CONFIRMATION only at explicit frozen-methodology gates"
+  },
+  "future_development_policy": {
+    "fit": "DEV_TRAIN",
+    "routine_selection": "DEV_VAL",
+    "confirmation_during_routine_iteration": "PROHIBITED",
+    "final_test_during_development": "PROHIBITED"
+  },
+  "confirmation_gate_policy": {
+    "access_condition": "candidate methodology frozen and gate explicitly recorded",
+    "failed_gate_response": "return to DEV_TRAIN/DEV_VAL with a materially revised pre-specified hypothesis",
+    "tiny_confirmation_driven_tweaks": "PROHIBITED"
+  },
+  "final_test_policy": {
+    "status": "SEALED until final AMP methodology is frozen",
+    "historical_disclosure": "One-time Stage 13 test evaluation exists; no Stage 14+ research decision used test."
+  },
+  "stage16_status": "CURRENT HISTORICAL BEST under the old validation protocol; not automatically confirmed under the new protocol",
+  "stage17b_question": "On the frozen 48-feature direct-customer representation, which conventional supervised learner provides the strongest discrimination under the new DEV_TRAIN/DEV_VAL protocol?",
+  "prohibitions_observed": {
+    "new_candidate_model_training": false,
+    "validation_performance_benchmarking": false,
+    "confirmation_evaluation": false,
+    "final_test_evaluation": false,
+    "feature_redesign": false
+  }
+}

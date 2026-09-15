@@ -944,3 +944,82 @@ retain its advantage over the frozen Stage 14 window-to-customer baseline across
 pre-specified customer history-length and consumption-level strata?** Stage 17
 is not executed. **TEST NOT ACCESSED DURING STAGE 16.** Full evidence is under
 `results/supervised/stage_16/`.
+
+## Stage 17A — Development and Confirmation Protocol Governance
+
+Stages 13–16 repeatedly used the original validation customers for legitimate
+exploratory decisions: supervised model selection, behavioural representation
+selection, frozen-FC hybrid assessment, and direct-customer formulation
+selection. The original validation population is therefore not statistically
+pristine. It remains more independent than data used for routine future
+iteration and is reassigned to an explicit confirmation role.
+
+The historical `train`/`val`/`test` assignments remain unchanged and recoverable.
+A new research hierarchy is frozen:
+
+- original train → `DEV_TRAIN` and `DEV_VAL`;
+- original validation → `CONFIRMATION`; and
+- original test → `FINAL_TEST`.
+
+Only the 29,655 original-training customers with at least one established usable
+Stage 3C stride-30 window enter the development split. They are sorted by
+`CONS_NO` and split exactly once with
+`sklearn.model_selection.train_test_split`, `test_size=0.20`, `shuffle=True`,
+train-only customer-`FLAG` stratification, and `random_state=42`. Seed 42 follows
+the established repository convention and was not screened using feature values
+or model performance. The one unavailable original-training customer,
+`B08E0670C8A6933E5EC44715F7A80E9D`, remains in the governance manifest as
+`DEV_TRAIN` with `stage16_representation_available=false`; it is transparently
+excluded from representation fitting unless a later policy explicitly changes
+its handling.
+
+Frozen role counts are:
+
+| Role | Customers | Normal | Theft | Theft prevalence | Stage 16 representation available | Unavailable |
+|---|---:|---:|---:|---:|---:|---:|
+| `DEV_TRAIN` | 23,725 | 21,702 | 2,023 | 0.085268703899 | 23,724 | 1 |
+| `DEV_VAL` | 5,931 | 5,426 | 505 | 0.085145843871 | 5,931 | 0 |
+| `CONFIRMATION` | 6,355 | 5,813 | 542 | 0.085287175452 | 6,355 | 0 |
+| `FINAL_TEST` | 6,356 | 5,814 | 542 | 0.085273757080 | 6,356 | 0 |
+
+All pairwise overlaps are zero and the role union is the complete authoritative
+population of 42,367 customers. Every original-validation ID is confirmation,
+every original-test ID is final test, and both development roles contain only
+original-training IDs. The new manifest does not contain labels or features.
+Confirmation/final aggregate class counts come from the already tracked Stage 13
+split audit; row-level test labels were not reopened. The manifest is
+`results/governance/stage_17a/research_protocol_manifest.csv`, SHA-256
+`dae7dba53260a3af6b8e2ddd904b5c7867c3321f27cdff5af5e4060b97c348c0`.
+
+For all routine Stage 17+ development, fitting uses `DEV_TRAIN` and selection
+uses only `DEV_VAL`. This applies to candidate models, feature and hyperparameter
+decisions, imbalance experiments, and architecture comparisons. Confirmation
+and final test must not be consulted, and the split cannot be regenerated.
+
+`CONFIRMATION` may be opened only after a candidate methodology is frozen and an
+explicit gate is recorded, such as after controlled benchmarking or a major
+representation change. Confirmation must not drive small repeated tweaks. A
+failed gate returns work to `DEV_TRAIN`/`DEV_VAL`; another gate requires a
+materially revised, pre-specified hypothesis.
+
+`FINAL_TEST` remains sealed until the final AMP methodology is frozen. The
+historical one-time Stage 13 test evaluation must remain disclosed, so final test
+must not be described as historically untouched. No Stage 14+ research decision
+used test, and future development cannot access it before final evaluation.
+
+Historical Stages 13–16 remain valid exploratory evidence under their documented
+protocol and are not rewritten as if this hierarchy existed earlier. Stage 16
+direct-customer HGB remains the current historical best, but it is not confirmed
+under the new protocol.
+
+Stage 17B is defined but not executed: **On the frozen 48-feature direct-customer
+representation, which conventional supervised learner provides the strongest
+discrimination under the new DEV_TRAIN/DEV_VAL protocol?** Expected controlled
+families are logistic regression, HistGradientBoosting, and XGBoost, LightGBM,
+or CatBoost only if available without environment disruption. There will be no
+broad AutoML, neural network, GAN, or feature redesign. Customer ROC-AUC and
+average precision are primary; precision, recall, and F1 are secondary.
+
+**NO NEW MODEL BENCHMARKING, CONFIRMATION EVALUATION, OR FINAL-TEST EVALUATION
+WAS PERFORMED DURING STAGE 17A.** Full evidence is under
+`results/governance/stage_17a/`.

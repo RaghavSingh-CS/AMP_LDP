@@ -41,6 +41,7 @@ preventing preprocessing leakage.
 - Stage 14 — Behavioural representation analysis: complete (validation only; test closed)
 - Stage 15 — Frozen-FC hybrid ablation: complete (FC rejected; test closed)
 - Stage 16 — Direct customer-level behavioural modeling: complete (direct HGB adopted; test closed)
+- Stage 17A — Development/confirmation split governance: complete (protocol frozen; no modeling)
 
 
 Stage 3B compares candidate missingness thresholds without changing the
@@ -179,4 +180,15 @@ HGB as the next supervised baseline. Test was not accessed. See
 `results/supervised/stage_16/stage_16_report.md`.
 
     python -m src.analysis.run_stage16_customer_aggregation
+
+Stage 17A freezes the post-exploration evaluation hierarchy without changing the
+historical split: original train becomes `DEV_TRAIN`/`DEV_VAL`, original
+validation becomes `CONFIRMATION`, and original test becomes `FINAL_TEST`.
+The deterministic customer-level 80/20 development split uses train-only `FLAG`
+stratification and seed 42. Routine work must fit on `DEV_TRAIN` and select on
+`DEV_VAL`; confirmation is reserved for explicit frozen-methodology gates and
+final test remains sealed. No models were trained or evaluated. See
+`results/governance/stage_17a/stage_17a_protocol_report.md`.
+
+    python -m src.governance.create_research_protocol
 
