@@ -1,0 +1,7 @@
+dimension,stratum,count,normal_count,theft_count,theft_prevalence,inference_sufficient
+history,SHORT,1617,1450,167,0.10327767470624613,True
+history,MEDIUM,1639,1473,166,0.10128126906650396,True
+history,LONG,2675,2503,172,0.06429906542056074,True
+consumption,LOW,2006,1890,116,0.05782652043868395,True
+consumption,MEDIUM,1983,1840,143,0.07211296016137166,True
+consumption,HIGH,1942,1696,246,0.1266735324407827,True

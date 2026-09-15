@@ -44,6 +44,7 @@ preventing preprocessing leakage.
 - Stage 17A — Development/confirmation split governance: complete (protocol frozen; no modeling)
 - Stage 17B — Frozen customer-feature learner benchmark: complete (HGB retained; confirmation closed)
 - Stage 17C — Confirmation Gate #1: complete (strong confirmation; final test closed)
+- Stage 18 — Customer-stratum robustness: complete (generally robust; low-consumption threshold limitation)
 
 
 Stage 3B compares candidate missingness thresholds without changing the
@@ -215,4 +216,18 @@ confirmation and closes confirmation again. `FINAL_TEST` was not accessed. See
 `results/supervised/stage_17c/stage_17c_report.md`.
 
     python -m src.evaluation.evaluate_stage17c_confirmation
+
+Stage 18 is an analysis-only robustness audit of the exact saved Stage 17B HGB
+`DEV_VAL` probabilities. Its train-derived, tie-aware history groups are at most
+18, 19–33, and exactly 34 usable windows; consumption groups use tertiles of the
+existing `mean__customer_median` feature. All history groups retain ROC-AUC
+`0.766–0.801`, while consumption ROC-AUC ranges from `0.714` to `0.832`.
+Low-consumption recall is `0.172` at the unchanged global threshold, producing
+Decision B: generally robust with a material subgroup limitation. The Stage 14
+subgroup comparison is skipped because its original-train fit includes current
+`DEV_VAL` customers. No model is retrained, and `CONFIRMATION` and `FINAL_TEST`
+remain closed. See `results/supervised/stage_18/stage_18_report.md`.
+
+    python -m src.analysis.run_stage18_robustness --prepare
+    python -m src.analysis.run_stage18_robustness --evaluate
 

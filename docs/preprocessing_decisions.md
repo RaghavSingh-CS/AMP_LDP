@@ -1183,3 +1183,97 @@ generalization, or causal proof of propagated-window label noise.
 **CONFIRMATION GATE #1 ACCESSED ONCE FOR THE FROZEN STAGE 17B PIPELINE.**
 **FINAL_TEST NOT ACCESSED.** Full evidence is under
 `results/supervised/stage_17c/`.
+
+## Stage 18 — Pre-Specified Customer-Stratum Robustness
+
+Stage 18 asks: **Does the frozen Stage 17B direct-customer HGB retain useful
+discrimination across pre-specified customer history-length and consumption-level
+strata within `DEV_VAL`?** This is analysis-only. The detector, 48-feature schema,
+HGB configuration, saved probabilities, and threshold `0.20070617709942135` remain
+unchanged. The governance-manifest, Stage 16 preregistration, frozen-model, and
+historical-split hashes were reverified. No fit or model-scoring method is called.
+
+The run used an irreversible `--prepare` then `--evaluate` workflow. `--prepare`
+derived and froze boundaries from the 23,724 representation-available `DEV_TRAIN`
+customers before any subgroup score was calculated. History length is the number
+of usable windows contributing to the customer representation and is never a
+predictor. To avoid splitting its large integer ties, all observed cutpoint pairs
+were enumerated, the pair minimizing squared deviation from equal thirds was
+chosen, and lexicographically smaller cutpoints break exact ties. This froze
+`SHORT <= 18`, `MEDIUM 19–33`, and `LONG = 34`. Consumption uses the existing
+Stage 16 feature `mean__customer_median` (the median over windows of window mean
+standardized consumption); linear DEV_TRAIN tertiles froze cutpoints
+`-0.3365242282549541` and `0.4767419298489887`, with boundary values assigned to
+the lower group.
+
+| Dimension | Stratum | DEV_TRAIN customers | Normal | Theft | Prevalence |
+|---|---|---:|---:|---:|---:|
+| History | SHORT | 6,450 | 5,752 | 698 | 0.108217 |
+| History | MEDIUM | 6,503 | 5,820 | 683 | 0.105028 |
+| History | LONG | 10,771 | 10,130 | 641 | 0.059512 |
+| Consumption | LOW | 7,908 | 7,476 | 432 | 0.054628 |
+| Consumption | MEDIUM | 7,908 | 7,261 | 647 | 0.081816 |
+| Consumption | HIGH | 7,908 | 6,965 | 943 | 0.119246 |
+
+The primary `DEV_VAL` results use the exact saved Stage 17B HGB probabilities and
+the same global threshold in every group. Confusion entries are TN/FP/FN/TP.
+
+| Dimension | Stratum | Customers | Theft | Prevalence | ROC-AUC | AP | Precision | Recall | F1 | Confusion |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| History | SHORT | 1,617 | 167 | 0.103278 | 0.766415 | 0.338323 | 0.340659 | 0.371257 | 0.355301 | 1330/120/105/62 |
+| History | MEDIUM | 1,639 | 166 | 0.101281 | 0.800563 | 0.380575 | 0.375723 | 0.391566 | 0.383481 | 1365/108/101/65 |
+| History | LONG | 2,675 | 172 | 0.064299 | 0.785077 | 0.369592 | 0.368715 | 0.383721 | 0.376068 | 2390/113/106/66 |
+| Consumption | LOW | 2,006 | 116 | 0.057827 | 0.760108 | 0.212551 | 0.289855 | 0.172414 | 0.216216 | 1841/49/96/20 |
+| Consumption | MEDIUM | 1,983 | 143 | 0.072113 | 0.714001 | 0.249262 | 0.281481 | 0.265734 | 0.273381 | 1743/97/105/38 |
+| Consumption | HIGH | 1,942 | 246 | 0.126674 | 0.831941 | 0.489227 | 0.409091 | 0.548780 | 0.468750 | 1501/195/111/135 |
+
+Within-history best-to-worst ranges are `0.034147` ROC-AUC and `0.042252` AP;
+the three ROC-AUC bootstrap intervals overlap, so there is no evidence that the
+aggregate result depends disproportionately on complete histories. Consumption
+ranges are `0.117940` ROC-AUC and `0.276676` AP. Much of the raw AP range reflects
+prevalence: AP is 3.68, 3.46, and 3.86 times prevalence in LOW, MEDIUM, and HIGH.
+However, HIGH ROC-AUC is stronger than MEDIUM with non-overlapping percentile
+intervals, while LOW recall falls to `0.172414` at the frozen threshold.
+
+Customer-level bootstrap used 2,000 valid replicates with deterministic seeds
+42–47. Every group achieved 2,000 valid attempts with zero single-class discards.
+ROC-AUC/AP 95% percentile intervals are: SHORT `[0.726909, 0.804206]`/
+`[0.274584, 0.414029]`; MEDIUM-history `[0.765846, 0.836651]`/
+`[0.308821, 0.456948]`; LONG `[0.746761, 0.823234]`/
+`[0.297272, 0.446135]`; LOW-consumption `[0.713772, 0.802988]`/
+`[0.147281, 0.292378]`; MEDIUM-consumption `[0.671030, 0.757993]`/
+`[0.186063, 0.324510]`; and HIGH-consumption `[0.803971, 0.857071]`/
+`[0.424000, 0.552272]`.
+
+All nine pre-specified history-by-consumption cells exceed 100 customers, 30
+theft, and 30 normal customers, so descriptive intersection metrics are retained;
+they are not bootstrapped and no further slicing is performed. Failure-mode
+inspection shows LOW-consumption customers have median variability `0.0775`,
+median abrupt change `0.0452`, and median low-consumption fraction `0.7333`, all
+markedly different from the other consumption groups. This is descriptive and
+does not motivate a Stage 18 feature or threshold change.
+
+The frozen Stage 14 within-stratum comparison was pre-registered as skipped.
+Stage 14 was fitted on all original-train customers, including customers now in
+`DEV_VAL`, so such a comparison would be in-sample under Stage 17A; no compatible
+leakage-safe saved predictions exist.
+
+The outcome is **B — generally robust with a material subgroup limitation**.
+Ranking remains useful in every primary group and is not restricted to long or
+high-consumption histories, but the low-consumption operating point and weaker
+middle-consumption ranking require disclosure. Stage 18 therefore supports the
+narrow SGCC claim that direct-customer discrimination persists across the
+pre-specified groups. It cannot establish the stronger statement that the direct
+formulation *improves over Stage 14 within every group*, because that comparator
+is methodologically invalid here.
+
+Stage 19 should ask: **Which frozen customer-feature groups and aggregation
+families are necessary for the confirmed direct-customer HGB discrimination under
+leakage-safe `DEV_TRAIN`/`DEV_VAL` ablation?** This controlled, literature-aligned
+ablation should remain development-only and disclose the low-consumption weakness;
+no confirmation reuse, threshold optimization, synthetic balancing, or GAN work
+is justified by Stage 18.
+
+**CONFIRMATION NOT ACCESSED DURING STAGE 18.**
+**FINAL_TEST NOT ACCESSED DURING STAGE 18.** Full evidence is under
+`results/supervised/stage_18/`.

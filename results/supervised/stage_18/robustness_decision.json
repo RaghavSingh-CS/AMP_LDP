@@ -1,0 +1,18 @@
+{
+  "stage": "Stage 18 \u2014 frozen DEV_VAL robustness decision",
+  "decision": "B",
+  "decision_label": "GENERALLY ROBUST WITH A MATERIAL SUBGROUP LIMITATION",
+  "decision_policy": {
+    "A": "Every sufficiently populated primary group has ROC-AUC >= 0.70, AP >= 2 times its prevalence, recall >= 0.20 at the frozen threshold, and each dimension's ROC-AUC range <= 0.12.",
+    "B": "Decision A fails, but every sufficiently populated primary group has ROC-AUC >= 0.60, AP >= 1.25 times its prevalence, and recall >= 0.10; classify as generally robust with a material subgroup limitation.",
+    "C": "At least one sufficiently populated primary group fails the Decision B minimums; classify as substantial robustness failure."
+  },
+  "frozen_detector_modified": false,
+  "stage14_subgroup_comparison": {
+    "status": "SKIPPED_PRE_SCORING",
+    "reason": "The frozen Stage 14 model was trained on the complete original-train split, which includes both current DEV_TRAIN and DEV_VAL customers. Applying it to DEV_VAL would be in-sample and is not compatible with the Stage 17A hierarchy; no leakage-safe saved Stage 14 DEV_VAL predictions exist."
+  },
+  "confirmation_accessed": false,
+  "final_test_accessed": false,
+  "next_research_question": "Which frozen customer-feature groups and aggregation families are necessary for the confirmed direct-customer HGB discrimination under leakage-safe DEV_TRAIN/DEV_VAL ablation?"
+}
