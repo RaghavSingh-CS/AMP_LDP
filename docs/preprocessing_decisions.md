@@ -1023,3 +1023,88 @@ average precision are primary; precision, recall, and F1 are secondary.
 **NO NEW MODEL BENCHMARKING, CONFIRMATION EVALUATION, OR FINAL-TEST EVALUATION
 WAS PERFORMED DURING STAGE 17A.** Full evidence is under
 `results/governance/stage_17a/`.
+
+## Stage 17B — Frozen Customer-Feature Learner Benchmark
+
+Stage 17B applies the Stage 17A protocol to a model-family comparison on the
+unchanged 48-feature Stage 16 direct-customer representation. Before scoring,
+the governance manifest hash
+`dae7dba53260a3af6b8e2ddd904b5c7867c3321f27cdff5af5e4060b97c348c0`,
+historical manifest hash
+`6ad1132bbaef0c6f6ccc5bdc973844b805c4291612ac7170ec165f273835959c`,
+and Stage 16 pre-registration hash
+`a722299d6207fce06180f71bf96717ce58948e127a85440e04f721c1616fcdf3`
+were verified. Exact feature names and order match Stage 16. All behavioural
+reference thresholds were refitted using `DEV_TRAIN` windows only.
+
+The usable matrices contain 23,724 `DEV_TRAIN` customers (21,702 normal, 2,022
+theft; prevalence `0.085230146687`) from 614,976 windows, and 5,931 `DEV_VAL`
+customers (5,426 normal, 505 theft; prevalence `0.085145843871`) from 153,947
+windows. The sole governance-unavailable `DEV_TRAIN` customer remains documented
+but cannot enter the representation. Customer overlap is zero, all matrix rows
+are original-train IDs, and all 48 columns are finite.
+
+The immutable configuration was written before DEV_VAL scoring. All models are
+unweighted and fitted once:
+
+- scikit-learn 1.9.0 logistic regression uses a DEV_TRAIN-fitted StandardScaler,
+  `C=1`, `lbfgs`, 300 maximum iterations, and seed 42;
+- scikit-learn 1.9.0 HistGradientBoosting uses learning rate 0.1, 100 iterations,
+  15 maximum leaves, 100 minimum samples per leaf, L2 1.0, no early stopping,
+  and seed 42; and
+- LightGBM 4.7.0 uses binary objective, 200 estimators, learning rate 0.05,
+  15 leaves, 50 minimum child samples, full row/column sampling, L2 1.0,
+  deterministic column-wise single-thread execution, and seed 42.
+
+LightGBM was added from a 1.4 MB wheel using `pip install --no-deps`; no core
+dependency was replaced. XGBoost and CatBoost were absent and skipped before
+scoring because their substantially larger compiled runtimes were not considered
+lightweight environment changes. No search, weighted variants, resampling,
+synthetic augmentation, ensemble, neural model, or feature change was performed.
+
+The one-pass DEV_VAL results are:
+
+| Model | ROC-AUC | AP | Precision | Recall | F1 | Threshold | TN/FP/FN/TP | Fit seconds | Artifact bytes |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Logistic regression | 0.752240 | 0.262321 | 0.317965 | 0.396040 | 0.352734 | 0.162130 | 4997/429/305/200 | 0.339 | 2,363 |
+| HistGradientBoosting | **0.788831** | **0.359795** | 0.362617 | 0.384158 | 0.373077 | 0.200706 | 5085/341/311/194 | 1.760 | 126,780 |
+| LightGBM | 0.785410 | 0.358024 | 0.319386 | 0.453465 | **0.374795** | 0.158921 | 4938/488/276/229 | 1.724 | 154,575 |
+
+Selection is AP first, then ROC-AUC. HGB leads LightGBM by `+0.001770915760`
+AP and `+0.003420640627` ROC-AUC. LightGBM's slightly higher
+validation-optimized F1 cannot override ranking metrics. Threshold-dependent
+metrics maximize DEV_VAL F1 and are secondary and optimistic.
+
+Because HGB wins, the paired seed-42 bootstrap compares HGB minus second-ranked
+LightGBM over 2,000 DEV_VAL customer resamples. ROC-AUC delta mean is `+0.003384`,
+95% interval `[-0.002134, +0.009190]`, with 88.7% above zero. AP delta mean is
+`+0.001059`, interval `[-0.011291, +0.013817]`, with 56.2% above zero. Both
+intervals include zero, so the tree learners are statistically compatible.
+
+HGB permutation importance replicates all main Stage 16 categories. Customer q90
+of window maximum remains first, early-to-late mean change second, and persistence
+of maximum above the DEV_TRAIN q90 third. Lower-tail median and mean
+low-consumption fraction remain important, while upper-tail abrupt changes also
+contribute. This is a frozen-feature stability check; no feature was removed.
+
+The outcome is **B — models essentially equivalent; HGB remains preferred for
+simplicity**. HGB DEV_VAL ROC-AUC/AP `0.788831`/`0.359795` are only about
+`0.0044`/`0.0165` below the historical Stage 16 evidence. There is no dramatic
+collapse, so the direct-customer formulation replicates internally under the new
+development hierarchy. This is not external validation.
+
+The HGB pipeline, representation, configuration, and selection are now frozen,
+and no unresolved implementation issue remains. Spending one confirmation gate
+is justified. The exact proposed question is: **Does the frozen Stage 17B
+pipeline retain its discrimination advantage on the held-out CONFIRMATION
+population?** The gate is not executed in Stage 17B.
+
+For a paper, Stage 17B supplies model-family evidence: conventional tree learners
+give essentially the same strong discrimination, whereas the linear diagnostic
+is weaker. Together with earlier negative reconstruction, summary-representation,
+and direct-customer results, this strengthens the methodological narrative but
+does not establish novelty, state of the art, or comparison with incompatible
+published protocols.
+
+**CONFIRMATION AND FINAL_TEST WERE NOT ACCESSED OR EVALUATED DURING STAGE 17B.**
+Full evidence is under `results/supervised/stage_17b/`.

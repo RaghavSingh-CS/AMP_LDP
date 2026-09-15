@@ -1,0 +1,3 @@
+winner,comparator,metric,resamples,seed,sampling_attempts,observed_delta,bootstrap_mean_delta,percentile_95_CI_lower,percentile_95_CI_upper,fraction_above_zero
+hist_gradient_boosting,lightgbm,ROC_AUC,2000,42,2000,0.003420640626539684,0.0033840770707826763,-0.0021338200437529403,0.009189811264203322,0.887
+hist_gradient_boosting,lightgbm,PR_AUC_average_precision,2000,42,2000,0.0017709157602339154,0.0010586431582232329,-0.01129127038371122,0.013817358870486842,0.562

@@ -42,6 +42,7 @@ preventing preprocessing leakage.
 - Stage 15 — Frozen-FC hybrid ablation: complete (FC rejected; test closed)
 - Stage 16 — Direct customer-level behavioural modeling: complete (direct HGB adopted; test closed)
 - Stage 17A — Development/confirmation split governance: complete (protocol frozen; no modeling)
+- Stage 17B — Frozen customer-feature learner benchmark: complete (HGB retained; confirmation closed)
 
 
 Stage 3B compares candidate missingness thresholds without changing the
@@ -191,4 +192,15 @@ final test remains sealed. No models were trained or evaluated. See
 `results/governance/stage_17a/stage_17a_protocol_report.md`.
 
     python -m src.governance.create_research_protocol
+
+Stage 17B reconstructs the unchanged 48-feature direct-customer representation
+using only `DEV_TRAIN`/`DEV_VAL` and compares one fixed configuration each for
+logistic regression, HistGradientBoosting, and LightGBM. HGB remains the AP-first
+winner at DEV_VAL ROC-AUC/AP `0.788831`/`0.359795`; LightGBM is statistically
+compatible at `0.785410`/`0.358024`. Decision B retains HGB for simplicity and
+internally replicates the strong direct-customer formulation. A confirmation
+gate is recommended but was not executed; `CONFIRMATION` and `FINAL_TEST` stayed
+closed. See `results/supervised/stage_17b/stage_17b_report.md`.
+
+    python -m src.analysis.run_stage17b_learner_benchmark
 

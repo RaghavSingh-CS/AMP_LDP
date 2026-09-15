@@ -1,0 +1,198 @@
+{
+  "stage": "Stage 17B \u2014 frozen learner benchmark training summary",
+  "benchmark_config_sha256": "605eb1f482123a24a14c0929c951f400c37b3fbc2d2bb2e4d46d2ce834698046",
+  "protocol_manifest_sha256": "dae7dba53260a3af6b8e2ddd904b5c7867c3321f27cdff5af5e4060b97c348c0",
+  "historical_manifest_sha256": "6ad1132bbaef0c6f6ccc5bdc973844b805c4291612ac7170ec165f273835959c",
+  "feature_preregistration_sha256": "a722299d6207fce06180f71bf96717ce58948e127a85440e04f721c1616fcdf3",
+  "feature_count": 48,
+  "feature_names_in_order": [
+    "mean__customer_median",
+    "mean__customer_q10",
+    "mean__customer_q90",
+    "median__customer_median",
+    "median__customer_q10",
+    "median__customer_q90",
+    "minimum__customer_median",
+    "minimum__customer_q10",
+    "minimum__customer_q90",
+    "maximum__customer_median",
+    "maximum__customer_q10",
+    "maximum__customer_q90",
+    "q10__customer_median",
+    "q10__customer_q10",
+    "q10__customer_q90",
+    "q90__customer_median",
+    "q90__customer_q10",
+    "q90__customer_q90",
+    "standard_deviation__customer_median",
+    "standard_deviation__customer_q90",
+    "range__customer_median",
+    "range__customer_q90",
+    "interquartile_range__customer_median",
+    "interquartile_range__customer_q90",
+    "mean_absolute_deviation__customer_median",
+    "mean_absolute_deviation__customer_q90",
+    "mean_absolute_consecutive_change__customer_median",
+    "mean_absolute_consecutive_change__customer_q90",
+    "maximum_absolute_consecutive_change__customer_median",
+    "maximum_absolute_consecutive_change__customer_q90",
+    "first_to_last_change__customer_mean",
+    "first_to_last_change__customer_standard_deviation",
+    "absolute_first_to_last_change__customer_mean",
+    "absolute_first_to_last_change__customer_standard_deviation",
+    "linear_slope__customer_mean",
+    "linear_slope__customer_standard_deviation",
+    "second_half_minus_first_half_mean__customer_mean",
+    "second_half_minus_first_half_mean__customer_standard_deviation",
+    "fraction_below_minus_one__customer_mean",
+    "fraction_below_minus_one__customer_q90",
+    "maximum__training_q90_exceedance_fraction",
+    "standard_deviation__training_q90_exceedance_fraction",
+    "mean_absolute_consecutive_change__training_q90_exceedance_fraction",
+    "maximum_absolute_consecutive_change__training_q90_exceedance_fraction",
+    "mean__late_third_minus_early_third",
+    "maximum__late_third_minus_early_third",
+    "standard_deviation__late_third_minus_early_third",
+    "mean_absolute_consecutive_change__late_third_minus_early_third"
+  ],
+  "DEV_TRAIN_derived_persistence_q90_thresholds": {
+    "maximum": 1.5190057158470154,
+    "standard_deviation": 0.438372477889061,
+    "mean_absolute_consecutive_change": 0.2778959274291992,
+    "maximum_absolute_consecutive_change": 1.1807788610458374
+  },
+  "development_data_audit": {
+    "DEV_TRAIN": {
+      "role": "DEV_TRAIN",
+      "customers": 23724,
+      "normal_customers": 21702,
+      "theft_customers": 2022,
+      "customer_theft_prevalence": 0.08523014668689934,
+      "usable_windows": 614976,
+      "normal_usable_windows": 566642,
+      "theft_usable_windows": 48334,
+      "window_theft_prevalence": 0.07859493703819335,
+      "feature_shape": [
+        23724,
+        48
+      ],
+      "nonfinite_feature_values": 0
+    },
+    "DEV_VAL": {
+      "role": "DEV_VAL",
+      "customers": 5931,
+      "normal_customers": 5426,
+      "theft_customers": 505,
+      "customer_theft_prevalence": 0.0851458438711853,
+      "usable_windows": 153947,
+      "normal_usable_windows": 141666,
+      "theft_usable_windows": 12281,
+      "window_theft_prevalence": 0.07977420800665164,
+      "feature_shape": [
+        5931,
+        48
+      ],
+      "nonfinite_feature_values": 0
+    }
+  },
+  "representation_unavailable_customers": [
+    {
+      "CONS_NO": "B08E0670C8A6933E5EC44715F7A80E9D",
+      "original_split": "train",
+      "research_role": "DEV_TRAIN"
+    }
+  ],
+  "matrix_customer_overlap": 0,
+  "loaded_model_data_source": "original train only",
+  "loaded_model_roles": [
+    "DEV_TRAIN",
+    "DEV_VAL"
+  ],
+  "closed_roles_loaded_into_matrices": [],
+  "models": [
+    {
+      "model": "logistic_regression",
+      "package": "scikit-learn",
+      "package_version": "1.9.0",
+      "fit_runtime_seconds": 0.33945080000557937,
+      "artifact": "models\\supervised\\stage_17b\\logistic_regression.joblib",
+      "artifact_sha256": "97869db1feb377725f659ce4e64c6d90eee4ed933c780cb86a9c022d56a13f15",
+      "artifact_size_bytes": 2363,
+      "configuration": {
+        "implementation": "sklearn.pipeline.Pipeline(StandardScaler, LogisticRegression)",
+        "parameters": {
+          "C": 1.0,
+          "solver": "lbfgs",
+          "max_iter": 300,
+          "class_weight": null,
+          "random_state": 42
+        },
+        "scaling": "StandardScaler fitted only on DEV_TRAIN customers"
+      }
+    },
+    {
+      "model": "hist_gradient_boosting",
+      "package": "scikit-learn",
+      "package_version": "1.9.0",
+      "fit_runtime_seconds": 1.7597337999904994,
+      "artifact": "models\\supervised\\stage_17b\\hist_gradient_boosting.joblib",
+      "artifact_sha256": "67ed869858185d8f71d99b3dce8b358c43793178185e5aa50e6997d11b56974b",
+      "artifact_size_bytes": 126780,
+      "configuration": {
+        "implementation": "sklearn.ensemble.HistGradientBoostingClassifier",
+        "parameters": {
+          "learning_rate": 0.1,
+          "max_iter": 100,
+          "max_leaf_nodes": 15,
+          "min_samples_leaf": 100,
+          "l2_regularization": 1.0,
+          "class_weight": null,
+          "early_stopping": false,
+          "random_state": 42
+        }
+      }
+    },
+    {
+      "model": "lightgbm",
+      "package": "lightgbm",
+      "package_version": "4.7.0",
+      "fit_runtime_seconds": 1.7237278999964474,
+      "artifact": "models\\supervised\\stage_17b\\lightgbm.joblib",
+      "artifact_sha256": "e7965ce1855f97d8bfbc5cd8273e96dd2d613739a25ca8c9fa2fa0c062e00e47",
+      "artifact_size_bytes": 154575,
+      "configuration": {
+        "implementation": "lightgbm.LGBMClassifier",
+        "parameters": {
+          "objective": "binary",
+          "n_estimators": 200,
+          "learning_rate": 0.05,
+          "num_leaves": 15,
+          "max_depth": -1,
+          "min_child_samples": 50,
+          "subsample": 1.0,
+          "colsample_bytree": 1.0,
+          "reg_lambda": 1.0,
+          "class_weight": null,
+          "random_state": 42,
+          "n_jobs": 1,
+          "deterministic": true,
+          "force_col_wise": true,
+          "verbosity": -1
+        }
+      }
+    }
+  ],
+  "environment": {
+    "scikit_learn": "1.9.0",
+    "lightgbm": "4.7.0",
+    "xgboost": "not installed; skipped pre-scoring",
+    "catboost": "not installed; skipped pre-scoring"
+  },
+  "prohibited_actions": {
+    "hyperparameter_search": false,
+    "feature_redesign_or_selection": false,
+    "resampling_or_synthetic_augmentation": false,
+    "confirmation_access": false,
+    "final_test_access": false
+  }
+}

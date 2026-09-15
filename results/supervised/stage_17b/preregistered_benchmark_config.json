@@ -1,0 +1,127 @@
+{
+  "stage": "Stage 17B — frozen direct-customer conventional learner benchmark",
+  "created_before_DEV_VAL_scoring": true,
+  "research_question": "On the frozen 48-feature direct-customer representation, which conventional supervised learner provides the strongest theft discrimination under the new DEV_TRAIN to DEV_VAL protocol?",
+  "governance_manifest": {
+    "path": "results/governance/stage_17a/research_protocol_manifest.csv",
+    "sha256": "dae7dba53260a3af6b8e2ddd904b5c7867c3321f27cdff5af5e4060b97c348c0",
+    "fit_role": "DEV_TRAIN",
+    "selection_role": "DEV_VAL",
+    "closed_roles": ["CONFIRMATION", "FINAL_TEST"]
+  },
+  "representation": {
+    "source_preregistration": "results/supervised/stage_16/preregistered_config.json",
+    "source_preregistration_sha256": "a722299d6207fce06180f71bf96717ce58948e127a85440e04f721c1616fcdf3",
+    "feature_count": 48,
+    "feature_names_in_order": [
+      "mean__customer_median", "mean__customer_q10", "mean__customer_q90",
+      "median__customer_median", "median__customer_q10", "median__customer_q90",
+      "minimum__customer_median", "minimum__customer_q10", "minimum__customer_q90",
+      "maximum__customer_median", "maximum__customer_q10", "maximum__customer_q90",
+      "q10__customer_median", "q10__customer_q10", "q10__customer_q90",
+      "q90__customer_median", "q90__customer_q10", "q90__customer_q90",
+      "standard_deviation__customer_median", "standard_deviation__customer_q90",
+      "range__customer_median", "range__customer_q90",
+      "interquartile_range__customer_median", "interquartile_range__customer_q90",
+      "mean_absolute_deviation__customer_median", "mean_absolute_deviation__customer_q90",
+      "mean_absolute_consecutive_change__customer_median", "mean_absolute_consecutive_change__customer_q90",
+      "maximum_absolute_consecutive_change__customer_median", "maximum_absolute_consecutive_change__customer_q90",
+      "first_to_last_change__customer_mean", "first_to_last_change__customer_standard_deviation",
+      "absolute_first_to_last_change__customer_mean", "absolute_first_to_last_change__customer_standard_deviation",
+      "linear_slope__customer_mean", "linear_slope__customer_standard_deviation",
+      "second_half_minus_first_half_mean__customer_mean", "second_half_minus_first_half_mean__customer_standard_deviation",
+      "fraction_below_minus_one__customer_mean", "fraction_below_minus_one__customer_q90",
+      "maximum__training_q90_exceedance_fraction", "standard_deviation__training_q90_exceedance_fraction",
+      "mean_absolute_consecutive_change__training_q90_exceedance_fraction", "maximum_absolute_consecutive_change__training_q90_exceedance_fraction",
+      "mean__late_third_minus_early_third", "maximum__late_third_minus_early_third",
+      "standard_deviation__late_third_minus_early_third", "mean_absolute_consecutive_change__late_third_minus_early_third"
+    ],
+    "train_derived_reference_scope": "DEV_TRAIN windows only",
+    "revision_policy": "No feature addition, removal, redefinition, or DEV_VAL-driven selection is permitted."
+  },
+  "environment_audit_before_scoring": {
+    "scikit_learn": {"available": true, "version": "1.9.0"},
+    "lightgbm": {
+      "available_before_stage": false,
+      "installed_for_stage": true,
+      "version": "4.7.0",
+      "installation": "pip install --no-deps lightgbm; 1.4 MB compiled wheel; no core dependency replacement"
+    },
+    "xgboost": {
+      "available": false,
+      "included": false,
+      "reason": "Not installed; skipped before scoring because adding its substantially larger compiled runtime was not considered a lightweight environment change."
+    },
+    "catboost": {
+      "available": false,
+      "included": false,
+      "reason": "Not installed; skipped before scoring because adding its substantially larger compiled runtime was not considered a lightweight environment change."
+    }
+  },
+  "candidate_models": {
+    "logistic_regression": {
+      "implementation": "sklearn.pipeline.Pipeline(StandardScaler, LogisticRegression)",
+      "parameters": {
+        "C": 1.0,
+        "solver": "lbfgs",
+        "max_iter": 300,
+        "class_weight": null,
+        "random_state": 42
+      },
+      "scaling": "StandardScaler fitted only on DEV_TRAIN customers"
+    },
+    "hist_gradient_boosting": {
+      "implementation": "sklearn.ensemble.HistGradientBoostingClassifier",
+      "parameters": {
+        "learning_rate": 0.1,
+        "max_iter": 100,
+        "max_leaf_nodes": 15,
+        "min_samples_leaf": 100,
+        "l2_regularization": 1.0,
+        "class_weight": null,
+        "early_stopping": false,
+        "random_state": 42
+      }
+    },
+    "lightgbm": {
+      "implementation": "lightgbm.LGBMClassifier",
+      "parameters": {
+        "objective": "binary",
+        "n_estimators": 200,
+        "learning_rate": 0.05,
+        "num_leaves": 15,
+        "max_depth": -1,
+        "min_child_samples": 50,
+        "subsample": 1.0,
+        "colsample_bytree": 1.0,
+        "reg_lambda": 1.0,
+        "class_weight": null,
+        "random_state": 42,
+        "n_jobs": 1,
+        "deterministic": true,
+        "force_col_wise": true,
+        "verbosity": -1
+      }
+    }
+  },
+  "class_imbalance_policy": "All primary candidates are unweighted. No weighted variants, SMOTE, Tomek links, GAN augmentation, or synthetic balancing.",
+  "fit_policy": "Fit every candidate once on DEV_TRAIN only. No DEV_VAL data is supplied to fit or preprocessing.",
+  "evaluation_policy": "Score DEV_VAL once after all configurations are frozen. Primary metrics are customer average precision then ROC-AUC. Precision, recall, F1, and confusion counts are secondary.",
+  "threshold_policy": "Maximize positive-class F1 on DEV_VAL with the established deterministic highest-threshold tie break; acknowledge resulting threshold metrics as optimistic.",
+  "selection_policy": "Highest DEV_VAL average precision, then ROC-AUC. Model size and runtime break only essentially equivalent discrimination. Accuracy is not used.",
+  "bootstrap_policy": {
+    "resamples": 2000,
+    "seed": 42,
+    "unit": "DEV_VAL customer",
+    "comparison": "winner minus Stage 17B HGB; if HGB wins, HGB minus the second-best AP candidate",
+    "metrics": ["ROC_AUC", "average_precision"],
+    "interval": "2.5th and 97.5th percentiles"
+  },
+  "importance_policy": "For the winning tree model, independently permute each frozen customer feature across DEV_VAL for five repeats with seed 42 and report mean decreases in ROC-AUC and average precision. No feature removal follows.",
+  "decision_policy": {
+    "A": "A non-HGB conventional learner has higher AP and ROC-AUC than HGB, both paired 95% intervals are above zero, and its observed AP or ROC-AUC gain is at least 0.01.",
+    "B": "Decision A is not met and the best candidate has ROC-AUC at least 0.70 and average precision at least 0.25; retain HGB for simplicity if models are essentially equivalent or HGB remains strongest.",
+    "C": "The best candidate has ROC-AUC below 0.70 or average precision below 0.25, so DEV_VAL does not support the historical Stage 16 formulation result."
+  },
+  "data_access_policy": "Only original-train customer data assigned DEV_TRAIN or DEV_VAL may be loaded into matrices. CONFIRMATION and FINAL_TEST features, labels, predictions, and performance are closed."
+}
