@@ -1369,3 +1369,37 @@ advantage under `DEV_TRAIN`/`DEV_VAL`, while keeping `CONFIRMATION` and
 **CONFIRMATION NOT ACCESSED DURING STAGE 19.**
 **FINAL_TEST NOT ACCESSED DURING STAGE 19.** Full evidence is under
 `results/supervised/stage_19/`.
+
+## Stage 20A — Label-formulation control design (design only)
+
+### Research question
+
+Can the Stage 17B direct-customer advantage be attributed to better alignment between customer-level SGCC supervision and the training objective, rather than to richer aggregation, unequal window multiplicity, or mean prediction pooling?
+
+### Scientific constraint
+
+SGCC provides customer-level theft flags without verified theft-event timing. A customer flag propagated to windows is therefore a proxy target, not temporal window ground truth. Stage 20 can test objective/label-unit alignment, but it cannot causally identify mislabeled windows or estimate temporal label noise.
+
+### Selected control design
+
+The Stage 20B minimum experiment is pre-designed around three complementary controls:
+
+1. An unweighted versus customer-balanced window HGB comparison on the exact 17 Stage 14 window summaries. Customer-balanced weights are fixed as `N_windows / (N_customers * n_i)`, equalizing total customer contribution while retaining mean window weight 1.
+2. A fixed prediction-aggregation panel for those window models: arithmetic mean as primary, with median, NumPy linear 90th percentile, and maximum as non-selective sensitivity analyses.
+3. A matched linear loss-placement comparison using the same 17 local quantities and shared DEV_TRAIN-only transformation: customer-balanced window logistic loss versus customer logistic loss after arithmetic feature pooling. The window arm is evaluated using the sigmoid of the mean window logit, making the customer scoring form algebraically matched for a linear model.
+
+Fixed-K sampling was considered but rejected as a primary control because it changes retained information and temporal coverage as well as multiplicity. New rich aggregate HGBs, multiple-instance architectures, pseudo-window labels, and replicated customer vectors were rejected because they either repeat the representation confound or rely on unsupported temporal assumptions.
+
+### Intended Stage 20B protocol
+
+Stage 20B should freeze a machine-readable specification before evaluation, fit controls only on DEV_TRAIN, and evaluate the specified comparisons once on DEV_VAL. Primary metrics are customer-level ROC-AUC and Average Precision. Pre-specified paired customer bootstrap comparisons use 2,000 replicates and seed 42. No aggregator, regularization, threshold, or comparison may be selected from DEV_VAL. The frozen Stage 17B DEV_VAL result may be contextualized but is not a fully representation-matched causal control. Historical Stage 14 predictions are not a valid matched baseline under the later Stage 17A split and must not be reused as one.
+
+### Stage decision and paper relevance
+
+Stage 20A is documentation and design only: no model was fitted, no score was produced, and no frozen detector component changed. If Stage 20B supports the matched loss-unit contrast, the defensible paper claim is that customer-level supervision is better aligned with the available customer-level SGCC label under matched observed information. A causal claim that individual windows are mislabeled remains unsupported without temporal ground truth.
+
+Detailed candidate definitions, held variables, supported and unsupported inferences, leakage risks, implementation complexity, outcome mapping, and stopping rules are recorded in `results/supervised/stage_20a/stage_20a_label_formulation_control_design.md`.
+
+**CONFIRMATION NOT ACCESSED DURING STAGE 20A.**
+
+**FINAL_TEST NOT ACCESSED DURING STAGE 20A.**
