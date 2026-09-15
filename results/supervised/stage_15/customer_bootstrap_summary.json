@@ -1,0 +1,25 @@
+{
+  "unit": "customer",
+  "paired": true,
+  "replicates": 2000,
+  "seed": 42,
+  "comparison": "SUMMARY_PLUS_FC minus SUMMARY_ONLY",
+  "ROC_AUC_delta": {
+    "bootstrap_mean": -0.00025572516232595655,
+    "bootstrap_standard_deviation": 0.0008183808504610394,
+    "percentile_95_CI": [
+      -0.001825371552346275,
+      0.001353068612533287
+    ],
+    "proportion_above_zero": 0.378
+  },
+  "average_precision_delta": {
+    "bootstrap_mean": 0.0016678964603239785,
+    "bootstrap_standard_deviation": 0.0011249909694543271,
+    "percentile_95_CI": [
+      -0.00048488920181573926,
+      0.0039870867865442056
+    ],
+    "proportion_above_zero": 0.935
+  }
+}

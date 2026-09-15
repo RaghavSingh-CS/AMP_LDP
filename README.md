@@ -37,6 +37,9 @@ preventing preprocessing leakage.
 - Stage 9 — 1D CNN Autoencoder: implementation and manual training complete
 - Stage 10 — CNN threshold, frozen test, and FC comparison: complete
 - Stage 11–12 — LSTM Autoencoder: trained, thresholded, and frozen-test evaluated
+- Stage 13 — Leakage-safe supervised signal diagnostic: complete
+- Stage 14 — Behavioural representation analysis: complete (validation only; test closed)
+- Stage 15 — Frozen-FC hybrid ablation: complete (FC rejected; test closed)
 
 
 Stage 3B compares candidate missingness thresholds without changing the
@@ -124,4 +127,42 @@ LSTM training must be run manually from the repository root:
     python -m src.analysis.analyze_lstm_autoencoder_threshold
     python -m src.evaluation.evaluate_lstm_autoencoder_test
     python -m src.analysis.compare_fc_cnn_lstm
+
+Stage 13 tests the existing usable stride-30 consumption windows with a dummy
+classifier, unweighted/balanced logistic regression, and unweighted/balanced
+HistGradientBoosting. Validation-only selection chooses balanced
+HistGradientBoosting at window ROC-AUC/average precision `0.662847`/`0.203618`;
+its frozen test values are `0.657693`/`0.205305`. Mean-probability customer
+aggregation reaches frozen test ROC-AUC `0.702314`. This establishes moderate
+supervised statistical signal beyond reconstruction error, not confirmed
+per-window theft events or deployment readiness. See
+`results/supervised/stage_13/stage_13_report.md`.
+
+Stage 13 reproduction is deliberately two-phase so the validation decision is
+frozen before test access:
+
+    python -m src.training.train_supervised_baselines
+    python -m src.evaluation.evaluate_supervised_test
+
+Stage 14 pre-registers 17 interpretable window summaries and compares raw-only,
+summary-only, and combined representations with the fixed Stage 13 logistic and
+HistGradientBoosting settings. Unweighted summary-only HistGradientBoosting is
+the validation-only winner at customer ROC-AUC/average precision
+`0.738697`/`0.261320`, improving on its raw-only values by
+`+0.020741`/`+0.020351`. Raw-plus-summary is slightly weaker than summary-only.
+The test set is closed and was not accessed. Full evidence is at
+`results/supervised/stage_14/stage_14_report.md`.
+
+    python -m src.analysis.run_stage14_representation
+
+Stage 15 extracts six reconstruction summaries and the four-unit latent vector
+from the unchanged frozen FC autoencoder, then compares FC-only and hybrid
+representations with the Stage 14 HGB configuration. `SUMMARY_PLUS_FC` changes
+customer validation ROC-AUC/AP/F1 by `-0.000243`/`+0.001723`/`-0.001506` versus
+`SUMMARY_ONLY`; paired customer-bootstrap intervals include zero for both
+ranking deltas. FC features are largely redundant with behavioural variability
+summaries, so the FC branch is rejected from the current detector. Test was not
+accessed. See `results/supervised/stage_15/stage_15_report.md`.
+
+    python -m src.analysis.run_stage15_hybrid_ablation
 

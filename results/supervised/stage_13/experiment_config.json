@@ -1,0 +1,48 @@
+{
+  "stage": "Stage 13 \u2014 simple supervised baselines",
+  "seed": 42,
+  "input": "existing usable stride-30 windows; 30 scaled consumption values only",
+  "models": {
+    "dummy_prior": {
+      "strategy": "prior"
+    },
+    "logistic_unweighted": {
+      "standardization": "StandardScaler fitted on training windows only",
+      "C": 1.0,
+      "solver": "lbfgs",
+      "max_iter": 300,
+      "class_weight": null
+    },
+    "logistic_balanced": {
+      "standardization": "StandardScaler fitted on training windows only",
+      "C": 1.0,
+      "solver": "lbfgs",
+      "max_iter": 300,
+      "class_weight": "balanced"
+    },
+    "hist_gradient_boosting_unweighted": {
+      "learning_rate": 0.1,
+      "max_iter": 100,
+      "max_leaf_nodes": 15,
+      "min_samples_leaf": 100,
+      "l2_regularization": 1.0,
+      "class_weight": null,
+      "early_stopping": false
+    },
+    "hist_gradient_boosting_balanced": {
+      "learning_rate": 0.1,
+      "max_iter": 100,
+      "max_leaf_nodes": 15,
+      "min_samples_leaf": 100,
+      "l2_regularization": 1.0,
+      "class_weight": "balanced",
+      "early_stopping": false
+    }
+  },
+  "imbalance_policy": "compare unweighted and balanced class weights; no resampling",
+  "window_threshold_policy": "maximize positive-class F1 on validation",
+  "customer_aggregation": "arithmetic mean of usable-window predicted probabilities",
+  "customer_threshold_policy": "maximize positive-class F1 on validation customer means",
+  "selection_policy": "highest validation window ROC-AUC, then window average precision, among non-dummy models; no test information",
+  "test_policy": "Stages 6, 8, 10, and 12 establish one frozen test evaluation after validation-only selection. Stage 13 follows that policy for the selected supervised model only."
+}

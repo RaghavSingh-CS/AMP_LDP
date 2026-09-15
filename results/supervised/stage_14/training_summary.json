@@ -1,0 +1,306 @@
+{
+  "stage": "Stage 14 \u2014 validation-only training summary",
+  "preregistration_sha256": "0cb8ae776ead003c7beb84dc8958af738f8d8917e78ebc433f7414b12dabd0d3",
+  "models": [
+    {
+      "model": "logistic_unweighted_raw_only",
+      "family": "logistic",
+      "weighting": "unweighted",
+      "representation": "RAW_ONLY",
+      "fit_runtime_seconds": 1.2131479999952717,
+      "artifact": "models\\supervised\\stage_14\\logistic_unweighted_raw_only.joblib",
+      "artifact_sha256": "b6bff1ad38476a242065a35e3f4893356f9daa2c0ab830468badac16e1c86354",
+      "customer_ROC_AUC": 0.642089749213336,
+      "customer_PR_AUC_average_precision": 0.1857689043240745
+    },
+    {
+      "model": "logistic_unweighted_summary_only",
+      "family": "logistic",
+      "weighting": "unweighted",
+      "representation": "SUMMARY_ONLY",
+      "fit_runtime_seconds": 1.4202049000014085,
+      "artifact": "models\\supervised\\stage_14\\logistic_unweighted_summary_only.joblib",
+      "artifact_sha256": "53b6fbff04265f7a4533fec5aa8d2408dc6f21384968ca731a9931af33e877e4",
+      "customer_ROC_AUC": 0.6828413918923294,
+      "customer_PR_AUC_average_precision": 0.226928172892273
+    },
+    {
+      "model": "logistic_unweighted_raw_plus_summary",
+      "family": "logistic",
+      "weighting": "unweighted",
+      "representation": "RAW_PLUS_SUMMARY",
+      "fit_runtime_seconds": 3.1854171000013594,
+      "artifact": "models\\supervised\\stage_14\\logistic_unweighted_raw_plus_summary.joblib",
+      "artifact_sha256": "0ae1ac648cc644dacb6452ae5cda3209b425ec69b3bb9f150399ccaa0920ac46",
+      "customer_ROC_AUC": 0.6832175052354342,
+      "customer_PR_AUC_average_precision": 0.22898834874511814
+    },
+    {
+      "model": "logistic_balanced_raw_only",
+      "family": "logistic",
+      "weighting": "balanced",
+      "representation": "RAW_ONLY",
+      "fit_runtime_seconds": 2.139751399998204,
+      "artifact": "models\\supervised\\stage_14\\logistic_balanced_raw_only.joblib",
+      "artifact_sha256": "a8b2a6809ba74d7872c4d4cd94bc818f57836bae75953823f1a3b4fef4da186c",
+      "customer_ROC_AUC": 0.6335743526883059,
+      "customer_PR_AUC_average_precision": 0.17629688603935448
+    },
+    {
+      "model": "logistic_balanced_summary_only",
+      "family": "logistic",
+      "weighting": "balanced",
+      "representation": "SUMMARY_ONLY",
+      "fit_runtime_seconds": 2.512453599993023,
+      "artifact": "models\\supervised\\stage_14\\logistic_balanced_summary_only.joblib",
+      "artifact_sha256": "4f0657a2567f2d325cde7c5094c24c5c3463cd6ac30d2bd56b3e5ef8f1f8781c",
+      "customer_ROC_AUC": 0.6738191151909799,
+      "customer_PR_AUC_average_precision": 0.21305690601464156
+    },
+    {
+      "model": "logistic_balanced_raw_plus_summary",
+      "family": "logistic",
+      "weighting": "balanced",
+      "representation": "RAW_PLUS_SUMMARY",
+      "fit_runtime_seconds": 3.6012537000060547,
+      "artifact": "models\\supervised\\stage_14\\logistic_balanced_raw_plus_summary.joblib",
+      "artifact_sha256": "9241fd3d6090d321f669fb2eb735a80cd6f3af22183a83735621dc5718167cb6",
+      "customer_ROC_AUC": 0.674059065982024,
+      "customer_PR_AUC_average_precision": 0.21478416086114405
+    },
+    {
+      "model": "hist_gradient_boosting_unweighted_raw_only",
+      "family": "hist_gradient_boosting",
+      "weighting": "unweighted",
+      "representation": "RAW_ONLY",
+      "fit_runtime_seconds": 6.397512699986692,
+      "artifact": "models\\supervised\\stage_14\\hist_gradient_boosting_unweighted_raw_only.joblib",
+      "artifact_sha256": "f0bc361e14f7de6113f480b8d35c043423ca452fde0bb96f4f844bc431f5ade7",
+      "customer_ROC_AUC": 0.717955619260304,
+      "customer_PR_AUC_average_precision": 0.2409685694512967
+    },
+    {
+      "model": "hist_gradient_boosting_unweighted_summary_only",
+      "family": "hist_gradient_boosting",
+      "weighting": "unweighted",
+      "representation": "SUMMARY_ONLY",
+      "fit_runtime_seconds": 4.935989899997367,
+      "artifact": "models\\supervised\\stage_14\\hist_gradient_boosting_unweighted_summary_only.joblib",
+      "artifact_sha256": "ccf6d976ad146bcf338f491a13817b785a6f4551965be687a0bafe5d50a08919",
+      "customer_ROC_AUC": 0.7386969212028264,
+      "customer_PR_AUC_average_precision": 0.2613198493570088
+    },
+    {
+      "model": "hist_gradient_boosting_unweighted_raw_plus_summary",
+      "family": "hist_gradient_boosting",
+      "weighting": "unweighted",
+      "representation": "RAW_PLUS_SUMMARY",
+      "fit_runtime_seconds": 8.203121500002453,
+      "artifact": "models\\supervised\\stage_14\\hist_gradient_boosting_unweighted_raw_plus_summary.joblib",
+      "artifact_sha256": "b5a00fb725e8d28bf59541dd7d75288c23e268a063ddd1c94d621017a46bf6e2",
+      "customer_ROC_AUC": 0.7377074415849957,
+      "customer_PR_AUC_average_precision": 0.2605899768453697
+    },
+    {
+      "model": "hist_gradient_boosting_balanced_raw_only",
+      "family": "hist_gradient_boosting",
+      "weighting": "balanced",
+      "representation": "RAW_ONLY",
+      "fit_runtime_seconds": 6.159792799997376,
+      "artifact": "models\\supervised\\stage_14\\hist_gradient_boosting_balanced_raw_only.joblib",
+      "artifact_sha256": "8a1e85f17556eee5c3eaf935b2edbd3a6071326dcc78749dc1968d13f3dba7ab",
+      "customer_ROC_AUC": 0.7120441331714195,
+      "customer_PR_AUC_average_precision": 0.22260043199825724
+    },
+    {
+      "model": "hist_gradient_boosting_balanced_summary_only",
+      "family": "hist_gradient_boosting",
+      "weighting": "balanced",
+      "representation": "SUMMARY_ONLY",
+      "fit_runtime_seconds": 5.118368700001156,
+      "artifact": "models\\supervised\\stage_14\\hist_gradient_boosting_balanced_summary_only.joblib",
+      "artifact_sha256": "d5bb4e5a445e66f4fdf35d8904522dde586ae179dfe3d8c798535eb0bcb1f662",
+      "customer_ROC_AUC": 0.7333107242133836,
+      "customer_PR_AUC_average_precision": 0.24230210998709337
+    },
+    {
+      "model": "hist_gradient_boosting_balanced_raw_plus_summary",
+      "family": "hist_gradient_boosting",
+      "weighting": "balanced",
+      "representation": "RAW_PLUS_SUMMARY",
+      "fit_runtime_seconds": 8.251044400007231,
+      "artifact": "models\\supervised\\stage_14\\hist_gradient_boosting_balanced_raw_plus_summary.joblib",
+      "artifact_sha256": "6a5665cbdf4f7be8ba1aea0efe2274a3f04881e1e2f885c7b5d8adf107d17e2b",
+      "customer_ROC_AUC": 0.7320855786400631,
+      "customer_PR_AUC_average_precision": 0.2415649315627334
+    }
+  ],
+  "split_integrity": {
+    "authoritative_manifest": "data\\processed\\split_manifest.parquet",
+    "manifest_sha256": "6ad1132bbaef0c6f6ccc5bdc973844b805c4291612ac7170ec165f273835959c",
+    "customer_counts_without_loading_test_labels": {
+      "train": 29656,
+      "val": 6355,
+      "test": 6356
+    },
+    "customer_overlaps": {
+      "train_val": 0,
+      "train_test": 0,
+      "val_test": 0
+    },
+    "train_windows": 768923,
+    "validation_windows": 165541,
+    "train_window_prevalence": 0.07883104029922372,
+    "validation_window_prevalence": 0.08031243015325508,
+    "loaded_splits": [
+      "train",
+      "val"
+    ],
+    "test_features_loaded": false,
+    "test_labels_loaded": false,
+    "test_predictions_inspected": false
+  },
+  "feature_sanity": {
+    "feature_count": 17,
+    "train_nonfinite_values": 0,
+    "validation_nonfinite_values": 0,
+    "effectively_constant_features": [],
+    "clipping_or_additional_transformation": "none; logistic uses its pre-registered train-fitted StandardScaler and HistGradientBoosting is rank/bin based"
+  },
+  "stage13_raw_only_reproduction": {
+    "stage13_validation_artifact": "results\\supervised\\stage_13\\validation_metrics.csv",
+    "comparisons": [
+      {
+        "family": "logistic",
+        "weighting": "unweighted",
+        "level": "window",
+        "stage13_model": "logistic_unweighted",
+        "differences_stage14_minus_stage13": {
+          "ROC_AUC": 0.0,
+          "PR_AUC_average_precision": 5.551115123125783e-17,
+          "precision": 2.7755575615628914e-17,
+          "recall": 0.0,
+          "F1": 0.0,
+          "threshold": 2.7755575615628914e-17
+        },
+        "exact_within_1e-12": true
+      },
+      {
+        "family": "logistic",
+        "weighting": "unweighted",
+        "level": "customer_mean",
+        "stage13_model": "logistic_unweighted",
+        "differences_stage14_minus_stage13": {
+          "ROC_AUC": 0.0,
+          "PR_AUC_average_precision": 0.0,
+          "precision": 2.7755575615628914e-17,
+          "recall": 0.0,
+          "F1": 0.0,
+          "threshold": 1.3877787807814457e-17
+        },
+        "exact_within_1e-12": true
+      },
+      {
+        "family": "logistic",
+        "weighting": "balanced",
+        "level": "window",
+        "stage13_model": "logistic_balanced",
+        "differences_stage14_minus_stage13": {
+          "ROC_AUC": 0.0,
+          "PR_AUC_average_precision": 2.7755575615628914e-17,
+          "precision": 2.7755575615628914e-17,
+          "recall": 0.0,
+          "F1": 2.7755575615628914e-17,
+          "threshold": 0.0
+        },
+        "exact_within_1e-12": true
+      },
+      {
+        "family": "logistic",
+        "weighting": "balanced",
+        "level": "customer_mean",
+        "stage13_model": "logistic_balanced",
+        "differences_stage14_minus_stage13": {
+          "ROC_AUC": 0.0,
+          "PR_AUC_average_precision": 8.326672684688674e-17,
+          "precision": 8.326672684688674e-17,
+          "recall": 5.551115123125783e-17,
+          "F1": 0.0,
+          "threshold": 0.0
+        },
+        "exact_within_1e-12": true
+      },
+      {
+        "family": "hist_gradient_boosting",
+        "weighting": "unweighted",
+        "level": "window",
+        "stage13_model": "hist_gradient_boosting_unweighted",
+        "differences_stage14_minus_stage13": {
+          "ROC_AUC": 0.0,
+          "PR_AUC_average_precision": 8.326672684688674e-17,
+          "precision": 2.7755575615628914e-17,
+          "recall": 0.0,
+          "F1": 8.326672684688674e-17,
+          "threshold": 6.938893903907228e-17
+        },
+        "exact_within_1e-12": true
+      },
+      {
+        "family": "hist_gradient_boosting",
+        "weighting": "unweighted",
+        "level": "customer_mean",
+        "stage13_model": "hist_gradient_boosting_unweighted",
+        "differences_stage14_minus_stage13": {
+          "ROC_AUC": 0.0,
+          "PR_AUC_average_precision": 0.0,
+          "precision": 5.551115123125783e-17,
+          "recall": 0.0,
+          "F1": 0.0,
+          "threshold": 5.551115123125783e-17
+        },
+        "exact_within_1e-12": true
+      },
+      {
+        "family": "hist_gradient_boosting",
+        "weighting": "balanced",
+        "level": "window",
+        "stage13_model": "hist_gradient_boosting_balanced",
+        "differences_stage14_minus_stage13": {
+          "ROC_AUC": 0.0,
+          "PR_AUC_average_precision": 8.326672684688674e-17,
+          "precision": 5.551115123125783e-17,
+          "recall": 0.0,
+          "F1": 8.326672684688674e-17,
+          "threshold": 0.0
+        },
+        "exact_within_1e-12": true
+      },
+      {
+        "family": "hist_gradient_boosting",
+        "weighting": "balanced",
+        "level": "customer_mean",
+        "stage13_model": "hist_gradient_boosting_balanced",
+        "differences_stage14_minus_stage13": {
+          "ROC_AUC": 0.0,
+          "PR_AUC_average_precision": 5.551115123125783e-17,
+          "precision": 8.326672684688674e-17,
+          "recall": 0.0,
+          "F1": 0.0,
+          "threshold": 0.0
+        },
+        "exact_within_1e-12": true
+      }
+    ],
+    "all_raw_only_metrics_reproduced_within_1e-12": true
+  },
+  "test_access": {
+    "loaded_splits": [
+      "train",
+      "val"
+    ],
+    "test_features_loaded": false,
+    "test_labels_loaded": false,
+    "test_predictions_loaded_or_inspected": false,
+    "stage13_historical_test_metrics_used_for_selection": false
+  }
+}

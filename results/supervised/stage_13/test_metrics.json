@@ -1,0 +1,42 @@
+{
+  "stage": "Stage 13 \u2014 frozen supervised test evaluation",
+  "selected_model": "hist_gradient_boosting_balanced",
+  "selected_model_sha256_verified": true,
+  "thresholds_modified_after_validation": false,
+  "retraining_performed": false,
+  "window_level": {
+    "count": 165020,
+    "normal_count": 151985,
+    "theft_count": 13035,
+    "positive_prevalence": 0.07899042540298146,
+    "threshold": 0.608718870015863,
+    "threshold_rule": "predicted_probability >= threshold",
+    "ROC_AUC": 0.6576929281538455,
+    "PR_AUC_average_precision": 0.20530475429578066,
+    "precision": 0.21878862793572312,
+    "recall": 0.31231300345224394,
+    "F1": 0.2573162252702105,
+    "TN": 137449,
+    "FP": 14536,
+    "FN": 8964,
+    "TP": 4071
+  },
+  "customer_mean_level": {
+    "count": 6356,
+    "normal_count": 5814,
+    "theft_count": 542,
+    "positive_prevalence": 0.08527375707992448,
+    "threshold": 0.5251327815829091,
+    "threshold_rule": "predicted_probability >= threshold",
+    "ROC_AUC": 0.7023135401632655,
+    "PR_AUC_average_precision": 0.2193165970246905,
+    "precision": 0.2088607594936709,
+    "recall": 0.4261992619926199,
+    "F1": 0.2803398058252427,
+    "TN": 4939,
+    "FP": 875,
+    "FN": 311,
+    "TP": 231
+  },
+  "weak_supervision_note": "FLAG is customer-level. FLAG=1 windows are not confirmed theft events, and these scores do not establish deployment performance."
+}

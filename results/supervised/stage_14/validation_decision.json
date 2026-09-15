@@ -1,0 +1,19 @@
+{
+  "stage": "Stage 14 \u2014 validation-only representation decision",
+  "selection_policy": "Highest customer-mean validation ROC-AUC, then customer-mean average precision, then window ROC-AUC; no test information.",
+  "selected_model": "hist_gradient_boosting_unweighted_summary_only",
+  "selected_family": "hist_gradient_boosting",
+  "selected_weighting": "unweighted",
+  "selected_representation": "SUMMARY_ONLY",
+  "selected_model_artifact": "models\\supervised\\stage_14\\hist_gradient_boosting_unweighted_summary_only.joblib",
+  "selected_model_sha256": "ccf6d976ad146bcf338f491a13817b785a6f4551965be687a0bafe5d50a08919",
+  "customer_mean_threshold": 0.10812704535210725,
+  "customer_mean_ROC_AUC": 0.7386969212028264,
+  "customer_mean_PR_AUC_average_precision": 0.2613198493570088,
+  "window_threshold": 0.12565481969073553,
+  "window_ROC_AUC": 0.6766657801702997,
+  "window_PR_AUC_average_precision": 0.21363481167543547,
+  "best_tree_for_interpretation": "hist_gradient_boosting_unweighted_summary_only",
+  "test_evaluation_performed": false,
+  "test_policy": "CLOSED after Stage 13; no Stage 14 test evaluation permitted"
+}

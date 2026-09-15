@@ -1,0 +1,55 @@
+{
+  "stage": "Stage 13 validation model records",
+  "models": [
+    {
+      "model": "dummy_prior",
+      "fit_runtime_seconds": 0.06466539998655207,
+      "artifact": "models\\supervised\\stage_13\\dummy_prior.joblib",
+      "artifact_sha256": "a4f864b9a49ac5b7f05a17217925e18c59dc0fc5001f537c2eb21fdc62019c49",
+      "window_threshold": 0.07883104029922372,
+      "customer_mean_threshold": 0.0788310402992237,
+      "window_ROC_AUC": 0.5,
+      "window_PR_AUC_average_precision": 0.08031243015325508
+    },
+    {
+      "model": "logistic_unweighted",
+      "fit_runtime_seconds": 1.2170736999978544,
+      "artifact": "models\\supervised\\stage_13\\logistic_unweighted.joblib",
+      "artifact_sha256": "b6bff1ad38476a242065a35e3f4893356f9daa2c0ab830468badac16e1c86354",
+      "window_threshold": 0.11440282315015793,
+      "customer_mean_threshold": 0.10793439780964571,
+      "window_ROC_AUC": 0.6197784242093058,
+      "window_PR_AUC_average_precision": 0.17098456687384594
+    },
+    {
+      "model": "logistic_balanced",
+      "fit_runtime_seconds": 2.151661399999284,
+      "artifact": "models\\supervised\\stage_13\\logistic_balanced.joblib",
+      "artifact_sha256": "a8b2a6809ba74d7872c4d4cd94bc818f57836bae75953823f1a3b4fef4da186c",
+      "window_threshold": 0.5890945792198181,
+      "customer_mean_threshold": 0.5698619733254114,
+      "window_ROC_AUC": 0.6197775784057094,
+      "window_PR_AUC_average_precision": 0.17066922026621173
+    },
+    {
+      "model": "hist_gradient_boosting_unweighted",
+      "fit_runtime_seconds": 6.574761399999261,
+      "artifact": "models\\supervised\\stage_13\\hist_gradient_boosting_unweighted.joblib",
+      "artifact_sha256": "f0bc361e14f7de6113f480b8d35c043423ca452fde0bb96f4f844bc431f5ade7",
+      "window_threshold": 0.11881557176321007,
+      "customer_mean_threshold": 0.08920110425744236,
+      "window_ROC_AUC": 0.6616930951553699,
+      "window_PR_AUC_average_precision": 0.19979712389358997
+    },
+    {
+      "model": "hist_gradient_boosting_balanced",
+      "fit_runtime_seconds": 5.703521200004616,
+      "artifact": "models\\supervised\\stage_13\\hist_gradient_boosting_balanced.joblib",
+      "artifact_sha256": "8a1e85f17556eee5c3eaf935b2edbd3a6071326dcc78749dc1968d13f3dba7ab",
+      "window_threshold": 0.608718870015863,
+      "customer_mean_threshold": 0.5251327815829091,
+      "window_ROC_AUC": 0.6628467169162602,
+      "window_PR_AUC_average_precision": 0.20361816505488178
+    }
+  ]
+}

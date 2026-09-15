@@ -1,0 +1,70 @@
+{
+  "stage": "Stage 13 \u2014 supervised signal diagnostic split audit",
+  "authoritative_assignment": "data\\processed\\split_manifest.parquet",
+  "split_method": "customer-level 70/15/15 stratified by FLAG; random_state=42",
+  "customer_overlap": {
+    "train_val": 0,
+    "train_test": 0,
+    "val_test": 0
+  },
+  "total_customers": 42367,
+  "normal_customers": 38755,
+  "theft_customers": 3612,
+  "overall_customer_theft_prevalence": 0.08525503339863573,
+  "canonical_stride_30_windows": 1440478,
+  "usable_stride_30_windows": 1099484,
+  "splits": {
+    "train": {
+      "customers": 29656,
+      "normal_customers": 27128,
+      "theft_customers": 2528,
+      "customer_theft_prevalence": 0.08524413272187753,
+      "usable_windows": 768923,
+      "normal_usable_windows": 708308,
+      "theft_usable_windows": 60615,
+      "window_theft_prevalence": 0.07883104029922372,
+      "customers_with_usable_windows": 29655
+    },
+    "val": {
+      "customers": 6355,
+      "normal_customers": 5813,
+      "theft_customers": 542,
+      "customer_theft_prevalence": 0.08528717545239968,
+      "usable_windows": 165541,
+      "normal_usable_windows": 152246,
+      "theft_usable_windows": 13295,
+      "window_theft_prevalence": 0.08031243015325508,
+      "customers_with_usable_windows": 6355
+    },
+    "test": {
+      "customers": 6356,
+      "normal_customers": 5814,
+      "theft_customers": 542,
+      "customer_theft_prevalence": 0.08527375707992448,
+      "usable_windows": 165020,
+      "normal_usable_windows": 151985,
+      "theft_usable_windows": 13035,
+      "window_theft_prevalence": 0.07899042540298146,
+      "customers_with_usable_windows": 6356
+    }
+  },
+  "label_granularity": "FLAG is customer-level. Every window inherits its customer's FLAG; a FLAG=1 window is not a confirmed theft event.",
+  "supervised_features": [
+    "30 ordered float32 consumption values from each existing usable stride-30 window",
+    "Stage 1 customer-wise imputed and log1p-transformed",
+    "Stage 2 StandardScaled with training-customer statistics only",
+    "logistic regression adds a train-window-fitted StandardScaler inside its pipeline"
+  ],
+  "excluded_from_model_input": [
+    "FLAG/target",
+    "CONS_NO/customer identifier",
+    "split indicator",
+    "window_id",
+    "window_number_within_customer",
+    "start_feature_index and end_feature_index",
+    "start_date and end_date",
+    "missingness mask, missing_count, and missing_fraction",
+    "all reconstruction errors, anomaly flags, and prior model outputs"
+  ],
+  "test_access_during_validation_phase": "Aggregate customer counts were read from the authoritative split manifest and aggregate window counts from the pre-existing Stage 3C summary solely for the requested split audit. No test feature matrix or per-window test labels were loaded, and no test result can affect model/configuration/threshold selection."
+}

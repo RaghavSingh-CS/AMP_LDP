@@ -1,0 +1,83 @@
+{
+  "stage": "Stage 14 — pre-registered behavioural representation comparison",
+  "created_before_stage_14_validation_scoring": true,
+  "research_question": "Does explicitly representing customer/window consumption behaviour improve theft discrimination beyond the raw 30-point consumption window?",
+  "input_scope": "Features are deterministic functions only of each existing usable stride-30 window's 30 scaled consumption values.",
+  "feature_names_in_order": [
+    "mean",
+    "median",
+    "minimum",
+    "maximum",
+    "q10",
+    "q90",
+    "standard_deviation",
+    "range",
+    "interquartile_range",
+    "mean_absolute_deviation",
+    "first_to_last_change",
+    "absolute_first_to_last_change",
+    "mean_absolute_consecutive_change",
+    "maximum_absolute_consecutive_change",
+    "linear_slope",
+    "fraction_below_minus_one",
+    "second_half_minus_first_half_mean"
+  ],
+  "feature_definitions": {
+    "mean": "Arithmetic mean of the 30 scaled values.",
+    "median": "Median of the 30 scaled values.",
+    "minimum": "Minimum scaled value.",
+    "maximum": "Maximum scaled value.",
+    "q10": "10th percentile using NumPy's default linear quantile interpolation.",
+    "q90": "90th percentile using NumPy's default linear quantile interpolation.",
+    "standard_deviation": "Population standard deviation (ddof=0).",
+    "range": "Maximum minus minimum.",
+    "interquartile_range": "75th percentile minus 25th percentile.",
+    "mean_absolute_deviation": "Mean absolute deviation from the window mean.",
+    "first_to_last_change": "Last scaled value minus first scaled value.",
+    "absolute_first_to_last_change": "Absolute last-minus-first change.",
+    "mean_absolute_consecutive_change": "Mean absolute first difference across adjacent positions.",
+    "maximum_absolute_consecutive_change": "Maximum absolute first difference across adjacent positions.",
+    "linear_slope": "Least-squares slope against fixed zero-based positions 0 through 29.",
+    "fraction_below_minus_one": "Fraction of values at or below -1.0 in the established training-standardized feature space; low relative consumption, not physical zero usage.",
+    "second_half_minus_first_half_mean": "Mean of positions 15–29 minus mean of positions 0–14."
+  },
+  "representation_matrix": {
+    "RAW_ONLY": "30 existing scaled consumption values",
+    "SUMMARY_ONLY": "17 pre-registered behavioural summaries",
+    "RAW_PLUS_SUMMARY": "47 columns: raw 30 followed by the 17 summaries"
+  },
+  "models": {
+    "logistic_regression": {
+      "C": 1.0,
+      "solver": "lbfgs",
+      "max_iter": 300,
+      "standardization": "StandardScaler fitted on Stage 14 training windows only"
+    },
+    "hist_gradient_boosting": {
+      "learning_rate": 0.1,
+      "max_iter": 100,
+      "max_leaf_nodes": 15,
+      "min_samples_leaf": 100,
+      "l2_regularization": 1.0,
+      "early_stopping": false
+    },
+    "class_weight_variants": [
+      "unweighted",
+      "balanced"
+    ]
+  },
+  "threshold_policy": "For each fitted model/representation, maximize positive-class F1 on validation separately at window level and after customer mean-probability aggregation.",
+  "primary_selection_policy": "Highest customer-mean validation ROC-AUC, then customer-mean average precision, then window ROC-AUC; no test information.",
+  "feature_importance_policy": "For the selected tree model only, permute each pre-registered summary column across validation windows five times with seed 42 and report the mean customer ROC-AUC and average-precision decrease. If RAW_ONLY wins, raw positions are assessed instead.",
+  "leakage_exclusions": [
+    "FLAG and any label-derived feature",
+    "CONS_NO and window/customer identifiers",
+    "split indicators",
+    "window number, feature indices, and dates",
+    "missingness mask/count/fraction",
+    "Stage 13 predictions and all reconstruction-model outputs",
+    "test features, test predictions, and test labels"
+  ],
+  "test_policy": "CLOSED. Stage 14 code and execution load train and validation only; no Stage 14 candidate is evaluated on test.",
+  "feature_revision_policy": "No feature may be added, removed, or redefined after validation scoring unless a documented implementation bug is found."
+}

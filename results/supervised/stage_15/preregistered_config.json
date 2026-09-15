@@ -1,0 +1,87 @@
+{
+  "stage": "Stage 15 — pre-registered frozen-FC hybrid ablation",
+  "created_before_stage_15_validation_scoring": true,
+  "research_question": "Do signals derived from the already-trained frozen FC autoencoder provide incremental information beyond the Stage 14 SUMMARY_ONLY supervised representation?",
+  "frozen_fc": {
+    "checkpoint": "models\\autoencoder\\ae_stride30_baseline.pt",
+    "checkpoint_sha256": "421f1e2cdf96da1bd3231cd0baa750746d89757700d63ac428f9167f69237fa4",
+    "config": "models\\autoencoder\\ae_stride30_baseline_config.json",
+    "config_sha256": "3408e00443df58a32f70520452266e1f3e5a2618974bf15bd913a24f595aa27d",
+    "architecture": [30, 16, 8, 4, 8, 16, 30],
+    "latent_dimension": 4,
+    "inference_device": "cpu",
+    "inference_batch_size": 256,
+    "retraining_permitted": false
+  },
+  "reconstruction_feature_names_in_order": [
+    "reconstruction_mse",
+    "reconstruction_mae",
+    "maximum_absolute_reconstruction_error",
+    "early_half_reconstruction_mse",
+    "late_half_reconstruction_mse",
+    "late_minus_early_reconstruction_mse"
+  ],
+  "latent_feature_names_in_order": [
+    "latent_1",
+    "latent_2",
+    "latent_3",
+    "latent_4"
+  ],
+  "feature_definitions": {
+    "reconstruction_mse": "Mean of the 30 squared residuals, where residual is frozen-FC reconstruction minus input.",
+    "reconstruction_mae": "Mean absolute residual across 30 positions.",
+    "maximum_absolute_reconstruction_error": "Maximum absolute residual across 30 positions.",
+    "early_half_reconstruction_mse": "Mean squared residual over positions 0 through 14.",
+    "late_half_reconstruction_mse": "Mean squared residual over positions 15 through 29.",
+    "late_minus_early_reconstruction_mse": "Late-half MSE minus early-half MSE.",
+    "latent_1": "First coordinate of the frozen four-unit ReLU encoder bottleneck.",
+    "latent_2": "Second coordinate of the frozen four-unit ReLU encoder bottleneck.",
+    "latent_3": "Third coordinate of the frozen four-unit ReLU encoder bottleneck.",
+    "latent_4": "Fourth coordinate of the frozen four-unit ReLU encoder bottleneck."
+  },
+  "considered_but_excluded": {
+    "pointwise_error_standard_deviation": "Excluded to keep the complete set at 10; it is strongly tied to MSE/MAE and adds no distinct error-location information.",
+    "maximum_error_location": "Excluded because a position index has fragile semantics across pooled calendar windows and would add a difficult-to-interpret ordinal feature."
+  },
+  "representations": {
+    "SUMMARY_ONLY": "Exact Stage 14 17 behavioural summaries.",
+    "FC_RECON_ONLY": "Six frozen-FC reconstruction features.",
+    "FC_ONLY": "Six reconstruction features plus four frozen latent coordinates.",
+    "SUMMARY_PLUS_RECON": "Stage 14 summaries plus six reconstruction features.",
+    "SUMMARY_PLUS_FC": "Stage 14 summaries plus all ten FC-derived features; this is the central full hybrid comparison."
+  },
+  "model": {
+    "family": "HistGradientBoostingClassifier",
+    "class_weight": null,
+    "learning_rate": 0.1,
+    "max_iter": 100,
+    "max_leaf_nodes": 15,
+    "min_samples_leaf": 100,
+    "l2_regularization": 1.0,
+    "early_stopping": false,
+    "random_state": 42
+  },
+  "threshold_policy": "For each representation, maximize positive-class F1 on validation separately at window level and after mean-window-probability customer aggregation.",
+  "primary_comparison": "Customer-level ROC-AUC and average precision for SUMMARY_PLUS_FC minus SUMMARY_ONLY.",
+  "hybrid_interpretation_policy": "Permutation importance is computed for the best pre-registered SUMMARY_PLUS representation, but features are not redesigned from the result.",
+  "bootstrap_policy": {
+    "unit": "customer",
+    "paired": true,
+    "replicates": 2000,
+    "random_state": 42,
+    "interval": "2.5th and 97.5th percentiles of paired metric deltas",
+    "metrics": ["ROC_AUC", "average_precision"],
+    "comparison": "SUMMARY_PLUS_FC minus SUMMARY_ONLY"
+  },
+  "leakage_controls": [
+    "Frozen FC checkpoint only; no retraining or adaptation.",
+    "Feature extraction does not use FLAG or any label-derived quantity.",
+    "Customer/window identifiers are alignment metadata only.",
+    "Existing preprocessing and customer split are unchanged.",
+    "Only train and validation windows may be loaded.",
+    "Test features, labels, predictions, and historical test metrics are prohibited."
+  ],
+  "inherited_validation_reuse_limitation": "The frozen Stage 4 checkpoint was selected at epoch 30 using reconstruction MSE on FLAG=0 validation windows. Stage 15 performs no new FC fitting and does not use the validation-derived P95 threshold, but every FC-derived feature inherits this historical normal-validation exposure. Hybrid validation deltas may therefore be optimistic and are diagnostic rather than an independent external estimate.",
+  "test_policy": "CLOSED. TEST NOT ACCESSED DURING STAGE 15.",
+  "feature_revision_policy": "No FC-derived feature may be added, removed, or redefined after Stage 15 validation scoring unless a documented implementation bug is found."
+}

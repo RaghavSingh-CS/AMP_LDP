@@ -1,0 +1,268 @@
+{
+  "stage": "Stage 15 \u2014 frozen-FC validation-only hybrid ablation",
+  "preregistration_sha256": "63089bf8f93c1809caa0250ab323b7dc71a4183db6d929895698378e33e26072",
+  "frozen_fc_audit": {
+    "checkpoint": "models\\autoencoder\\ae_stride30_baseline.pt",
+    "checkpoint_sha256_verified": "421f1e2cdf96da1bd3231cd0baa750746d89757700d63ac428f9167f69237fa4",
+    "config": "models\\autoencoder\\ae_stride30_baseline_config.json",
+    "config_sha256_verified": "3408e00443df58a32f70520452266e1f3e5a2618974bf15bd913a24f595aa27d",
+    "architecture": [
+      30,
+      16,
+      8,
+      4,
+      8,
+      16,
+      30
+    ],
+    "parameters": 1362,
+    "training_population": "708,308 usable stride-30 FLAG=0 train windows",
+    "checkpoint_selection": "epoch 30 by normal-validation reconstruction MSE; inherited validation reuse limitation applies",
+    "input": "30 Stage 2 scaled consumption values",
+    "reconstruction_error": "mean((reconstruction - input)^2) over 30 positions",
+    "existing_p95_threshold": 0.16436323150992393,
+    "threshold_used_as_stage15_feature": false,
+    "latent_extraction": "model.encoder output; four-unit ReLU bottleneck",
+    "retrained_or_adapted": false,
+    "checkpoint_metadata": {
+      "best_epoch": 30,
+      "best_validation_loss": 0.043589054377373454,
+      "stride": 30
+    }
+  },
+  "alignment_and_reconstruction_verification": {
+    "saved_artifact": "results\\autoencoder\\stride_30\\val_reconstruction_errors.parquet",
+    "saved_artifact_sha256": "e015d1f900b964ef0ff4b7333341be0e418a8478b72814aa891f519ab68e6f32",
+    "aligned_windows": 165541,
+    "missing_or_extra_windows": 0,
+    "customer_ids_aligned": true,
+    "labels_aligned": true,
+    "maximum_absolute_mse_difference": 0.0,
+    "verified_within_tolerance": 1e-06
+  },
+  "feature_sanity": {
+    "train_shape": [
+      768923,
+      10
+    ],
+    "validation_shape": [
+      165541,
+      10
+    ],
+    "train_nonfinite": 0,
+    "validation_nonfinite": 0,
+    "effectively_constant": []
+  },
+  "stage14_control": {
+    "stage14_artifact": "results\\supervised\\stage_14\\validation_metrics.csv",
+    "comparisons": [
+      {
+        "level": "window",
+        "differences": {
+          "ROC_AUC": 0.0,
+          "PR_AUC_average_precision": 5.551115123125783e-17,
+          "precision": 2.7755575615628914e-17,
+          "recall": 0.0,
+          "F1": 0.0,
+          "threshold": 2.7755575615628914e-17
+        }
+      },
+      {
+        "level": "customer_mean",
+        "differences": {
+          "ROC_AUC": 0.0,
+          "PR_AUC_average_precision": 0.0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "F1": 5.551115123125783e-17,
+          "threshold": 5.551115123125783e-17
+        }
+      }
+    ],
+    "maximum_absolute_metric_difference": 5.551115123125783e-17,
+    "reproduced_within_1e-12": true
+  },
+  "model_records": [
+    {
+      "representation": "SUMMARY_ONLY",
+      "feature_count": 17,
+      "feature_names": [
+        "mean",
+        "median",
+        "minimum",
+        "maximum",
+        "q10",
+        "q90",
+        "standard_deviation",
+        "range",
+        "interquartile_range",
+        "mean_absolute_deviation",
+        "first_to_last_change",
+        "absolute_first_to_last_change",
+        "mean_absolute_consecutive_change",
+        "maximum_absolute_consecutive_change",
+        "linear_slope",
+        "fraction_below_minus_one",
+        "second_half_minus_first_half_mean"
+      ],
+      "fit_runtime_seconds": 5.215662300004624,
+      "artifact": "models\\supervised\\stage_15\\hgb_unweighted_summary_only.joblib",
+      "artifact_sha256": "ccf6d976ad146bcf338f491a13817b785a6f4551965be687a0bafe5d50a08919",
+      "customer_ROC_AUC": 0.7386969212028264,
+      "customer_PR_AUC_average_precision": 0.2613198493570088
+    },
+    {
+      "representation": "FC_RECON_ONLY",
+      "feature_count": 6,
+      "feature_names": [
+        "reconstruction_mse",
+        "reconstruction_mae",
+        "maximum_absolute_reconstruction_error",
+        "early_half_reconstruction_mse",
+        "late_half_reconstruction_mse",
+        "late_minus_early_reconstruction_mse"
+      ],
+      "fit_runtime_seconds": 3.397987699994701,
+      "artifact": "models\\supervised\\stage_15\\hgb_unweighted_fc_recon_only.joblib",
+      "artifact_sha256": "4354b6a21889e11b4e141e56c1d7d12e967fbf0f112f61b2c6e8608a9455f451",
+      "customer_ROC_AUC": 0.6638189437975577,
+      "customer_PR_AUC_average_precision": 0.18022047027023047
+    },
+    {
+      "representation": "FC_ONLY",
+      "feature_count": 10,
+      "feature_names": [
+        "reconstruction_mse",
+        "reconstruction_mae",
+        "maximum_absolute_reconstruction_error",
+        "early_half_reconstruction_mse",
+        "late_half_reconstruction_mse",
+        "late_minus_early_reconstruction_mse",
+        "latent_1",
+        "latent_2",
+        "latent_3",
+        "latent_4"
+      ],
+      "fit_runtime_seconds": 3.474116099998355,
+      "artifact": "models\\supervised\\stage_15\\hgb_unweighted_fc_only.joblib",
+      "artifact_sha256": "9685b3b94a5717cac220de928479acabd80e602a9cb366394c94c8c001c90385",
+      "customer_ROC_AUC": 0.7147497687775777,
+      "customer_PR_AUC_average_precision": 0.24045992314926634
+    },
+    {
+      "representation": "SUMMARY_PLUS_RECON",
+      "feature_count": 23,
+      "feature_names": [
+        "mean",
+        "median",
+        "minimum",
+        "maximum",
+        "q10",
+        "q90",
+        "standard_deviation",
+        "range",
+        "interquartile_range",
+        "mean_absolute_deviation",
+        "first_to_last_change",
+        "absolute_first_to_last_change",
+        "mean_absolute_consecutive_change",
+        "maximum_absolute_consecutive_change",
+        "linear_slope",
+        "fraction_below_minus_one",
+        "second_half_minus_first_half_mean",
+        "reconstruction_mse",
+        "reconstruction_mae",
+        "maximum_absolute_reconstruction_error",
+        "early_half_reconstruction_mse",
+        "late_half_reconstruction_mse",
+        "late_minus_early_reconstruction_mse"
+      ],
+      "fit_runtime_seconds": 5.067820700001903,
+      "artifact": "models\\supervised\\stage_15\\hgb_unweighted_summary_plus_recon.joblib",
+      "artifact_sha256": "6adc376fb4cabee4f5338981f5f8326340da8ca46c86d05a8c50d426d7491921",
+      "customer_ROC_AUC": 0.738313825164744,
+      "customer_PR_AUC_average_precision": 0.26200635091488045
+    },
+    {
+      "representation": "SUMMARY_PLUS_FC",
+      "feature_count": 27,
+      "feature_names": [
+        "mean",
+        "median",
+        "minimum",
+        "maximum",
+        "q10",
+        "q90",
+        "standard_deviation",
+        "range",
+        "interquartile_range",
+        "mean_absolute_deviation",
+        "first_to_last_change",
+        "absolute_first_to_last_change",
+        "mean_absolute_consecutive_change",
+        "maximum_absolute_consecutive_change",
+        "linear_slope",
+        "fraction_below_minus_one",
+        "second_half_minus_first_half_mean",
+        "reconstruction_mse",
+        "reconstruction_mae",
+        "maximum_absolute_reconstruction_error",
+        "early_half_reconstruction_mse",
+        "late_half_reconstruction_mse",
+        "late_minus_early_reconstruction_mse",
+        "latent_1",
+        "latent_2",
+        "latent_3",
+        "latent_4"
+      ],
+      "fit_runtime_seconds": 5.443026699998882,
+      "artifact": "models\\supervised\\stage_15\\hgb_unweighted_summary_plus_fc.joblib",
+      "artifact_sha256": "18d41f27505bf2bd897519883538c1cb074d2b70f15b330374a6b666a29ec53e",
+      "customer_ROC_AUC": 0.7384542725523592,
+      "customer_PR_AUC_average_precision": 0.2630432266256381
+    }
+  ],
+  "best_pre_registered_hybrid_for_importance": "SUMMARY_PLUS_FC",
+  "central_customer_delta": {
+    "comparison": "SUMMARY_PLUS_FC minus SUMMARY_ONLY",
+    "ROC_AUC": -0.00024264865046719208,
+    "PR_AUC_average_precision": 0.0017233772686293114,
+    "F1": -0.0015053522113623874
+  },
+  "bootstrap": {
+    "unit": "customer",
+    "paired": true,
+    "replicates": 2000,
+    "seed": 42,
+    "comparison": "SUMMARY_PLUS_FC minus SUMMARY_ONLY",
+    "ROC_AUC_delta": {
+      "bootstrap_mean": -0.00025572516232595655,
+      "bootstrap_standard_deviation": 0.0008183808504610394,
+      "percentile_95_CI": [
+        -0.001825371552346275,
+        0.001353068612533287
+      ],
+      "proportion_above_zero": 0.378
+    },
+    "average_precision_delta": {
+      "bootstrap_mean": 0.0016678964603239785,
+      "bootstrap_standard_deviation": 0.0011249909694543271,
+      "percentile_95_CI": [
+        -0.00048488920181573926,
+        0.0039870867865442056
+      ],
+      "proportion_above_zero": 0.935
+    }
+  },
+  "inherited_validation_reuse_limitation": "The frozen Stage 4 checkpoint was selected at epoch 30 using reconstruction MSE on FLAG=0 validation windows. Stage 15 performs no new FC fitting and does not use the validation-derived P95 threshold, but every FC-derived feature inherits this historical normal-validation exposure. Hybrid validation deltas may therefore be optimistic and are diagnostic rather than an independent external estimate.",
+  "test_access": {
+    "loaded_splits": [
+      "train",
+      "val"
+    ],
+    "test_features_loaded": false,
+    "test_labels_loaded": false,
+    "test_predictions_loaded_or_inspected": false,
+    "historical_test_metrics_used": false
+  }
+}

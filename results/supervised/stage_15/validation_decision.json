@@ -1,0 +1,29 @@
+{
+  "stage": "Stage 15 — validation-only FC complementary-value decision",
+  "classification": "C. NO COMPLEMENTARY VALUE",
+  "decision": "Reject frozen-FC reconstruction and latent features from the current AMP detector representation; retain Stage 14 SUMMARY_ONLY unweighted HistGradientBoosting as the frozen supervised baseline.",
+  "evidence": {
+    "SUMMARY_ONLY_customer_ROC_AUC": 0.7386969212028264,
+    "SUMMARY_ONLY_customer_average_precision": 0.2613198493570088,
+    "SUMMARY_ONLY_customer_F1": 0.3032490974729241,
+    "SUMMARY_PLUS_FC_customer_ROC_AUC": 0.7384542725523592,
+    "SUMMARY_PLUS_FC_customer_average_precision": 0.2630432266256381,
+    "SUMMARY_PLUS_FC_customer_F1": 0.3017437452615618,
+    "delta_hybrid_minus_summary": {
+      "ROC_AUC": -0.00024264865046719208,
+      "average_precision": 0.0017233772686293114,
+      "F1": -0.0015053522113623319
+    },
+    "paired_customer_bootstrap_95_percent_CI": {
+      "ROC_AUC_delta": [-0.001825371552346275, 0.001353068612533287],
+      "average_precision_delta": [-0.00048488920181573926, 0.0039870867865442056]
+    },
+    "redundancy": "Reconstruction MSE/MAE/max error have absolute Spearman correlations of approximately 0.946–0.962 with Stage 14 variability/change summaries; latent_3 has Spearman 0.972 with mean.",
+    "importance": "FC features receive small conditional permutation importance, but their combined inclusion does not improve customer ROC-AUC and yields only a microscopic, uncertain AP change."
+  },
+  "inherited_limitation": "The frozen FC checkpoint was historically selected using normal-validation reconstruction MSE, so FC-derived validation deltas inherit validation reuse and may be optimistic.",
+  "paper_relevance": "FC/CNN/LSTM reconstruction experiments remain evidence that anomaly reconstruction was investigated in controlled ablations and rejected for the detector because it did not add incremental value beyond supervised behavioural summaries.",
+  "recommended_stage_16_question": "Does a direct customer-level formulation using compact temporal aggregates of the frozen 17 window summaries improve discrimination over mean aggregation of window-level probabilities?",
+  "test_evaluation_performed": false,
+  "test_policy": "TEST NOT ACCESSED DURING STAGE 15; remains closed."
+}

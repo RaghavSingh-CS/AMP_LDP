@@ -1,0 +1,18 @@
+{
+  "stage": "Stage 13 \u2014 validation-only frozen supervised decision",
+  "created_before_test_inference": true,
+  "test_features_or_per_window_labels_loaded": false,
+  "selection_rule": "highest validation window ROC-AUC, then window average precision, among non-dummy models; no test information",
+  "selected_model": "hist_gradient_boosting_balanced",
+  "selected_model_artifact": "models\\supervised\\stage_13\\hist_gradient_boosting_balanced.joblib",
+  "selected_model_sha256": "8a1e85f17556eee5c3eaf935b2edbd3a6071326dcc78749dc1968d13f3dba7ab",
+  "window_threshold": 0.608718870015863,
+  "window_threshold_source": "maximum validation positive-class F1",
+  "customer_aggregation": "mean predicted probability over usable windows",
+  "customer_mean_threshold": 0.5251327815829091,
+  "customer_threshold_source": "maximum validation customer-level positive-class F1",
+  "validation_window_ROC_AUC": 0.6628467169162602,
+  "validation_window_PR_AUC_average_precision": 0.20361816505488178,
+  "test_evaluation_authorized_by_methodology": true,
+  "methodology_basis": "Stages 6, 8, 10, and 12 establish one frozen test evaluation after validation-only selection. Stage 13 follows that policy for the selected supervised model only."
+}

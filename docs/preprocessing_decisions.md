@@ -702,3 +702,148 @@ artifacts are under `results/lstm_autoencoder/stride_30/` and
 The next research stage should investigate one new pre-registered modeling
 hypothesis with the frozen FC baseline retained for comparison; this stage does
 not implement a GAN, ensemble, longer sequences, or hyperparameter search.
+
+## Stage 13 — Leakage-Safe Supervised Signal Diagnostic
+
+Stage 13 preserves the Stage 1–3 preprocessing, authoritative customer split,
+Stage 3C usable-window rule, trained reconstruction models, and all prior
+thresholds and outputs. It asks whether the existing 30-value scaled consumption
+windows contain supervised signal under customer-level `FLAG` labels. The only
+model features are the 30 ordered consumption values. IDs, target, split fields,
+window/date/index metadata, missingness information, and prior model outputs are
+excluded. Logistic model standardization is fitted on training windows only.
+
+The exact customer population is 42,367: 38,755 normal and 3,612 theft-labelled
+(8.525503%). Train/validation/test customer counts are 29,656/6,355/6,356, with
+zero overlap. Their usable stride-30 window counts are 768,923/165,541/165,020.
+One theft-labelled training customer has no usable window after the previously
+adopted Stage 3C rule. `FLAG` remains customer-level and is propagated to each
+window; it does not confirm theft within a particular window.
+
+Five fixed baselines use seed 42: dummy prior, unweighted/balanced logistic
+regression, and unweighted/balanced HistGradientBoosting. No resampling,
+synthetic augmentation, neural model, or hyperparameter search is used.
+Threshold-dependent validation metrics use a per-model validation-F1-maximizing
+threshold. Customer diagnostics aggregate usable-window probabilities by mean
+and freeze a separate validation-F1-maximizing threshold.
+
+Validation-only selection uses highest window ROC-AUC then average precision and
+chooses balanced HistGradientBoosting. Its validation window ROC-AUC/average
+precision/F1 are `0.662847`/`0.203618`/`0.243040`; mean-probability customer
+values are `0.712044`/`0.222600`/`0.275208`. The model hash and window/customer
+thresholds `0.608718870015863`/`0.5251327815829091` were frozen before test
+inference. Aggregate test counts had been inspected solely for the requested
+split audit; no test feature matrix or per-window label was loaded before the
+freeze.
+
+Following the one-time frozen-test policy established in Stages 6, 8, 10, and
+12, only the selected supervised model was evaluated on test. Window
+ROC-AUC/average precision/F1 are `0.657693`/`0.205305`/`0.257316`; customer-mean
+values are `0.702314`/`0.219317`/`0.280340`. Class weighting changes tree window
+ROC-AUC by only `+0.001154` and does not materially create the signal.
+
+The diagnostic supports a controlled supervised or hybrid research track: the
+selected validation window ROC-AUC is `0.098536` above the FC reconstruction
+validation ROC-AUC. Absolute precision/recall remain modest, and weak labels
+limit window-level interpretation. The recommended next stage is a
+pre-registered label/window-formulation and compact consumption-feature study,
+potentially followed by a validation-only test of whether the frozen FC score
+adds incremental supervised value. Stage 13 does not claim causal detection or
+deployment readiness. Full evidence is under `results/supervised/stage_13/`.
+
+## Stage 14 — Behavioural Representation Analysis
+
+Stage 14 chooses representation analysis instead of another neural network or
+GAN because Stage 13 already established moderate supervised signal while the
+earlier FC/CNN/LSTM sequence showed that added reconstruction complexity did not
+improve discrimination. From Stage 14 onward, test is closed for development.
+This stage uses train and validation only.
+
+Before validation scoring, Stage 14 pre-registered 17 deterministic features
+derived only from each existing 30-value scaled consumption window: `mean`,
+`median`, `minimum`, `maximum`, `q10`, `q90`, `standard_deviation`, `range`,
+`interquartile_range`, `mean_absolute_deviation`, `first_to_last_change`,
+`absolute_first_to_last_change`, `mean_absolute_consecutive_change`,
+`maximum_absolute_consecutive_change`, `linear_slope`,
+`fraction_below_minus_one`, and `second_half_minus_first_half_mean`.
+
+The compared representations are raw 30 values, summaries only, and their
+47-column concatenation. Each uses the fixed Stage 13 logistic regression and
+HistGradientBoosting configurations with unweighted and balanced variants. IDs,
+labels, split/date/window metadata, missingness information, earlier predictions
+and reconstruction outputs, and all test information are excluded. Logistic
+standardization is fitted on training windows only. All engineered train and
+validation values are finite, no feature is constant, and no clipping or new
+transformation is introduced.
+
+All raw-only validation metrics reproduce Stage 13 within `1e-12`. Summary
+representations improve customer ROC-AUC and average precision across both model
+families and both weight settings. Unweighted HGB improves from raw-only
+`0.717956`/`0.240969` to summary-only `0.738697`/`0.261320`; combined is slightly
+lower at `0.737707`/`0.260590`. Balanced HGB shows a similar raw-to-summary gain
+from `0.712044`/`0.222600` to `0.733311`/`0.242302`. Logistic gains are also
+consistent. Therefore summary-only unweighted HGB becomes the validation-frozen
+supervised baseline for the next research stage.
+
+Validation permutation importance for the selected tree is led by `maximum`,
+`mean_absolute_consecutive_change`, `median`, `minimum`, and
+`maximum_absolute_consecutive_change`. The apparent signal is primarily level
+and local variability/jumps; trend, half-window shift, and relative-low fraction
+are weak conditional contributors. Correlation among summaries and possible
+customer/load confounding prevent causal theft interpretations.
+
+Stage 14 did not load test features, labels, or predictions and did not use the
+historical Stage 13 test result for selection. The recommended Stage 15 question
+is whether frozen FC autoencoder-derived signals add incremental validation
+information beyond summary-only HGB. Stage 15 is not executed. Full evidence is
+under `results/supervised/stage_14/`.
+
+## Stage 15 — Frozen-FC Hybrid Ablation
+
+Stage 15 tests the selected stride-30 FC autoencoder as a complementary
+representation rather than treating reconstruction as the final anomaly
+detector. The unchanged checkpoint is
+`models/autoencoder/ae_stride30_baseline.pt`, SHA-256
+`421f1e2cdf96da1bd3231cd0baa750746d89757700d63ac428f9167f69237fa4`.
+It is the 1,362-parameter `30→16→8→4→8→16→30` model trained on 708,308
+normal training windows and selected at epoch 30 using normal-validation MSE.
+The latter creates inherited validation reuse for all FC-derived Stage 15
+features; results are diagnostic and may be optimistic. No FC retraining or
+adaptation occurs, and the validation-derived P95 threshold is not a feature.
+
+Before scoring, ten FC-derived features were pre-registered: reconstruction
+MSE, MAE, maximum absolute error, early-half MSE, late-half MSE,
+late-minus-early MSE, and the four frozen ReLU bottleneck coordinates. The
+controlled unweighted HGB ablation compares exact Stage 14 summaries,
+reconstruction-only, all FC features, summaries plus reconstruction, and
+summaries plus all FC features. Extraction is deterministic CPU inference with
+gradients disabled and no label input. All 165,541 validation window IDs,
+customer IDs, labels, and computed MSE values align with saved Stage 4 output;
+maximum MSE difference is exactly zero. Stage 14 summary-only metrics reproduce
+within `1e-12`.
+
+Customer ROC-AUC/AP/F1 are `0.738697`/`0.261320`/`0.303249` for summary-only,
+`0.663819`/`0.180220`/`0.238210` for reconstruction-only,
+`0.714750`/`0.240460`/`0.288013` for all FC features, and
+`0.738454`/`0.263043`/`0.301744` for the complete hybrid. Thus full-hybrid
+deltas are `-0.000243` ROC-AUC, `+0.001723` AP, and `-0.001506` F1. A seeded
+2,000-replicate paired customer bootstrap gives 95% intervals
+`[-0.001825, 0.001353]` for ROC-AUC delta and
+`[-0.000485, 0.003987]` for AP delta.
+
+FC features have small conditional importance in the hybrid and substantial
+redundancy with Stage 14 summaries: reconstruction MSE, maximum error, and MAE
+have Spearman correlations around `0.946–0.962` with variability/change
+summaries, while latent coordinate 3 correlates `0.972` with mean. The outcome
+is **C — no complementary value**. The isolated microscopic AP increase does
+not justify frozen neural inference, especially with flat/worse ROC-AUC and F1
+and inherited validation reuse. The FC branch is rejected from the current AMP
+detector; Stage 14 summary-only unweighted HGB remains frozen.
+
+For paper relevance, FC/CNN/LSTM experiments remain controlled evidence that
+reconstruction anomaly modelling was investigated and rejected for lack of
+incremental detection value. The recommended Stage 16 question is whether a
+direct customer-level model using compact temporal aggregates of the frozen 17
+window summaries improves over mean aggregation of window probabilities. Stage
+16 is not executed. **TEST NOT ACCESSED DURING STAGE 15.** Full evidence is
+under `results/supervised/stage_15/`.
