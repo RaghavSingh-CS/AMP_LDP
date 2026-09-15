@@ -1,0 +1,32 @@
+{
+  "stage": "Stage 21 pre-scoring environment/package audit",
+  "packages": {
+    "scikit_learn": {
+      "available": true,
+      "version": "1.9.0"
+    },
+    "lightgbm": {
+      "available": true,
+      "version": "4.7.0"
+    },
+    "xgboost": {
+      "available": false,
+      "included": false,
+      "reason": "Absent from the established environment; installing another compiled boosting runtime is not a lightweight requirement for this bounded panel."
+    },
+    "catboost": {
+      "available": false,
+      "included": false,
+      "reason": "Absent from the established environment; installing another large compiled boosting runtime is not a lightweight requirement for this bounded panel."
+    }
+  },
+  "environment_modified": false,
+  "package_installation_performed": false,
+  "included_panel": [
+    "LOGISTIC_REGRESSION",
+    "RANDOM_FOREST",
+    "HGB",
+    "LIGHTGBM"
+  ],
+  "included_fixed_ensemble": "BOOST_MEAN_HGB_LIGHTGBM"
+}

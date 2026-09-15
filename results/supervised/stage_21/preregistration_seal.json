@@ -1,0 +1,7 @@
+{
+  "preregistration_path": "results/supervised/stage_21/preregistered_benchmark_specification.json",
+  "preregistration_sha256": "2db791b49c1d97b184dced16c719e361ecad543621d04f13d9ba6843f87473c0",
+  "audit_sha256": "98e43f8f3afd47230764dc8615dcb88726ddb175531bc795c6f1eda4a706bb68",
+  "environment_audit_sha256": "f2eb5698be6617fbd248e30537ce64bb0820064051cb9082253127e5c3c5b9be",
+  "frozen_before_DEV_VAL_scoring": true
+}

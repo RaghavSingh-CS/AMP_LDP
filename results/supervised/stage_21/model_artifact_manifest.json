@@ -1,0 +1,49 @@
+{
+  "models": [
+    {
+      "model": "HGB",
+      "path": "models/supervised/stage_21/hgb.joblib",
+      "sha256": "42a0192d3ed2c8d577c354bfc5efefceea2bc730e65398e345905ab88a887adb",
+      "serialized_bytes": 274208,
+      "meaningful_parameter_count": null,
+      "tree_count": 100,
+      "leaf_count": 1500
+    },
+    {
+      "model": "LOGISTIC_REGRESSION",
+      "path": "models/supervised/stage_21/logistic_regression.joblib",
+      "sha256": "4f9cdaeb0170e96eeacd86fa2f584c82f573986848f9fb050a192ab9082ae484",
+      "serialized_bytes": 2865,
+      "meaningful_parameter_count": 49,
+      "tree_count": null,
+      "leaf_count": null
+    },
+    {
+      "model": "RANDOM_FOREST",
+      "path": "models/supervised/stage_21/random_forest.joblib",
+      "sha256": "b302c64f2d539fa2293c0352d276469de4bd7417795aaf826e52119dd875a985",
+      "serialized_bytes": 39249641,
+      "meaningful_parameter_count": null,
+      "tree_count": 300,
+      "leaf_count": 244731
+    },
+    {
+      "model": "LIGHTGBM",
+      "path": "models/supervised/stage_21/lightgbm.joblib",
+      "sha256": "d7f3f7b4d586d942d28ebc5a5be400bbbc30f688751d82eb2e0c7db020344850",
+      "serialized_bytes": 360326,
+      "meaningful_parameter_count": null,
+      "tree_count": 200,
+      "leaf_count": 3000
+    },
+    {
+      "model": "BOOST_MEAN_HGB_LIGHTGBM",
+      "path": "models/supervised/stage_21/boost_mean_hgb_lightgbm.joblib",
+      "sha256": "1d14b51194bc421dde4b341441dea67d99890a6fd318c23fb8db12d4ca493f18",
+      "serialized_bytes": 90,
+      "meaningful_parameter_count": null,
+      "tree_count": null,
+      "leaf_count": null
+    }
+  ]
+}

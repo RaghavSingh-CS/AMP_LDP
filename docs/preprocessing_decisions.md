@@ -1459,3 +1459,54 @@ class balancing, or post-hoc comparison invention occurred. The frozen Stage
 **CONFIRMATION NOT ACCESSED DURING STAGE 20B.**
 
 **FINAL_TEST NOT ACCESSED DURING STAGE 20B.**
+
+## Stage 21 — Independent strong supervised benchmark
+
+Stage 21 pre-registered a minimal classifier benchmark on the unchanged 48
+Stage 16 customer features before scoring. Every model used the same 23,724
+`DEV_TRAIN` customers and 5,931 `DEV_VAL` customers with zero overlap. The panel
+comprised the established logistic regression, one fixed 300-tree random forest,
+the exact Stage 17B HGB, the exact Stage 17B LightGBM, and a pre-specified
+arithmetic mean of HGB and LightGBM probabilities. XGBoost and CatBoost were
+absent and were excluded without changing the environment.
+
+The HGB reconstruction passed its mandatory stop gate: its maximum probability
+difference from the frozen Stage 17B predictions was
+`9.71e-17`, and ROC-AUC/AP reproduced exactly at
+`0.788831`/`0.359795`. Logistic regression reached
+`0.752240`/`0.262321`; random forest `0.779494`/`0.349708`; LightGBM
+`0.785410`/`0.358024`; and the fixed boosting mean
+`0.788887`/`0.361659`.
+
+The pre-registered bootstrap rule selected LightGBM as the strongest non-HGB
+individual for both primary metrics. LightGBM minus HGB was `-0.003421` ROC-AUC
+(paired 2,000-customer 95% interval `[-0.009190, +0.002134]`) and
+`-0.001771` AP (`[-0.013817, +0.011291]`). The fixed ensemble minus HGB was
+`+0.000057` ROC-AUC (`[-0.002757, +0.002828]`) and `+0.001865` AP
+(`[-0.004723, +0.008461]`). Neither an individual model nor the ensemble met
+the frozen material-superiority rule.
+
+Decision **B — STRONG CONVENTIONAL LEARNERS ESSENTIALLY EQUIVALENT** records
+that HGB and LightGBM cluster inside the practical margins. This strengthens the
+interpretation that the AMP customer representation, rather than a uniquely
+favourable classifier, carries the result. It does not establish protocol-
+equivalent superiority over published SGCC studies and is not a state-of-the-art
+claim.
+
+Stage 19 found substantial family redundancy, and Stage 21 now finds boosting-
+family equivalence. The frozen next-step rule therefore recommends exactly one
+final pre-specified compact-representation experiment; it does not justify more
+classifier or architecture hunting.
+
+The first sealed execution passed HGB reproduction, then stopped on an overly
+strict bitwise repeat-inference assertion used only for timing. That assertion
+was changed to a `1e-12` absolute tolerance and the correction was documented;
+no scientific configuration or preregistration field changed.
+
+No adaptive tuning, feature selection, resampling, synthetic data, threshold
+tuning, learned ensemble, or post-hoc model configuration occurred. Full
+evidence is under `results/supervised/stage_21/`.
+
+**CONFIRMATION NOT ACCESSED DURING STAGE 21.**
+
+**FINAL_TEST NOT ACCESSED DURING STAGE 21.**

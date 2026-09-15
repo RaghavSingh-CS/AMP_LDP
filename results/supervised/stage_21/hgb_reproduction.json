@@ -1,0 +1,10 @@
+{
+  "stage": "Stage 21 HGB reproduction stop gate",
+  "passed_before_new_benchmark_fit": true,
+  "maximum_absolute_probability_difference": 9.71445146547012e-17,
+  "ROC_AUC": 0.7888308218953116,
+  "AP": 0.35979459032174654,
+  "ROC_AUC_difference": 0.0,
+  "AP_difference": 0.0,
+  "tolerance": 1e-12
+}

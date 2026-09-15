@@ -1,0 +1,6 @@
+model,fit_seconds,inference_seconds,serialized_bytes,meaningful_parameter_count,tree_count,leaf_count,path,sha256
+HGB,1.16014360000554,0.01743500000156928,274208,,100.0,1500.0,models/supervised/stage_21/hgb.joblib,42a0192d3ed2c8d577c354bfc5efefceea2bc730e65398e345905ab88a887adb
+LOGISTIC_REGRESSION,0.2955967000016244,0.0022366000048350543,2865,49.0,,,models/supervised/stage_21/logistic_regression.joblib,4f9cdaeb0170e96eeacd86fa2f584c82f573986848f9fb050a192ab9082ae484
+RANDOM_FOREST,6.9129604999907315,0.12938820000272244,39249641,,300.0,244731.0,models/supervised/stage_21/random_forest.joblib,b302c64f2d539fa2293c0352d276469de4bd7417795aaf826e52119dd875a985
+LIGHTGBM,1.2854566000023624,0.06349689999478869,360326,,200.0,3000.0,models/supervised/stage_21/lightgbm.joblib,d7f3f7b4d586d942d28ebc5a5be400bbbc30f688751d82eb2e0c7db020344850
+BOOST_MEAN_HGB_LIGHTGBM,0.0,0.11086549999890849,90,,,,models/supervised/stage_21/boost_mean_hgb_lightgbm.joblib,1d14b51194bc421dde4b341441dea67d99890a6fd318c23fb8db12d4ca493f18

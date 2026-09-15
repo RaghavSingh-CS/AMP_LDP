@@ -262,3 +262,19 @@ AMP development experiment matrix should now be frozen. `CONFIRMATION` and
     python -m src.analysis.run_stage20b_label_formulation_controls --prepare
     python -m src.analysis.run_stage20b_label_formulation_controls --evaluate
 
+Stage 21 freezes an independent strong supervised benchmark on the same 48
+customer features for every model. Exact HGB reproduction passes before the new
+panel is interpreted. HGB (`0.788831`/`0.359795` ROC-AUC/AP), LightGBM
+(`0.785410`/`0.358024`), and their fixed arithmetic probability mean
+(`0.788887`/`0.361659`) are statistically and practically close; neither
+LightGBM nor the ensemble materially beats HGB under paired bootstrap. Random
+forest is modestly lower and logistic regression clearly lower. Decision B
+supports classifier robustness of the customer representation rather than a
+special HGB-only result. With Stage 19 redundancy, the only recommended
+remaining development work is one pre-specified compact-representation
+experiment. `CONFIRMATION` and `FINAL_TEST` were not accessed. See
+`results/supervised/stage_21/stage_21_report.md`.
+
+    python -m src.analysis.run_stage21_supervised_benchmark --prepare
+    python -m src.analysis.run_stage21_supervised_benchmark --evaluate
+

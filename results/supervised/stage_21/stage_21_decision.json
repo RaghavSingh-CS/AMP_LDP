@@ -1,0 +1,41 @@
+{
+  "stage": "Stage 21 independent strong supervised benchmark decision",
+  "decision": "B",
+  "decision_label": "STRONG CONVENTIONAL LEARNERS ESSENTIALLY EQUIVALENT",
+  "decision_policy": {
+    "D": "The fixed ensemble is materially stronger than HGB.",
+    "C": "D is false and a selected individual benchmark is materially stronger than HGB.",
+    "A": "D/C are false and HGB is materially stronger than both selected strongest individual references.",
+    "B": "D/C/A are false and LightGBM is boosting-equivalent to HGB.",
+    "E": "None of D/C/A/B applies.",
+    "evaluation_order": [
+      "D",
+      "C",
+      "A",
+      "B",
+      "E"
+    ]
+  },
+  "evidence": {
+    "bootstrap_selected_models": [
+      "LIGHTGBM",
+      "BOOST_MEAN_HGB_LIGHTGBM"
+    ],
+    "materially_stronger_individuals": [],
+    "ensemble_materially_stronger": false,
+    "HGB_materially_stronger_than_selected_individuals": false,
+    "LightGBM_within_frozen_equivalence_margins": true
+  },
+  "paper_implication": "HGB and LightGBM cluster within the frozen practical margins, supporting the interpretation that AMP's customer representation, rather than a uniquely favorable classifier, carries the development result.",
+  "literature_claim_boundary": "Motivates strong tabular baselines only; no protocol-equivalent published comparison and no state-of-the-art claim.",
+  "next_step": "RUN ONE FINAL COMPACT-REPRESENTATION EXPERIMENT",
+  "next_step_reason": "Stage 19 found strong feature-family redundancy and Stage 21 finds classifier-level boosting equivalence, jointly motivating one pre-specified simplification test rather than more model hunting.",
+  "adaptive_tuning": false,
+  "feature_or_representation_change": false,
+  "resampling_or_synthetic_data": false,
+  "threshold_tuning": false,
+  "learned_ensemble": false,
+  "frozen_stage17b_detector_modified": false,
+  "confirmation_accessed": false,
+  "final_test_accessed": false
+}

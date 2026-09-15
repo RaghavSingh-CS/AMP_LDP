@@ -1,0 +1,303 @@
+{
+  "stage": "Stage 21 \u2014 independent strong supervised benchmark",
+  "base_head_before_stage": "17ef49343f094a72fbf48bf27282f149b25b8315",
+  "created_before_any_new_benchmark_DEV_VAL_scoring": true,
+  "research_question": "Is the confirmed AMP customer-level behavioural result competitive against independently specified strong conventional supervised learners under an exact representation-matched comparison?",
+  "scientific_independence": "No published pipeline is reproduced. Literature motivates only the inclusion of conventional strong tabular learners.",
+  "audit": {
+    "path": "results/supervised/stage_21/pre_stage_audit.json",
+    "sha256": "98e43f8f3afd47230764dc8615dcb88726ddb175531bc795c6f1eda4a706bb68"
+  },
+  "environment_audit": {
+    "path": "results/supervised/stage_21/environment_package_audit.json",
+    "sha256": "f2eb5698be6617fbd248e30537ce64bb0820064051cb9082253127e5c3c5b9be"
+  },
+  "frozen_inputs": {
+    "stage17a_manifest": {
+      "path": "results/governance/stage_17a/research_protocol_manifest.csv",
+      "sha256": "dae7dba53260a3af6b8e2ddd904b5c7867c3321f27cdff5af5e4060b97c348c0"
+    },
+    "historical_split": {
+      "path": "data/processed/split_manifest.parquet",
+      "sha256": "6ad1132bbaef0c6f6ccc5bdc973844b805c4291612ac7170ec165f273835959c"
+    },
+    "stage16_feature_specification": {
+      "path": "results/supervised/stage_16/preregistered_config.json",
+      "sha256": "a722299d6207fce06180f71bf96717ce58948e127a85440e04f721c1616fcdf3"
+    },
+    "stage17b_configuration": {
+      "path": "results/supervised/stage_17b/preregistered_benchmark_config.json",
+      "sha256": "605eb1f482123a24a14c0929c951f400c37b3fbc2d2bb2e4d46d2ce834698046"
+    },
+    "stage17b_training_summary": {
+      "path": "results/supervised/stage_17b/training_summary.json",
+      "sha256": "560e8602ce0d572a2e305efcebe525ef3f1174aad0e6f5a3209c2b33fff4865a"
+    },
+    "stage17b_decision": {
+      "path": "results/supervised/stage_17b/validation_decision.json",
+      "sha256": "11e15f18e2521ffed8e7dbaacee469284ee356acedea1d8f34ffcf48785a68fa"
+    },
+    "stage17b_model": {
+      "path": "models/supervised/stage_17b/hist_gradient_boosting.joblib",
+      "sha256": "67ed869858185d8f71d99b3dce8b358c43793178185e5aa50e6997d11b56974b"
+    },
+    "stage17b_predictions": {
+      "path": "results/supervised/stage_17b/dev_val_customer_probabilities.csv",
+      "sha256": "d98a7551a763a5f1e78193786012d86a96c593a73d770fa625a0e09aaac71aea"
+    },
+    "stage17b_metrics": {
+      "path": "results/supervised/stage_17b/dev_val_metrics.csv",
+      "sha256": "9deeb02106b361857b9c4eead2bf9cdd25affd232e4848275129182341a7b083"
+    },
+    "stage19_decision": {
+      "path": "results/supervised/stage_19/family_ablation_decision.json",
+      "sha256": "ef6d9830c5b7bb191fdfc6be97f1ba47381d579677dc24e322eef8751ae92ee6"
+    },
+    "stage19_report": {
+      "path": "results/supervised/stage_19/stage_19_report.md",
+      "sha256": "d2490d8bc43159cccf5efa2c7d3341151925b60f0e390262dd5e970ebab1464c"
+    },
+    "stage20b_decision": {
+      "path": "results/supervised/stage_20b/stage_20b_decision.json",
+      "sha256": "7aa026c6b22c9e1e1a5a0fc9fd53177d0b433be5992dc725aa2014fa9df6addb"
+    },
+    "stage20b_report": {
+      "path": "results/supervised/stage_20b/stage_20b_report.md",
+      "sha256": "97aded0bbea32a0f76223c64cdac6c97970404f7df86a34e09d2f2fdc8febd4f"
+    }
+  },
+  "data_roles": {
+    "fit": "DEV_TRAIN only",
+    "evaluate_once": "DEV_VAL only",
+    "closed": [
+      "CONFIRMATION",
+      "FINAL_TEST"
+    ]
+  },
+  "representation": {
+    "feature_count": 48,
+    "ordered_names": [
+      "mean__customer_median",
+      "mean__customer_q10",
+      "mean__customer_q90",
+      "median__customer_median",
+      "median__customer_q10",
+      "median__customer_q90",
+      "minimum__customer_median",
+      "minimum__customer_q10",
+      "minimum__customer_q90",
+      "maximum__customer_median",
+      "maximum__customer_q10",
+      "maximum__customer_q90",
+      "q10__customer_median",
+      "q10__customer_q10",
+      "q10__customer_q90",
+      "q90__customer_median",
+      "q90__customer_q10",
+      "q90__customer_q90",
+      "standard_deviation__customer_median",
+      "standard_deviation__customer_q90",
+      "range__customer_median",
+      "range__customer_q90",
+      "interquartile_range__customer_median",
+      "interquartile_range__customer_q90",
+      "mean_absolute_deviation__customer_median",
+      "mean_absolute_deviation__customer_q90",
+      "mean_absolute_consecutive_change__customer_median",
+      "mean_absolute_consecutive_change__customer_q90",
+      "maximum_absolute_consecutive_change__customer_median",
+      "maximum_absolute_consecutive_change__customer_q90",
+      "first_to_last_change__customer_mean",
+      "first_to_last_change__customer_standard_deviation",
+      "absolute_first_to_last_change__customer_mean",
+      "absolute_first_to_last_change__customer_standard_deviation",
+      "linear_slope__customer_mean",
+      "linear_slope__customer_standard_deviation",
+      "second_half_minus_first_half_mean__customer_mean",
+      "second_half_minus_first_half_mean__customer_standard_deviation",
+      "fraction_below_minus_one__customer_mean",
+      "fraction_below_minus_one__customer_q90",
+      "maximum__training_q90_exceedance_fraction",
+      "standard_deviation__training_q90_exceedance_fraction",
+      "mean_absolute_consecutive_change__training_q90_exceedance_fraction",
+      "maximum_absolute_consecutive_change__training_q90_exceedance_fraction",
+      "mean__late_third_minus_early_third",
+      "maximum__late_third_minus_early_third",
+      "standard_deviation__late_third_minus_early_third",
+      "mean_absolute_consecutive_change__late_third_minus_early_third"
+    ],
+    "same_matrix_for_every_main_model": true,
+    "new_feature_engineering": false,
+    "feature_selection": false,
+    "resampling_or_synthetic_data": false
+  },
+  "models": {
+    "LOGISTIC_REGRESSION": {
+      "implementation": "sklearn Pipeline(StandardScaler, LogisticRegression)",
+      "parameters": {
+        "C": 1.0,
+        "solver": "lbfgs",
+        "max_iter": 300,
+        "class_weight": null,
+        "random_state": 42
+      },
+      "scaling": "StandardScaler fitted on DEV_TRAIN customers only"
+    },
+    "RANDOM_FOREST": {
+      "implementation": "sklearn RandomForestClassifier",
+      "parameters": {
+        "n_estimators": 300,
+        "criterion": "gini",
+        "max_depth": null,
+        "min_samples_split": 2,
+        "min_samples_leaf": 5,
+        "max_features": "sqrt",
+        "bootstrap": true,
+        "class_weight": null,
+        "n_jobs": -1,
+        "random_state": 42
+      },
+      "justification": "A conventional moderate 300-tree bagging reference with sqrt feature subsampling and minimum leaf size 5; fixed independently of DEV_VAL."
+    },
+    "HGB": {
+      "implementation": "sklearn HistGradientBoostingClassifier",
+      "parameters": {
+        "learning_rate": 0.1,
+        "max_iter": 100,
+        "max_leaf_nodes": 15,
+        "min_samples_leaf": 100,
+        "l2_regularization": 1.0,
+        "class_weight": null,
+        "early_stopping": false,
+        "random_state": 42
+      },
+      "status": "Exact frozen Stage 17B reference configuration"
+    },
+    "LIGHTGBM": {
+      "implementation": "lightgbm LGBMClassifier",
+      "parameters": {
+        "objective": "binary",
+        "n_estimators": 200,
+        "learning_rate": 0.05,
+        "num_leaves": 15,
+        "max_depth": -1,
+        "min_child_samples": 50,
+        "subsample": 1.0,
+        "colsample_bytree": 1.0,
+        "reg_lambda": 1.0,
+        "class_weight": null,
+        "random_state": 42,
+        "n_jobs": 1,
+        "deterministic": true,
+        "force_col_wise": true,
+        "verbosity": -1
+      },
+      "status": "Exact frozen Stage 17B configuration"
+    }
+  },
+  "excluded_packages": {
+    "XGBOOST": {
+      "available": false,
+      "included": false,
+      "reason": "Absent from the established environment; installing another compiled boosting runtime is not a lightweight requirement for this bounded panel."
+    },
+    "CATBOOST": {
+      "available": false,
+      "included": false,
+      "reason": "Absent from the established environment; installing another large compiled boosting runtime is not a lightweight requirement for this bounded panel."
+    }
+  },
+  "ensemble": {
+    "name": "BOOST_MEAN_HGB_LIGHTGBM",
+    "members": [
+      "HGB",
+      "LIGHTGBM"
+    ],
+    "score": "arithmetic mean of the two probabilities",
+    "fallback": "Skip only if exact HGB reproduction or LightGBM fitting fails for a documented implementation reason; do not replace members.",
+    "learned_weights_or_meta_model": false
+  },
+  "reproduction_stop_gate": {
+    "model": "HGB",
+    "reference_predictions": "results/supervised/stage_17b/dev_val_customer_probabilities.csv",
+    "expected_ROC_AUC": 0.7888308218953116,
+    "expected_AP": 0.35979459032174654,
+    "maximum_absolute_probability_or_metric_difference": 1e-12,
+    "action_on_failure": "Abort before fitting or interpreting any new benchmark model."
+  },
+  "metrics": {
+    "primary": [
+      "ROC_AUC",
+      "PR_AUC_average_precision"
+    ],
+    "secondary": [
+      "precision",
+      "recall",
+      "F1",
+      "TN",
+      "FP",
+      "FN",
+      "TP"
+    ],
+    "secondary_threshold": 0.5,
+    "threshold_status": "Fixed probability 0.5 for every model; descriptive only; never drives selection.",
+    "complexity": [
+      "serialized model bytes",
+      "meaningful parameter count",
+      "tree and leaf counts"
+    ],
+    "runtime": "Fit seconds and median of five post-warmup full-DEV_VAL predict_proba timings."
+  },
+  "primary_deltas": "Every model and the fixed ensemble minus HGB for ROC-AUC and AP.",
+  "bootstrap_selection": {
+    "individual_AP": "Highest DEV_VAL AP among LOGISTIC_REGRESSION, RANDOM_FOREST, LIGHTGBM; ties use NON_HGB_ORDER.",
+    "individual_ROC": "Highest DEV_VAL ROC-AUC among the same candidates; include separately only if different; ties use NON_HGB_ORDER.",
+    "ensemble": "BOOST_MEAN_HGB_LIGHTGBM",
+    "delta_direction": "selected benchmark or ensemble minus HGB",
+    "resamples": 2000,
+    "seed": 42,
+    "unit": "paired DEV_VAL customer",
+    "single_class_policy": "discard and continue deterministically",
+    "reported": [
+      "observed delta",
+      "mean delta",
+      "95% percentile interval",
+      "fraction below zero",
+      "fraction above zero"
+    ]
+  },
+  "materiality": {
+    "ROC_margin": 0.01,
+    "AP_margin": 0.02,
+    "materially_stronger": "Both observed deltas and both paired 95% lower bounds exceed zero, and observed ROC delta >= 0.01 or AP delta >= 0.02.",
+    "materially_weaker": "Both observed deltas and both paired 95% upper bounds are below zero, and observed ROC delta <= -0.01 or AP delta <= -0.02.",
+    "boosting_equivalent": "Absolute observed HGB delta is below 0.01 ROC and 0.02 AP and neither model is materially stronger."
+  },
+  "decision_policy": {
+    "D": "The fixed ensemble is materially stronger than HGB.",
+    "C": "D is false and a selected individual benchmark is materially stronger than HGB.",
+    "A": "D/C are false and HGB is materially stronger than both selected strongest individual references.",
+    "B": "D/C/A are false and LightGBM is boosting-equivalent to HGB.",
+    "E": "None of D/C/A/B applies.",
+    "evaluation_order": [
+      "D",
+      "C",
+      "A",
+      "B",
+      "E"
+    ]
+  },
+  "next_step_policy": {
+    "RUN_ONE_FINAL_COMPACT_REPRESENTATION_EXPERIMENT": "Only for decision B together with committed Stage 19 decision B, because classifier equivalence plus family redundancy jointly justify testing a pre-specified simplification.",
+    "FREEZE_RESEARCH_MATRIX_NOW": "For every other outcome unless a serious validity failure is discovered."
+  },
+  "prohibited_adaptations": [
+    "No confirmation/final-test access, copied literature pipeline, new feature engineering, feature selection, hyperparameter search, class resampling, SMOTE, GAN, learned stacking, learned ensemble weights, threshold hunting, or post-hoc model changes.",
+    "Do not modify the frozen 48-feature representation based on Stage 19.",
+    "Do not attempt another label-formulation experiment."
+  ],
+  "random_seeds": {
+    "models": 42,
+    "bootstrap": 42
+  }
+}

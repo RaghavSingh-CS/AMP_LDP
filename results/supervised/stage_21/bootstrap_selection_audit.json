@@ -1,0 +1,25 @@
+{
+  "selection_rule": {
+    "individual_AP": "Highest DEV_VAL AP among LOGISTIC_REGRESSION, RANDOM_FOREST, LIGHTGBM; ties use NON_HGB_ORDER.",
+    "individual_ROC": "Highest DEV_VAL ROC-AUC among the same candidates; include separately only if different; ties use NON_HGB_ORDER.",
+    "ensemble": "BOOST_MEAN_HGB_LIGHTGBM",
+    "delta_direction": "selected benchmark or ensemble minus HGB",
+    "resamples": 2000,
+    "seed": 42,
+    "unit": "paired DEV_VAL customer",
+    "single_class_policy": "discard and continue deterministically",
+    "reported": [
+      "observed delta",
+      "mean delta",
+      "95% percentile interval",
+      "fraction below zero",
+      "fraction above zero"
+    ]
+  },
+  "selected_models": [
+    "LIGHTGBM",
+    "BOOST_MEAN_HGB_LIGHTGBM"
+  ],
+  "attempts": 2000,
+  "valid_replicates": 2000
+}

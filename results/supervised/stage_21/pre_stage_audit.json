@@ -1,0 +1,120 @@
+{
+  "stage": "Stage 21 pre-scoring audit",
+  "base_head": "17ef49343f094a72fbf48bf27282f149b25b8315",
+  "git_clean_before_stage": true,
+  "frozen_inputs": {
+    "stage17a_manifest": {
+      "path": "results/governance/stage_17a/research_protocol_manifest.csv",
+      "sha256": "dae7dba53260a3af6b8e2ddd904b5c7867c3321f27cdff5af5e4060b97c348c0"
+    },
+    "historical_split": {
+      "path": "data/processed/split_manifest.parquet",
+      "sha256": "6ad1132bbaef0c6f6ccc5bdc973844b805c4291612ac7170ec165f273835959c"
+    },
+    "stage16_feature_specification": {
+      "path": "results/supervised/stage_16/preregistered_config.json",
+      "sha256": "a722299d6207fce06180f71bf96717ce58948e127a85440e04f721c1616fcdf3"
+    },
+    "stage17b_configuration": {
+      "path": "results/supervised/stage_17b/preregistered_benchmark_config.json",
+      "sha256": "605eb1f482123a24a14c0929c951f400c37b3fbc2d2bb2e4d46d2ce834698046"
+    },
+    "stage17b_training_summary": {
+      "path": "results/supervised/stage_17b/training_summary.json",
+      "sha256": "560e8602ce0d572a2e305efcebe525ef3f1174aad0e6f5a3209c2b33fff4865a"
+    },
+    "stage17b_decision": {
+      "path": "results/supervised/stage_17b/validation_decision.json",
+      "sha256": "11e15f18e2521ffed8e7dbaacee469284ee356acedea1d8f34ffcf48785a68fa"
+    },
+    "stage17b_model": {
+      "path": "models/supervised/stage_17b/hist_gradient_boosting.joblib",
+      "sha256": "67ed869858185d8f71d99b3dce8b358c43793178185e5aa50e6997d11b56974b"
+    },
+    "stage17b_predictions": {
+      "path": "results/supervised/stage_17b/dev_val_customer_probabilities.csv",
+      "sha256": "d98a7551a763a5f1e78193786012d86a96c593a73d770fa625a0e09aaac71aea"
+    },
+    "stage17b_metrics": {
+      "path": "results/supervised/stage_17b/dev_val_metrics.csv",
+      "sha256": "9deeb02106b361857b9c4eead2bf9cdd25affd232e4848275129182341a7b083"
+    },
+    "stage19_decision": {
+      "path": "results/supervised/stage_19/family_ablation_decision.json",
+      "sha256": "ef6d9830c5b7bb191fdfc6be97f1ba47381d579677dc24e322eef8751ae92ee6"
+    },
+    "stage19_report": {
+      "path": "results/supervised/stage_19/stage_19_report.md",
+      "sha256": "d2490d8bc43159cccf5efa2c7d3341151925b60f0e390262dd5e970ebab1464c"
+    },
+    "stage20b_decision": {
+      "path": "results/supervised/stage_20b/stage_20b_decision.json",
+      "sha256": "7aa026c6b22c9e1e1a5a0fc9fd53177d0b433be5992dc725aa2014fa9df6addb"
+    },
+    "stage20b_report": {
+      "path": "results/supervised/stage_20b/stage_20b_report.md",
+      "sha256": "97aded0bbea32a0f76223c64cdac6c97970404f7df86a34e09d2f2fdc8febd4f"
+    }
+  },
+  "feature_count": 48,
+  "features_in_order": [
+    "mean__customer_median",
+    "mean__customer_q10",
+    "mean__customer_q90",
+    "median__customer_median",
+    "median__customer_q10",
+    "median__customer_q90",
+    "minimum__customer_median",
+    "minimum__customer_q10",
+    "minimum__customer_q90",
+    "maximum__customer_median",
+    "maximum__customer_q10",
+    "maximum__customer_q90",
+    "q10__customer_median",
+    "q10__customer_q10",
+    "q10__customer_q90",
+    "q90__customer_median",
+    "q90__customer_q10",
+    "q90__customer_q90",
+    "standard_deviation__customer_median",
+    "standard_deviation__customer_q90",
+    "range__customer_median",
+    "range__customer_q90",
+    "interquartile_range__customer_median",
+    "interquartile_range__customer_q90",
+    "mean_absolute_deviation__customer_median",
+    "mean_absolute_deviation__customer_q90",
+    "mean_absolute_consecutive_change__customer_median",
+    "mean_absolute_consecutive_change__customer_q90",
+    "maximum_absolute_consecutive_change__customer_median",
+    "maximum_absolute_consecutive_change__customer_q90",
+    "first_to_last_change__customer_mean",
+    "first_to_last_change__customer_standard_deviation",
+    "absolute_first_to_last_change__customer_mean",
+    "absolute_first_to_last_change__customer_standard_deviation",
+    "linear_slope__customer_mean",
+    "linear_slope__customer_standard_deviation",
+    "second_half_minus_first_half_mean__customer_mean",
+    "second_half_minus_first_half_mean__customer_standard_deviation",
+    "fraction_below_minus_one__customer_mean",
+    "fraction_below_minus_one__customer_q90",
+    "maximum__training_q90_exceedance_fraction",
+    "standard_deviation__training_q90_exceedance_fraction",
+    "mean_absolute_consecutive_change__training_q90_exceedance_fraction",
+    "maximum_absolute_consecutive_change__training_q90_exceedance_fraction",
+    "mean__late_third_minus_early_third",
+    "maximum__late_third_minus_early_third",
+    "standard_deviation__late_third_minus_early_third",
+    "mean_absolute_consecutive_change__late_third_minus_early_third"
+  ],
+  "DEV_TRAIN_customers_with_representation": 23724,
+  "DEV_VAL_customers_with_representation": 5931,
+  "DEV_TRAIN_DEV_VAL_overlap": 0,
+  "stage17b_expected_DEV_VAL": {
+    "ROC_AUC": 0.7888308218953116,
+    "AP": 0.35979459032174654,
+    "maximum_reproduction_tolerance": 1e-12
+  },
+  "confirmation_accessed": false,
+  "final_test_accessed": false
+}

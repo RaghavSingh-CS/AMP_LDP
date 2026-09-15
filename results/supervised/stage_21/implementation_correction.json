@@ -1,0 +1,14 @@
+{
+  "stage": "Stage 21 implementation correction",
+  "trigger": "The first sealed evaluation attempt passed the exact HGB reproduction stop gate, then rejected repeated parallel probability inference because the runtime timing helper required bit-for-bit equality.",
+  "correction": "The timing-only repeatability assertion now accepts maximum absolute floating-point differences up to 1e-12 with zero relative tolerance.",
+  "scientific_configuration_changed": false,
+  "model_panel_changed": false,
+  "model_parameters_changed": false,
+  "metrics_or_comparisons_changed": false,
+  "preregistration_changed": false,
+  "preregistration_sha256": "2db791b49c1d97b184dced16c719e361ecad543621d04f13d9ba6843f87473c0",
+  "dev_val_result_used_to_make_scientific_choice": false,
+  "confirmation_accessed": false,
+  "final_test_accessed": false
+}
