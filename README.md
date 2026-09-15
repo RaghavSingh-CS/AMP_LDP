@@ -43,6 +43,7 @@ preventing preprocessing leakage.
 - Stage 16 — Direct customer-level behavioural modeling: complete (direct HGB adopted; test closed)
 - Stage 17A — Development/confirmation split governance: complete (protocol frozen; no modeling)
 - Stage 17B — Frozen customer-feature learner benchmark: complete (HGB retained; confirmation closed)
+- Stage 17C — Confirmation Gate #1: complete (strong confirmation; final test closed)
 
 
 Stage 3B compares candidate missingness thresholds without changing the
@@ -203,4 +204,15 @@ gate is recommended but was not executed; `CONFIRMATION` and `FINAL_TEST` stayed
 closed. See `results/supervised/stage_17b/stage_17b_report.md`.
 
     python -m src.analysis.run_stage17b_learner_benchmark
+
+Stage 17C opens `CONFIRMATION` once for the exact saved Stage 17B HGB pipeline,
+without retraining or threshold adjustment. Confirmation ROC-AUC/AP are
+`0.789084`/`0.379058`, with bootstrap 95% intervals
+`[0.768115, 0.810559]`/`[0.337648, 0.422308]`. Development-to-confirmation
+differences are compatible with sampling variation, and the direct formulation
+retains a clear paired advantage over frozen Stage 14. Decision A records strong
+confirmation and closes confirmation again. `FINAL_TEST` was not accessed. See
+`results/supervised/stage_17c/stage_17c_report.md`.
+
+    python -m src.evaluation.evaluate_stage17c_confirmation
 

@@ -1108,3 +1108,78 @@ published protocols.
 
 **CONFIRMATION AND FINAL_TEST WERE NOT ACCESSED OR EVALUATED DURING STAGE 17B.**
 Full evidence is under `results/supervised/stage_17b/`.
+
+## Stage 17C — Confirmation Gate #1
+
+Stage 17C is the first explicitly governed confirmation gate, not another
+development stage. Its pre-specified question is whether the exact saved Stage
+17B direct-customer HGB retains strong discrimination on `CONFIRMATION`. Before
+opening the gate, the repository was clean at
+`95e34dedcb1e0e5de29347b3921db4dfb3abedd5`; the Stage 17A protocol,
+historical split, Stage 16 feature pre-registration, Stage 17B benchmark config,
+training summary, decision, and model hashes were verified.
+
+The pre-gate artifact froze the exact 48-feature order, four `DEV_TRAIN`-derived
+persistence references, HGB configuration, model hash
+`67ed869858185d8f71d99b3dce8b358c43793178185e5aa50e6997d11b56974b`,
+and threshold `0.20070617709942135`. It also froze numerical interpretation
+before confirmation scoring:
+
+- A requires ROC-AUC at least 0.75 and AP at least 0.30, with separate
+  confirmation-bootstrap lower bounds at least 0.70 and 0.20;
+- B applies if A fails but ROC-AUC remains at least 0.65 and AP remains at least
+  the larger of 0.15 or 1.5 times confirmation prevalence; and
+- C applies if B's minimum discrimination is not met.
+
+The exact saved Stage 17B model trained only on `DEV_TRAIN` was evaluated; it was
+not retrained with `DEV_VAL`. No confirmation-fitted reference, normalization,
+feature, model choice, hyperparameter, or threshold was introduced. All 6,355
+governed confirmation customers were representation-available and produced one
+finite 48-column row. The population contains 5,813 normal and 542 theft
+customers, prevalence `0.085287175452`.
+
+At the frozen threshold, confirmation results are ROC-AUC `0.789084048160`, AP
+`0.379057855867`, precision `0.364667747164`, recall `0.415129151292`, and F1
+`0.388265746333`, with TN/FP/FN/TP `5421/392/317/225`. Relative to Stage 17B
+`DEV_VAL`, exact confirmation-minus-development deltas are
+`+0.000253226265` ROC-AUC, `+0.019263265545` AP, `+0.002050924734`
+precision, `+0.030970735450` recall, and `+0.015188823256` F1.
+
+A 2,000-resample seed-42 confirmation-customer bootstrap gives ROC-AUC 95%
+interval `[0.768115, 0.810559]` and AP interval `[0.337648, 0.422308]`.
+An independent, unpooled two-sample bootstrap puts confirmation-minus-DEV_VAL
+ROC-AUC at mean `+0.000369`, interval `[-0.029446, +0.030762]`, and AP at mean
+`+0.019691`, interval `[-0.039080, +0.079767]`. Both intervals include zero,
+so the observed change is compatible with ordinary sampling variation.
+
+The optional frozen Stage 14 window-HGB → customer-mean comparator was evaluated
+without retraining or tuning. Its ROC-AUC/AP remain `0.738696921203`/
+`0.261319849357`. Direct Stage 17B HGB improves these by
+`+0.050387126957` ROC-AUC and `+0.117738006510` AP. Paired 95% intervals are
+`[+0.034383, +0.066312]` and `[+0.085089, +0.151752]`; all 2,000 bootstrap
+replicates favor direct HGB for both metrics. Stage 14's model and threshold were
+historically selected on this original-validation population, so its threshold
+metrics are optimistic and only its ranking comparison is emphasized.
+
+The gate outcome is **A — strong confirmation**. Confirmation AP is about 4.44
+times the 8.53% prevalence baseline, discrimination is essentially unchanged
+from development, and the formulation advantage persists. This strengthens the
+customer-level formulation hypothesis, but it does not causally prove label
+noise. The result supports generalization to this held-out SGCC subset only, not
+external data.
+
+The frozen Stage 17B HGB is retained and `CONFIRMATION` returns to closed status.
+The recommended next development-only question is: **Does the direct-customer
+advantage persist across pre-specified history-length and consumption-level
+strata?** Confirmation must not be reused for routine robustness work.
+
+For a paper, the evidence chain now includes weak reconstruction baselines,
+supervised signal, improved behavioural summaries, a negative FC hybrid, a large
+direct-customer formulation gain, internal replication under the new split, and
+one successful frozen confirmation gate. This permits a transparent held-out
+SGCC confirmation statement, but not SOTA, deployment readiness, external
+generalization, or causal proof of propagated-window label noise.
+
+**CONFIRMATION GATE #1 ACCESSED ONCE FOR THE FROZEN STAGE 17B PIPELINE.**
+**FINAL_TEST NOT ACCESSED.** Full evidence is under
+`results/supervised/stage_17c/`.

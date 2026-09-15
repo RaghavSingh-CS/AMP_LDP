@@ -1,0 +1,94 @@
+{
+  "stage": "Stage 17C — Confirmation Gate #1 pre-gate audit",
+  "created_before_confirmation_features_labels_or_metrics_were_loaded": true,
+  "research_question": "Does the frozen Stage 17B direct-customer HGB pipeline retain strong discrimination on the held-out CONFIRMATION population?",
+  "pre_gate_git": {
+    "head": "95e34dedcb1e0e5de29347b3921db4dfb3abedd5",
+    "status_short": "clean"
+  },
+  "verified_artifacts": {
+    "stage17a_protocol_manifest": {
+      "path": "results/governance/stage_17a/research_protocol_manifest.csv",
+      "sha256": "dae7dba53260a3af6b8e2ddd904b5c7867c3321f27cdff5af5e4060b97c348c0"
+    },
+    "historical_split_manifest": {
+      "path": "data/processed/split_manifest.parquet",
+      "sha256": "6ad1132bbaef0c6f6ccc5bdc973844b805c4291612ac7170ec165f273835959c"
+    },
+    "stage16_feature_preregistration": {
+      "path": "results/supervised/stage_16/preregistered_config.json",
+      "sha256": "a722299d6207fce06180f71bf96717ce58948e127a85440e04f721c1616fcdf3",
+      "feature_count": 48,
+      "ordered_names_verified_against_stage17b": true
+    },
+    "stage17b_benchmark_configuration": {
+      "path": "results/supervised/stage_17b/preregistered_benchmark_config.json",
+      "sha256": "605eb1f482123a24a14c0929c951f400c37b3fbc2d2bb2e4d46d2ce834698046"
+    },
+    "stage17b_training_summary": {
+      "path": "results/supervised/stage_17b/training_summary.json",
+      "sha256": "560e8602ce0d572a2e305efcebe525ef3f1174aad0e6f5a3209c2b33fff4865a"
+    },
+    "stage17b_decision": {
+      "path": "results/supervised/stage_17b/validation_decision.json",
+      "sha256": "11e15f18e2521ffed8e7dbaacee469284ee356acedea1d8f34ffcf48785a68fa"
+    },
+    "stage17b_frozen_hgb": {
+      "path": "models/supervised/stage_17b/hist_gradient_boosting.joblib",
+      "sha256": "67ed869858185d8f71d99b3dce8b358c43793178185e5aa50e6997d11b56974b"
+    },
+    "stage14_frozen_comparator": {
+      "path": "models/supervised/stage_14/hist_gradient_boosting_unweighted_summary_only.joblib",
+      "sha256": "ccf6d976ad146bcf338f491a13817b785a6f4551965be687a0bafe5d50a08919",
+      "feature_preregistration_sha256": "0cb8ae776ead003c7beb84dc8958af738f8d8917e78ebc433f7414b12dabd0d3",
+      "frozen_decision_path": "results/supervised/stage_14/validation_decision.json",
+      "frozen_decision_sha256": "575f9f9ad179dd7eb313bd869c2f46ee8631053d8dc181478d6e04d8cac09916",
+      "authorized_scope": "Optional frozen ranking comparator only; no retraining or tuning. Its historical model/threshold selection used the original validation population, now CONFIRMATION, so threshold metrics are explicitly optimistic and it cannot affect the primary gate."
+    }
+  },
+  "frozen_pipeline": {
+    "learner": "sklearn HistGradientBoostingClassifier",
+    "parameters": {
+      "learning_rate": 0.1,
+      "max_iter": 100,
+      "max_leaf_nodes": 15,
+      "min_samples_leaf": 100,
+      "l2_regularization": 1.0,
+      "class_weight": null,
+      "early_stopping": false,
+      "random_state": 42
+    },
+    "frozen_DEV_VAL_threshold": 0.20070617709942135,
+    "threshold_rule": "predicted_probability >= frozen threshold",
+    "retraining_before_primary_confirmation": false,
+    "feature_count": 48,
+    "DEV_TRAIN_derived_persistence_q90_thresholds": {
+      "maximum": 1.5190057158470154,
+      "standard_deviation": 0.438372477889061,
+      "mean_absolute_consecutive_change": 0.2778959274291992,
+      "maximum_absolute_consecutive_change": 1.1807788610458374
+    }
+  },
+  "confirmation_governance_metadata": {
+    "expected_customers": 6355,
+    "expected_original_split": "val",
+    "expected_research_role": "CONFIRMATION",
+    "expected_representation_available": 6355,
+    "final_test_expected_in_model_or_evaluation_paths": false
+  },
+  "success_interpretation_frozen_before_scoring": {
+    "A_STRONG_CONFIRMATION": "Confirmation ROC-AUC >= 0.75 and AP >= 0.30, with the separate customer-bootstrap 95% lower bounds >= 0.70 for ROC-AUC and >= 0.20 for AP.",
+    "B_PARTIAL_OR_DEGRADED_CONFIRMATION": "Decision A is not met, but ROC-AUC >= 0.65 and AP >= max(0.15, 1.5 times confirmation theft prevalence).",
+    "C_CONFIRMATION_FAILURE": "Decision B minimum discrimination is not met.",
+    "selection_or_tuning_after_confirmation": "PROHIBITED"
+  },
+  "uncertainty_policy": {
+    "confirmation_bootstrap": "2,000 customer resamples, seed 42, percentile 95% intervals for ROC-AUC and AP",
+    "development_confirmation_difference": "2,000 independent two-sample customer bootstraps, seed 42, CONFIRMATION minus DEV_VAL; datasets are never pooled",
+    "stage14_comparator": "2,000 paired CONFIRMATION-customer resamples, seed 42, frozen Stage17B direct HGB minus frozen Stage14 window-to-customer HGB"
+  },
+  "data_access_policy": {
+    "confirmation": "One evaluation of the frozen Stage17B pipeline is authorized after this audit is written.",
+    "final_test": "CLOSED. Features, labels, predictions, and performance must not be loaded or evaluated."
+  }
+}

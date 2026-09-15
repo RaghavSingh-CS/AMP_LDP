@@ -1,0 +1,44 @@
+{
+  "stage": "Stage 17C \u2014 Confirmation Gate #1 decision",
+  "decision": "A",
+  "decision_label": "STRONG CONFIRMATION",
+  "success_policy": {
+    "A_STRONG_CONFIRMATION": "Confirmation ROC-AUC >= 0.75 and AP >= 0.30, with the separate customer-bootstrap 95% lower bounds >= 0.70 for ROC-AUC and >= 0.20 for AP.",
+    "B_PARTIAL_OR_DEGRADED_CONFIRMATION": "Decision A is not met, but ROC-AUC >= 0.65 and AP >= max(0.15, 1.5 times confirmation theft prevalence).",
+    "C_CONFIRMATION_FAILURE": "Decision B minimum discrimination is not met.",
+    "selection_or_tuning_after_confirmation": "PROHIBITED"
+  },
+  "direct_confirmation_metrics": {
+    "model": "stage17b_frozen_direct_customer_hgb",
+    "evaluation_role": "CONFIRMATION",
+    "threshold_source": "frozen Stage 17B DEV_VAL threshold",
+    "count": 6355,
+    "normal_count": 5813,
+    "theft_count": 542,
+    "positive_prevalence": 0.08528717545239968,
+    "threshold": 0.20070617709942135,
+    "threshold_rule": "predicted_probability >= threshold",
+    "ROC_AUC": 0.789084048160282,
+    "PR_AUC_average_precision": 0.37905785586699864,
+    "precision": 0.3646677471636953,
+    "recall": 0.4151291512915129,
+    "F1": 0.3882657463330457,
+    "TN": 5421,
+    "FP": 392,
+    "FN": 317,
+    "TP": 225
+  },
+  "development_to_confirmation_deltas": {
+    "comparison": "CONFIRMATION_minus_STAGE17B_DEV_VAL",
+    "ROC_AUC_delta": 0.00025322626497037426,
+    "PR_AUC_average_precision_delta": 0.01926326554525215,
+    "precision_delta": 0.002050924733788817,
+    "recall_delta": 0.030970735449928788,
+    "F1_delta": 0.015188823256122641
+  },
+  "retain_frozen_stage17b_pipeline": true,
+  "confirmation_returns_to_closed_status": true,
+  "next_research_question": "Does the direct-customer advantage persist across pre-specified history-length and consumption-level strata?",
+  "confirmation_gate_1_accessed_once": true,
+  "final_test_accessed": false
+}
