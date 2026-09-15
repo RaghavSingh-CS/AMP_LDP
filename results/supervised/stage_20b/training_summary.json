@@ -1,0 +1,100 @@
+{
+  "stage": "Stage 20B training and evaluation summary",
+  "preregistration_sha256": "c198ebc2124402711dc0b1d41301a9590199a70e529ddf7cbfa23e0d04b50c1c",
+  "scikit_learn_version": "1.9.0",
+  "development_counts": {
+    "DEV_TRAIN": {
+      "customers": 23724,
+      "normal_customers": 21702,
+      "theft_customers": 2022,
+      "theft_prevalence": 0.08523014668689934,
+      "usable_windows": 614976
+    },
+    "DEV_VAL": {
+      "customers": 5931,
+      "normal_customers": 5426,
+      "theft_customers": 505,
+      "theft_prevalence": 0.0851458438711853,
+      "usable_windows": 153947
+    }
+  },
+  "matrix_shapes": {
+    "DEV_TRAIN_windows_by_features": [
+      614976,
+      17
+    ],
+    "DEV_VAL_windows_by_features": [
+      153947,
+      17
+    ],
+    "DEV_TRAIN_customers_by_features": [
+      23724,
+      17
+    ],
+    "DEV_VAL_customers_by_features": [
+      5931,
+      17
+    ]
+  },
+  "customer_weight_audit": {
+    "minimum_window_weight": 0.762414829361183,
+    "maximum_window_weight": 25.922104198280223,
+    "mean_window_weight": 1.0,
+    "equal_total_customer_weight": true
+  },
+  "shared_scaler": {
+    "weighted_mean": [
+      -0.0046886260507726756,
+      -0.008537935149077617,
+      -0.3988213685626661,
+      0.4105527242445948,
+      -0.24232631961440973,
+      0.2389755711318411,
+      0.20975564296820975,
+      0.8093740927919997,
+      0.2623539852334029,
+      0.16736133517966512,
+      0.0010187557078612725,
+      0.28458433090181917,
+      0.1487666536030082,
+      0.5738744590436274,
+      -5.805120316076719e-05,
+      0.23959910705535165,
+      -0.0010073034441226304
+    ],
+    "scale": [
+      0.954072703989561,
+      0.9817725645708095,
+      0.8692720335956338,
+      1.0622375233264647,
+      0.9205345529411406,
+      1.0283201797415862,
+      0.20267929213960462,
+      0.6581817040564198,
+      0.33669860673784,
+      0.1748695601392438,
+      0.5061387669391397,
+      0.41855614661250384,
+      0.12149855771591005,
+      0.5278440647244481,
+      0.01694262493861633,
+      0.4000141334718087,
+      0.2800459409920188
+    ],
+    "fit_role": "DEV_TRAIN"
+  },
+  "fit_runtime_seconds": {
+    "WINDOW_HGB_UNWEIGHTED": 4.303579400002491,
+    "WINDOW_HGB_CUSTOMER_BALANCED": 4.296034500002861,
+    "W_LOGIT": 1.8554901000024984,
+    "C_LOGIT": 0.13150299999688286
+  },
+  "bootstrap_attempts": 2000,
+  "bootstrap_valid_replicates": 2000,
+  "loaded_model_data_source": "original train only",
+  "loaded_model_roles": [
+    "DEV_TRAIN",
+    "DEV_VAL"
+  ],
+  "closed_roles_loaded_into_matrices": []
+}

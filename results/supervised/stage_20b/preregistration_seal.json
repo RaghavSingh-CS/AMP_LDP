@@ -1,0 +1,7 @@
+{
+  "preregistration_path": "results/supervised/stage_20b/preregistered_control_experiment.json",
+  "preregistration_sha256": "c198ebc2124402711dc0b1d41301a9590199a70e529ddf7cbfa23e0d04b50c1c",
+  "audit_path": "results/supervised/stage_20b/pre_stage_audit.json",
+  "audit_sha256": "9e3eb0d1b1dcffeb4694b151c0441910605058c18b35b5c2bc8af3ec387a48a3",
+  "frozen_before_DEV_VAL_scoring": true
+}

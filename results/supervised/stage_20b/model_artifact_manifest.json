@@ -1,0 +1,28 @@
+{
+  "models": [
+    {
+      "model": "WINDOW_HGB_UNWEIGHTED",
+      "path": "models/supervised/stage_20b/window_hgb_unweighted.joblib",
+      "sha256": "9118f30d9657b8f072d28e4cb3670b41f5e51863c4fb126cd351c41bf57d1602",
+      "size_bytes": 217344
+    },
+    {
+      "model": "WINDOW_HGB_CUSTOMER_BALANCED",
+      "path": "models/supervised/stage_20b/window_hgb_customer_balanced.joblib",
+      "sha256": "a94453ee4842f31bed4ee7119db93ba9a02fb5dd9784c514fa7826d2375512a5",
+      "size_bytes": 216960
+    },
+    {
+      "model": "W_LOGIT",
+      "path": "models/supervised/stage_20b/w_logit.joblib",
+      "sha256": "7d599dc4798f989929b460bf4ad0f8b978de1828ed7a97d8e2c907952c656332",
+      "size_bytes": 1386
+    },
+    {
+      "model": "C_LOGIT",
+      "path": "models/supervised/stage_20b/c_logit.joblib",
+      "sha256": "fa6f1491e3ae7354b7640b562e690c16624de18bd452d92eef051c8a1b7f6719",
+      "size_bytes": 1386
+    }
+  ]
+}

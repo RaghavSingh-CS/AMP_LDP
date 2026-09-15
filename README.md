@@ -246,3 +246,19 @@ tuning is performed, and `CONFIRMATION` and `FINAL_TEST` remain closed. See
     python -m src.analysis.run_stage19_family_ablation --prepare
     python -m src.analysis.run_stage19_family_ablation --evaluate
 
+Stage 20A documents a controlled label/objective-formulation design and makes
+explicit that SGCC's customer-level `FLAG` cannot identify temporal window-label
+noise. Stage 20B then freezes and runs three DEV-only controls using the exact 17
+window summaries: equal total customer weighting, a fixed four-rule probability
+aggregation panel, and matched window-versus-customer logistic loss placement.
+Customer balancing produces small uncertain mean-pooled HGB changes; Q90 improves
+AP but not ROC-AUC with corresponding certainty; and C_LOGIT's small advantage
+over W_LOGIT is also uncertain. Decision E is mixed/inconclusive: no single
+formulation mechanism is isolated, no temporal label-noise claim is made, and the
+AMP development experiment matrix should now be frozen. `CONFIRMATION` and
+`FINAL_TEST` were not accessed. See
+`results/supervised/stage_20b/stage_20b_report.md`.
+
+    python -m src.analysis.run_stage20b_label_formulation_controls --prepare
+    python -m src.analysis.run_stage20b_label_formulation_controls --evaluate
+

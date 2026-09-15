@@ -1,0 +1,271 @@
+{
+  "stage": "Stage 20B \u2014 controlled label/objective-formulation experiment",
+  "base_head_before_stage": "b405a2828588d5365662ab25a1c198d1d7c6ea0d",
+  "created_before_any_new_DEV_VAL_scoring": true,
+  "research_question": "Does aligning training and scoring more closely with the customer-level label provide an advantage that cannot be explained solely by unequal windows per customer or mean-probability aggregation?",
+  "causal_limit": "SGCC has no temporal theft-event truth. These controls cannot identify temporal window-label noise.",
+  "audit": {
+    "path": "results/supervised/stage_20b/pre_stage_audit.json",
+    "sha256": "9e3eb0d1b1dcffeb4694b151c0441910605058c18b35b5c2bc8af3ec387a48a3"
+  },
+  "frozen_inputs": {
+    "stage17a_governance_manifest": {
+      "path": "results/governance/stage_17a/research_protocol_manifest.csv",
+      "sha256": "dae7dba53260a3af6b8e2ddd904b5c7867c3321f27cdff5af5e4060b97c348c0"
+    },
+    "historical_split_manifest": {
+      "path": "data/processed/split_manifest.parquet",
+      "sha256": "6ad1132bbaef0c6f6ccc5bdc973844b805c4291612ac7170ec165f273835959c"
+    },
+    "stage16_feature_specification": {
+      "path": "results/supervised/stage_16/preregistered_config.json",
+      "sha256": "a722299d6207fce06180f71bf96717ce58948e127a85440e04f721c1616fcdf3"
+    },
+    "stage17b_model": {
+      "path": "models/supervised/stage_17b/hist_gradient_boosting.joblib",
+      "sha256": "67ed869858185d8f71d99b3dce8b358c43793178185e5aa50e6997d11b56974b"
+    },
+    "stage14_window_feature_specification": {
+      "path": "results/supervised/stage_14/preregistered_config.json",
+      "sha256": "0cb8ae776ead003c7beb84dc8958af738f8d8917e78ebc433f7414b12dabd0d3"
+    },
+    "stage17b_configuration": {
+      "path": "results/supervised/stage_17b/preregistered_benchmark_config.json",
+      "sha256": "605eb1f482123a24a14c0929c951f400c37b3fbc2d2bb2e4d46d2ce834698046"
+    },
+    "stage17b_training_summary": {
+      "path": "results/supervised/stage_17b/training_summary.json",
+      "sha256": "560e8602ce0d572a2e305efcebe525ef3f1174aad0e6f5a3209c2b33fff4865a"
+    },
+    "stage17b_decision": {
+      "path": "results/supervised/stage_17b/validation_decision.json",
+      "sha256": "11e15f18e2521ffed8e7dbaacee469284ee356acedea1d8f34ffcf48785a68fa"
+    },
+    "stage20a_design": {
+      "path": "results/supervised/stage_20a/stage_20a_label_formulation_control_design.md",
+      "sha256": "3bca593c59ea2cb6a3c3e031d092d8f30f9a73d1c946428dfffce6269ed113f1"
+    }
+  },
+  "data_roles": {
+    "fit": "DEV_TRAIN only",
+    "evaluate_once": "DEV_VAL only",
+    "closed": [
+      "CONFIRMATION",
+      "FINAL_TEST"
+    ]
+  },
+  "features": {
+    "count": 17,
+    "ordered_names": [
+      "mean",
+      "median",
+      "minimum",
+      "maximum",
+      "q10",
+      "q90",
+      "standard_deviation",
+      "range",
+      "interquartile_range",
+      "mean_absolute_deviation",
+      "first_to_last_change",
+      "absolute_first_to_last_change",
+      "mean_absolute_consecutive_change",
+      "maximum_absolute_consecutive_change",
+      "linear_slope",
+      "fraction_below_minus_one",
+      "second_half_minus_first_half_mean"
+    ],
+    "definition": "Exact frozen Stage 14 behavioural summaries of each usable 30-day window.",
+    "new_feature_discovery": false
+  },
+  "models": {
+    "WINDOW_HGB_UNWEIGHTED": {
+      "training_unit": "window",
+      "target": "customer FLAG propagated to each window; proxy only",
+      "parameters": {
+        "learning_rate": 0.1,
+        "max_iter": 100,
+        "max_leaf_nodes": 15,
+        "min_samples_leaf": 100,
+        "l2_regularization": 1.0,
+        "class_weight": null,
+        "early_stopping": false,
+        "random_state": 42
+      },
+      "sample_weight": "1 for every DEV_TRAIN window"
+    },
+    "WINDOW_HGB_CUSTOMER_BALANCED": {
+      "training_unit": "window",
+      "target": "customer FLAG propagated to each window; proxy only",
+      "parameters": {
+        "learning_rate": 0.1,
+        "max_iter": 100,
+        "max_leaf_nodes": 15,
+        "min_samples_leaf": 100,
+        "l2_regularization": 1.0,
+        "class_weight": null,
+        "early_stopping": false,
+        "random_state": 42
+      },
+      "sample_weight": "N_windows / (N_customers * n_i) for every window of customer i; equal total customer weight and mean window weight 1"
+    },
+    "W_LOGIT": {
+      "training_unit": "window",
+      "target": "customer FLAG propagated to each window; proxy only",
+      "parameters": {
+        "C": 1.0,
+        "solver": "lbfgs",
+        "max_iter": 300,
+        "class_weight": null,
+        "random_state": 42
+      },
+      "sample_weight": "same customer-balanced weights as WINDOW_HGB_CUSTOMER_BALANCED",
+      "customer_score": "arithmetic mean of window probabilities, required by the Stage 20B instruction"
+    },
+    "C_LOGIT": {
+      "training_unit": "customer",
+      "target": "one customer FLAG",
+      "parameters": {
+        "C": 1.0,
+        "solver": "lbfgs",
+        "max_iter": 300,
+        "class_weight": null,
+        "random_state": 42
+      },
+      "customer_vector": "arithmetic mean of the shared transformed 17-dimensional window vectors",
+      "customer_score": "direct logistic probability"
+    }
+  },
+  "shared_logistic_preprocessing": {
+    "definition": "Weighted mean and population variance fitted on DEV_TRAIN windows with customer-balanced weights; identical centering/scaling applied to both arms; zero scales replaced by 1.",
+    "fit_scope": "DEV_TRAIN only",
+    "stage20a_pooling_operator": "arithmetic mean",
+    "note": "The explicit Stage 20B request fixes W_LOGIT scoring as mean probability; therefore exact linear mean-logit equivalence is not claimed."
+  },
+  "aggregation_panel": {
+    "models": [
+      "WINDOW_HGB_UNWEIGHTED",
+      "WINDOW_HGB_CUSTOMER_BALANCED"
+    ],
+    "rules": {
+      "MEAN": "arithmetic mean of window probabilities",
+      "MEDIAN": "median of window probabilities",
+      "Q90": "90th percentile with NumPy linear interpolation",
+      "MAXIMUM": "maximum window probability"
+    },
+    "selection": "All four reported equally; no winning rule selected; MEAN is the historical primary reference."
+  },
+  "metrics": {
+    "primary": [
+      "ROC_AUC",
+      "PR_AUC_average_precision"
+    ],
+    "secondary": [
+      "precision",
+      "recall",
+      "F1",
+      "TN",
+      "FP",
+      "FN",
+      "TP"
+    ],
+    "secondary_threshold": 0.5,
+    "threshold_status": "Fixed at 0.5 before scoring; descriptive only; not used for the formulation decision.",
+    "report_counts_and_prevalence": true
+  },
+  "comparisons": [
+    {
+      "comparison": "BALANCED_MEAN_MINUS_UNWEIGHTED_MEAN",
+      "candidate": "WINDOW_HGB_CUSTOMER_BALANCED_MEAN",
+      "comparator": "WINDOW_HGB_UNWEIGHTED_MEAN",
+      "question": "Does equal total customer contribution materially help?"
+    },
+    {
+      "comparison": "WINDOW_HGB_UNWEIGHTED_MEDIAN_MINUS_WINDOW_HGB_UNWEIGHTED_MEAN",
+      "candidate": "WINDOW_HGB_UNWEIGHTED_MEDIAN",
+      "comparator": "WINDOW_HGB_UNWEIGHTED_MEAN",
+      "question": "Is arithmetic-mean aggregation hiding useful window evidence?"
+    },
+    {
+      "comparison": "WINDOW_HGB_UNWEIGHTED_Q90_MINUS_WINDOW_HGB_UNWEIGHTED_MEAN",
+      "candidate": "WINDOW_HGB_UNWEIGHTED_Q90",
+      "comparator": "WINDOW_HGB_UNWEIGHTED_MEAN",
+      "question": "Is arithmetic-mean aggregation hiding useful window evidence?"
+    },
+    {
+      "comparison": "WINDOW_HGB_UNWEIGHTED_MAXIMUM_MINUS_WINDOW_HGB_UNWEIGHTED_MEAN",
+      "candidate": "WINDOW_HGB_UNWEIGHTED_MAXIMUM",
+      "comparator": "WINDOW_HGB_UNWEIGHTED_MEAN",
+      "question": "Is arithmetic-mean aggregation hiding useful window evidence?"
+    },
+    {
+      "comparison": "WINDOW_HGB_CUSTOMER_BALANCED_MEDIAN_MINUS_WINDOW_HGB_CUSTOMER_BALANCED_MEAN",
+      "candidate": "WINDOW_HGB_CUSTOMER_BALANCED_MEDIAN",
+      "comparator": "WINDOW_HGB_CUSTOMER_BALANCED_MEAN",
+      "question": "Is arithmetic-mean aggregation hiding useful window evidence?"
+    },
+    {
+      "comparison": "WINDOW_HGB_CUSTOMER_BALANCED_Q90_MINUS_WINDOW_HGB_CUSTOMER_BALANCED_MEAN",
+      "candidate": "WINDOW_HGB_CUSTOMER_BALANCED_Q90",
+      "comparator": "WINDOW_HGB_CUSTOMER_BALANCED_MEAN",
+      "question": "Is arithmetic-mean aggregation hiding useful window evidence?"
+    },
+    {
+      "comparison": "WINDOW_HGB_CUSTOMER_BALANCED_MAXIMUM_MINUS_WINDOW_HGB_CUSTOMER_BALANCED_MEAN",
+      "candidate": "WINDOW_HGB_CUSTOMER_BALANCED_MAXIMUM",
+      "comparator": "WINDOW_HGB_CUSTOMER_BALANCED_MEAN",
+      "question": "Is arithmetic-mean aggregation hiding useful window evidence?"
+    },
+    {
+      "comparison": "C_LOGIT_MINUS_W_LOGIT",
+      "candidate": "C_LOGIT",
+      "comparator": "W_LOGIT",
+      "question": "Does placing the loss at customer level help in the matched linear control?"
+    }
+  ],
+  "bootstrap": {
+    "comparisons": [
+      "BALANCED_MEAN_MINUS_UNWEIGHTED_MEAN",
+      "WINDOW_HGB_UNWEIGHTED_MEDIAN_MINUS_WINDOW_HGB_UNWEIGHTED_MEAN",
+      "WINDOW_HGB_UNWEIGHTED_Q90_MINUS_WINDOW_HGB_UNWEIGHTED_MEAN",
+      "WINDOW_HGB_UNWEIGHTED_MAXIMUM_MINUS_WINDOW_HGB_UNWEIGHTED_MEAN",
+      "WINDOW_HGB_CUSTOMER_BALANCED_MEDIAN_MINUS_WINDOW_HGB_CUSTOMER_BALANCED_MEAN",
+      "WINDOW_HGB_CUSTOMER_BALANCED_Q90_MINUS_WINDOW_HGB_CUSTOMER_BALANCED_MEAN",
+      "WINDOW_HGB_CUSTOMER_BALANCED_MAXIMUM_MINUS_WINDOW_HGB_CUSTOMER_BALANCED_MEAN",
+      "C_LOGIT_MINUS_W_LOGIT"
+    ],
+    "resamples": 2000,
+    "seed": 42,
+    "unit": "paired DEV_VAL customer",
+    "single_class_policy": "discard and continue deterministically",
+    "interval": "2.5th and 97.5th percentiles",
+    "reported": [
+      "observed delta",
+      "mean delta",
+      "95% percentile interval",
+      "fraction below zero",
+      "fraction above zero"
+    ]
+  },
+  "practical_evidence_rule": {
+    "clear_material_improvement": "Both observed primary deltas positive, both paired 95% lower bounds above zero, and ROC-AUC delta >= 0.01 or AP delta >= 0.02.",
+    "aggregation_substantial": "The same alternative rule meets clear material improvement versus MEAN in both HGB arms."
+  },
+  "decision_policy": {
+    "A": "Only customer multiplicity meets the clear material improvement rule.",
+    "B": "Only aggregation choice meets the substantial aggregation rule.",
+    "C": "Only C_LOGIT minus W_LOGIT meets the clear material improvement rule.",
+    "D": "None of A/B/C is supported and C_LOGIT fails to improve both observed primary metrics; the historical direct-customer advantage appears primarily representational.",
+    "E": "More than one mechanism is supported, or the remaining pattern is mixed/inconclusive."
+  },
+  "prohibited_adaptations": [
+    "No hyperparameter tuning, feature discovery, aggregation selection, threshold tuning, class balancing, SMOTE, GAN, pseudo temporal labels, multiple-instance learning, or post-hoc comparison invention.",
+    "Do not reuse historically incompatible Stage 14 fitted models.",
+    "Do not load CONFIRMATION or FINAL_TEST features, labels, predictions, or performance.",
+    "Do not alter the frozen Stage 17B detector."
+  ],
+  "random_seeds": {
+    "models": 42,
+    "bootstrap": 42
+  }
+}

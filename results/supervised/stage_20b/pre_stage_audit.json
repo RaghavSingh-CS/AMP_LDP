@@ -1,0 +1,84 @@
+{
+  "stage": "Stage 20B pre-scoring audit",
+  "base_head": "b405a2828588d5365662ab25a1c198d1d7c6ea0d",
+  "git_clean_before_stage": true,
+  "frozen_inputs": {
+    "stage17a_governance_manifest": {
+      "path": "results/governance/stage_17a/research_protocol_manifest.csv",
+      "sha256": "dae7dba53260a3af6b8e2ddd904b5c7867c3321f27cdff5af5e4060b97c348c0"
+    },
+    "historical_split_manifest": {
+      "path": "data/processed/split_manifest.parquet",
+      "sha256": "6ad1132bbaef0c6f6ccc5bdc973844b805c4291612ac7170ec165f273835959c"
+    },
+    "stage16_feature_specification": {
+      "path": "results/supervised/stage_16/preregistered_config.json",
+      "sha256": "a722299d6207fce06180f71bf96717ce58948e127a85440e04f721c1616fcdf3"
+    },
+    "stage17b_model": {
+      "path": "models/supervised/stage_17b/hist_gradient_boosting.joblib",
+      "sha256": "67ed869858185d8f71d99b3dce8b358c43793178185e5aa50e6997d11b56974b"
+    },
+    "stage14_window_feature_specification": {
+      "path": "results/supervised/stage_14/preregistered_config.json",
+      "sha256": "0cb8ae776ead003c7beb84dc8958af738f8d8917e78ebc433f7414b12dabd0d3"
+    },
+    "stage17b_configuration": {
+      "path": "results/supervised/stage_17b/preregistered_benchmark_config.json",
+      "sha256": "605eb1f482123a24a14c0929c951f400c37b3fbc2d2bb2e4d46d2ce834698046"
+    },
+    "stage17b_training_summary": {
+      "path": "results/supervised/stage_17b/training_summary.json",
+      "sha256": "560e8602ce0d572a2e305efcebe525ef3f1174aad0e6f5a3209c2b33fff4865a"
+    },
+    "stage17b_decision": {
+      "path": "results/supervised/stage_17b/validation_decision.json",
+      "sha256": "11e15f18e2521ffed8e7dbaacee469284ee356acedea1d8f34ffcf48785a68fa"
+    },
+    "stage20a_design": {
+      "path": "results/supervised/stage_20a/stage_20a_label_formulation_control_design.md",
+      "sha256": "3bca593c59ea2cb6a3c3e031d092d8f30f9a73d1c946428dfffce6269ed113f1"
+    }
+  },
+  "window_feature_count": 17,
+  "window_features_in_order": [
+    "mean",
+    "median",
+    "minimum",
+    "maximum",
+    "q10",
+    "q90",
+    "standard_deviation",
+    "range",
+    "interquartile_range",
+    "mean_absolute_deviation",
+    "first_to_last_change",
+    "absolute_first_to_last_change",
+    "mean_absolute_consecutive_change",
+    "maximum_absolute_consecutive_change",
+    "linear_slope",
+    "fraction_below_minus_one",
+    "second_half_minus_first_half_mean"
+  ],
+  "development_counts": {
+    "DEV_TRAIN": {
+      "customers": 23724,
+      "normal_customers": 21702,
+      "theft_customers": 2022,
+      "theft_prevalence": 0.08523014668689934,
+      "usable_windows": 614976
+    },
+    "DEV_VAL": {
+      "customers": 5931,
+      "normal_customers": 5426,
+      "theft_customers": 505,
+      "theft_prevalence": 0.0851458438711853,
+      "usable_windows": 153947
+    }
+  },
+  "DEV_TRAIN_DEV_VAL_customer_overlap": 0,
+  "loaded_data_scope": "Original train governance and window-manifest audit columns only; no model scoring",
+  "historical_stage14_model_reused": false,
+  "confirmation_accessed": false,
+  "final_test_accessed": false
+}

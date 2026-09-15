@@ -1403,3 +1403,59 @@ Detailed candidate definitions, held variables, supported and unsupported infere
 **CONFIRMATION NOT ACCESSED DURING STAGE 20A.**
 
 **FINAL_TEST NOT ACCESSED DURING STAGE 20A.**
+
+## Stage 20B — Controlled label/objective-formulation experiment
+
+Stage 20B froze a machine-readable specification before new scoring and used
+only original-train customers assigned by Stage 17A to `DEV_TRAIN` (23,724
+customers; 614,976 usable windows) or `DEV_VAL` (5,931 customers; 153,947
+usable windows). Membership overlap was zero. The exact 17 Stage 14 window
+summaries and unchanged Stage 17B HGB configuration were used; historical
+Stage 14 fitted models were not reused.
+
+Customer-balanced window weights were fixed as
+`N_windows / (N_customers * n_i)`, giving each customer equal total weight and
+mean window weight 1. Compared with unweighted HGB under mean probability
+pooling, balancing changed DEV_VAL ROC-AUC/AP by only
+`+0.003020`/`+0.002451`; paired 2,000-customer seed-42 intervals
+`[-0.000862, +0.006691]`/`[-0.001055, +0.006042]` both include zero.
+Customer multiplicity therefore did not meet the frozen clear-material-effect
+rule.
+
+The complete fixed aggregation panel was reported without selection. Median
+pooling materially reduced both metrics. Q90 increased AP relative to mean by
+`+0.023557` unweighted and `+0.022705` customer-balanced, with positive AP
+intervals, but corresponding ROC-AUC gains of `+0.005948` and `+0.004983` had
+intervals crossing zero. Maximum pooling was also uncertain. Thus no
+alternative met the pre-registered requirement for a clear material improvement
+in both ranking metrics and both HGB arms.
+
+The matched logistic control used the same 17 local quantities, one shared
+customer-weighted `DEV_TRAIN` transformation, fixed L2 logistic settings, and
+customer-level evaluation. `W_LOGIT` applied customer-balanced loss to proxy-
+labelled windows and averaged their probabilities; `C_LOGIT` applied loss once
+per customer after arithmetic feature pooling. Their ROC-AUC/AP values were
+`0.688480`/`0.212441` and `0.697107`/`0.214561`, respectively. C_LOGIT minus
+W_LOGIT was `+0.008627` ROC-AUC (95% interval
+`[-0.000754, +0.018022]`) and `+0.002121` AP
+(`[-0.013966, +0.017655]`), so a clear loss-placement advantage was not
+established.
+
+Decision **E — MIXED / INCONCLUSIVE** records that none of customer
+multiplicity, aggregation choice, or matched customer-level loss satisfied the
+complete frozen evidence rule. The strongest paper statement is that the
+pre-specified controls did not isolate a single formulation mechanism; the
+earlier direct-customer gain remains consistent with richer longitudinal
+representation, but is not causally decomposed. No temporal window-label-noise
+claim is supported. With no serious unresolved internal-validity issue that
+another SGCC development experiment can resolve, freeze the AMP development
+experiment matrix.
+
+No adaptive tuning, feature discovery, aggregation selection, threshold tuning,
+class balancing, or post-hoc comparison invention occurred. The frozen Stage
+17B detector was not modified. Full evidence is under
+`results/supervised/stage_20b/`.
+
+**CONFIRMATION NOT ACCESSED DURING STAGE 20B.**
+
+**FINAL_TEST NOT ACCESSED DURING STAGE 20B.**

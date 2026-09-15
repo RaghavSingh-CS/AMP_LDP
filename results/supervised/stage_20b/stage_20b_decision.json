@@ -1,0 +1,30 @@
+{
+  "stage": "Stage 20B \u2014 controlled formulation decision",
+  "decision": "E",
+  "decision_label": "MIXED / INCONCLUSIVE",
+  "decision_policy": {
+    "A": "Only customer multiplicity meets the clear material improvement rule.",
+    "B": "Only aggregation choice meets the substantial aggregation rule.",
+    "C": "Only C_LOGIT minus W_LOGIT meets the clear material improvement rule.",
+    "D": "None of A/B/C is supported and C_LOGIT fails to improve both observed primary metrics; the historical direct-customer advantage appears primarily representational.",
+    "E": "More than one mechanism is supported, or the remaining pattern is mixed/inconclusive."
+  },
+  "evidence": {
+    "customer_multiplicity_clear_material_effect": false,
+    "aggregation_clear_material_effect": false,
+    "aggregation_rules_supported_in_both_HGB_arms": [],
+    "matched_customer_loss_clear_material_advantage": false
+  },
+  "strongest_defensible_paper_claim": "The pre-specified controls did not isolate a clear multiplicity, aggregation, or customer-loss mechanism; the formulation explanation remains inconclusive.",
+  "research_matrix_recommendation": "Freeze the AMP development experiment matrix.",
+  "genuinely_unresolved_validity_issue": "No serious unresolved internal-validity issue requiring another development experiment was identified; temporal label noise remains inherently unidentifiable without new timing ground truth.",
+  "adaptive_tuning": false,
+  "new_feature_discovery": false,
+  "aggregation_selection": false,
+  "threshold_tuning": false,
+  "historical_stage14_model_reused": false,
+  "frozen_stage17b_detector_modified": false,
+  "temporal_label_noise_claimed": false,
+  "confirmation_accessed": false,
+  "final_test_accessed": false
+}
