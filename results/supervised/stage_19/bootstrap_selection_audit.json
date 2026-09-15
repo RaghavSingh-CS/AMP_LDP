@@ -1,0 +1,30 @@
+{
+  "selection_rule": {
+    "scope": "LEAVE_ONE_FAMILY_OUT only",
+    "selected_union": [
+      "family with the most negative observed ROC-AUC delta",
+      "family with the most negative observed AP delta",
+      "every family with ROC-AUC delta <= -0.01",
+      "every family with AP delta <= -0.02"
+    ],
+    "tie_break": "FAMILY_ORDER",
+    "resamples": 2000,
+    "seed": 42,
+    "unit": "paired DEV_VAL customer",
+    "single_class_policy": "Discard deterministically and continue until 2,000 valid replicates; report attempts and discards.",
+    "reported": [
+      "mean delta",
+      "2.5th percentile",
+      "97.5th percentile",
+      "fraction below zero",
+      "fraction above zero"
+    ]
+  },
+  "selected_families": [
+    "LEVEL_DISTRIBUTION",
+    "LONGITUDINAL_CONTRAST"
+  ],
+  "valid_resamples": 2000,
+  "attempted_resamples": 2000,
+  "discarded_single_class_resamples": 0
+}

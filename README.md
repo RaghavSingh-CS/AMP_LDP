@@ -45,6 +45,7 @@ preventing preprocessing leakage.
 - Stage 17B — Frozen customer-feature learner benchmark: complete (HGB retained; confirmation closed)
 - Stage 17C — Confirmation Gate #1: complete (strong confirmation; final test closed)
 - Stage 18 — Customer-stratum robustness: complete (generally robust; low-consumption threshold limitation)
+- Stage 19 — Customer feature-family ablation: complete (strong signal; high family redundancy)
 
 
 Stage 3B compares candidate missingness thresholds without changing the
@@ -230,4 +231,18 @@ remain closed. See `results/supervised/stage_18/stage_18_report.md`.
 
     python -m src.analysis.run_stage18_robustness --prepare
     python -m src.analysis.run_stage18_robustness --evaluate
+
+Stage 19 pre-registers an exhaustive semantic partition of the 48 frozen customer
+features, then fits family-only and leave-one-family-out models with the unchanged
+Stage 17B HGB configuration on `DEV_TRAIN` and evaluates only on `DEV_VAL`.
+`FULL_48` exactly reproduces Stage 17B ROC-AUC/AP `0.788831`/`0.359795`.
+Level/distribution is the strongest standalone and only conditionally necessary
+family, but the five non-level families together retain `0.763537`/`0.325818`;
+the signal is level-sensitive rather than narrowly level-dominated. Decision B
+records strong but highly redundant family-level signal. No compact model or
+tuning is performed, and `CONFIRMATION` and `FINAL_TEST` remain closed. See
+`results/supervised/stage_19/stage_19_report.md`.
+
+    python -m src.analysis.run_stage19_family_ablation --prepare
+    python -m src.analysis.run_stage19_family_ablation --evaluate
 

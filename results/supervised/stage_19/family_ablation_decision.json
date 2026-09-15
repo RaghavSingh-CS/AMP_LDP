@@ -1,0 +1,31 @@
+{
+  "stage": "Stage 19 \u2014 customer feature-family ablation decision",
+  "decision": "B",
+  "decision_label": "SIGNAL IS STRONG BUT HIGHLY REDUNDANT ACROSS FAMILIES",
+  "policy": {
+    "D": "Only if a compact model was genuinely pre-registered and retains both primary metrics within 0.01 of FULL_48 with paired intervals excluding losses beyond those margins.",
+    "C": "Exactly one family is conditionally necessary, it is the only strong standalone family, and leaving it out reduces both ROC-AUC below 0.70 and AP below 0.25.",
+    "A": "At least two feature families are conditionally necessary.",
+    "B": "Neither C nor A applies; discrimination is distributed but family-level leave-out evidence is substantially redundant.",
+    "evaluation_order": [
+      "D",
+      "C",
+      "A",
+      "B"
+    ]
+  },
+  "strong_standalone_families": [
+    "LEVEL_DISTRIBUTION"
+  ],
+  "conditionally_necessary_families": [
+    "LEVEL_DISTRIBUTION"
+  ],
+  "compact_model_constructed": false,
+  "frozen_stage17b_model_modified": false,
+  "hyperparameter_tuning": false,
+  "feature_discovery_or_individual_selection": false,
+  "threshold_tuning": false,
+  "confirmation_accessed": false,
+  "final_test_accessed": false,
+  "recommended_stage20_question": "Does a label-formulation control that weakens propagated window-label assumptions preserve the direct customer-level advantage under DEV_TRAIN/DEV_VAL, while keeping CONFIRMATION and FINAL_TEST closed?"
+}

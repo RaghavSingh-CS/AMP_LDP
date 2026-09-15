@@ -1277,3 +1277,95 @@ is justified by Stage 18.
 **CONFIRMATION NOT ACCESSED DURING STAGE 18.**
 **FINAL_TEST NOT ACCESSED DURING STAGE 18.** Full evidence is under
 `results/supervised/stage_18/`.
+
+## Stage 19 — Customer Behavioural Feature-Family Ablation
+
+Stage 19 asks: **Which frozen customer-feature groups and aggregation families
+are necessary for the confirmed direct-customer HGB discrimination under
+leakage-safe `DEV_TRAIN`/`DEV_VAL` ablation?** It is development-only explanatory
+ablation, not feature discovery or optimization. An immutable `--prepare` phase
+preceded all new ablation scoring and froze the exact HGB configuration, global
+threshold `0.20070617709942135`, experiment matrix, bootstrap-selection rule, and
+decision policy. The preregistration hash is
+`299c68d49b69c18403021b4a188d530e88f595ef54aebae2def8a252210a3e8d`.
+
+The exhaustive mutually exclusive feature mapping follows the Stage 16 semantic
+construction: LEVEL_DISTRIBUTION (18), VARIABILITY_ABRUPT_CHANGE (12),
+DIRECTIONAL_TEMPORAL_CHANGE (8), LOW_CONSUMPTION_BEHAVIOUR (2),
+PERSISTENCE_EXCEEDANCE (4), and LONGITUDINAL_CONTRAST (4). Its hash is
+`7ddec4b0c015b14ec647f3142d7bf9b1d14dda31bf3a2ea1d9351dfee5ec43ff`.
+No feature was added, redefined, or individually selected.
+
+The reconstructed matrices contain 23,724 `DEV_TRAIN` customers with 2,022 theft
+labels and 5,931 `DEV_VAL` customers with 505 theft labels, zero overlap, exact
+feature order, and exact DEV_TRAIN-derived persistence references. Before any
+family ablation, the new `FULL_48` control reproduced saved Stage 17B probabilities
+to maximum absolute difference `9.71445146547012e-17`; ROC-AUC difference is zero
+and AP difference is `5.551115123125783e-17`. Its serialized model hash also equals
+the frozen Stage 17B HGB hash
+`67ed869858185d8f71d99b3dce8b358c43793178185e5aa50e6997d11b56974b`.
+
+| Family-only model | Features | ROC-AUC | AP | Delta ROC-AUC | Delta AP |
+|---|---:|---:|---:|---:|---:|
+| LEVEL_DISTRIBUTION | 18 | 0.767717 | 0.309965 | -0.021114 | -0.049829 |
+| VARIABILITY_ABRUPT_CHANGE | 12 | 0.680289 | 0.201405 | -0.108542 | -0.158389 |
+| DIRECTIONAL_TEMPORAL_CHANGE | 8 | 0.656386 | 0.171075 | -0.132444 | -0.188720 |
+| LOW_CONSUMPTION_BEHAVIOUR | 2 | 0.591437 | 0.108022 | -0.197394 | -0.251772 |
+| PERSISTENCE_EXCEEDANCE | 4 | 0.718677 | 0.205721 | -0.070153 | -0.154074 |
+| LONGITUDINAL_CONTRAST | 4 | 0.693233 | 0.218358 | -0.095598 | -0.141437 |
+
+LEVEL_DISTRIBUTION is the only family meeting the frozen strong-standalone rule.
+Persistence, longitudinal, and variability families carry moderate standalone
+signal; directional signal is weaker, and the two low-consumption indicators are
+weak alone.
+
+| Omitted family | Features retained | ROC-AUC | AP | Delta ROC-AUC | Delta AP |
+|---|---:|---:|---:|---:|---:|
+| LEVEL_DISTRIBUTION | 30 | 0.763537 | 0.325818 | -0.025294 | -0.033977 |
+| VARIABILITY_ABRUPT_CHANGE | 36 | 0.788703 | 0.341956 | -0.000128 | -0.017838 |
+| DIRECTIONAL_TEMPORAL_CHANGE | 40 | 0.785885 | 0.343353 | -0.002946 | -0.016442 |
+| LOW_CONSUMPTION_BEHAVIOUR | 46 | 0.787614 | 0.352943 | -0.001217 | -0.006852 |
+| PERSISTENCE_EXCEEDANCE | 44 | 0.786127 | 0.350790 | -0.002704 | -0.009005 |
+| LONGITUDINAL_CONTRAST | 44 | 0.779620 | 0.336558 | -0.009211 | -0.023237 |
+
+The frozen bootstrap rule selected LEVEL_DISTRIBUTION (largest ROC-AUC and AP
+drop) and LONGITUDINAL_CONTRAST (AP loss above 0.02). With 2,000 paired seed-42
+DEV_VAL customer replicates and no invalid samples, omitting level gives mean
+ROC-AUC delta `-0.025220`, interval `[-0.034223, -0.016166]`, and mean AP delta
+`-0.033552`, interval `[-0.049842, -0.017956]`; 100% and 99.95% of replicates are
+below zero. Omitting longitudinal contrasts gives mean ROC-AUC delta `-0.009363`,
+interval `[-0.020744, +0.002106]`, and mean AP delta `-0.021740`, interval
+`[-0.046490, +0.002779]`; both include zero. Thus level/distribution is the only
+conditionally necessary family under the frozen rule.
+
+The evidence does not support narrow level domination: without all 18 level
+features, the other five families collectively retain useful ROC-AUC/AP
+`0.763537`/`0.325818`. Instead, the signal is level-sensitive and replaceable
+across correlated behavioural families. All 35 Stage 16 feature pairs with
+absolute Spearman correlation at least 0.95 are within level (26), variability
+(7), or directional (2) families. Stage 17B permutation importance is strongest
+for level, with secondary longitudinal, variability, and persistence importance;
+small leave-out losses show substantial conditional redundancy.
+
+This helps interpret Stage 18: dependence on level/distribution is consistent
+with consumption-stratum performance variation, but non-level behaviour preserves
+substantial discrimination. The LOW_CONSUMPTION_BEHAVIOUR family is weak alone and
+not conditionally necessary, so Stage 18's low-consumption recall limitation is
+not attributable to those two features alone. No subgroup model or threshold was
+introduced.
+
+The outcome is **B — signal is strong but highly redundant across families**.
+No compact model was pre-registered or constructed. For the SGCC paper, Stage 19
+shows that the confirmed direct-customer result is supported most strongly by
+consumption distribution, while secondary behavioural families provide collectively
+useful but substantially replaceable information. This is explanatory evidence,
+not causality, state of the art, or external generalization.
+
+The recommended Stage 20 question is: **Does a label-formulation control that
+weakens propagated window-label assumptions preserve the direct customer-level
+advantage under `DEV_TRAIN`/`DEV_VAL`, while keeping `CONFIRMATION` and
+`FINAL_TEST` closed?** GAN remains unjustified.
+
+**CONFIRMATION NOT ACCESSED DURING STAGE 19.**
+**FINAL_TEST NOT ACCESSED DURING STAGE 19.** Full evidence is under
+`results/supervised/stage_19/`.

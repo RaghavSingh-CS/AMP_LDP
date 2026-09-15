@@ -1,0 +1,82 @@
+{
+  "models": [
+    {
+      "experiment": "FULL_48",
+      "path": "models/supervised/stage_19/full_48.joblib",
+      "sha256": "67ed869858185d8f71d99b3dce8b358c43793178185e5aa50e6997d11b56974b",
+      "size_bytes": 126780
+    },
+    {
+      "experiment": "FAMILY_ONLY__LEVEL_DISTRIBUTION",
+      "path": "models/supervised/stage_19/family_only__level_distribution.joblib",
+      "sha256": "590489dbfc6d64b822dd0cb0d915d7cf92eaf95f51d34aaba09bd8a3f277c7b4",
+      "size_bytes": 95967
+    },
+    {
+      "experiment": "FAMILY_ONLY__VARIABILITY_ABRUPT_CHANGE",
+      "path": "models/supervised/stage_19/family_only__variability_abrupt_change.joblib",
+      "sha256": "6eab87121900684d0636930f65121337f22d6597ad8f82c16521ae5c0fb4fea0",
+      "size_bytes": 87146
+    },
+    {
+      "experiment": "FAMILY_ONLY__DIRECTIONAL_TEMPORAL_CHANGE",
+      "path": "models/supervised/stage_19/family_only__directional_temporal_change.joblib",
+      "sha256": "8be95892a5577f31a166393dd05fb2ed5e830da3296ca0e2752f1de3916f45e0",
+      "size_bytes": 79669
+    },
+    {
+      "experiment": "FAMILY_ONLY__LOW_CONSUMPTION_BEHAVIOUR",
+      "path": "models/supervised/stage_19/family_only__low_consumption_behaviour.joblib",
+      "sha256": "25309ec6af91040fb2eb25e497cd2dae435c42ef66ca35387c6d199b13e7bf15",
+      "size_bytes": 64276
+    },
+    {
+      "experiment": "FAMILY_ONLY__PERSISTENCE_EXCEEDANCE",
+      "path": "models/supervised/stage_19/family_only__persistence_exceedance.joblib",
+      "sha256": "2602be4c9197b309270fac486a321f99882ae4a54998b910dd740c95b29c0e3c",
+      "size_bytes": 67656
+    },
+    {
+      "experiment": "FAMILY_ONLY__LONGITUDINAL_CONTRAST",
+      "path": "models/supervised/stage_19/family_only__longitudinal_contrast.joblib",
+      "sha256": "567c6cbff10b962a62fee45d8a065dae35fa6d3e36d5a9250d6160c5cbd5b9c3",
+      "size_bytes": 73131
+    },
+    {
+      "experiment": "LEAVE_ONE_OUT__LEVEL_DISTRIBUTION",
+      "path": "models/supervised/stage_19/leave_one_out__level_distribution.joblib",
+      "sha256": "7340240f3118204a3b06eb572ae14f453e1bb36a395312c0dd56f56540b91efe",
+      "size_bytes": 102870
+    },
+    {
+      "experiment": "LEAVE_ONE_OUT__VARIABILITY_ABRUPT_CHANGE",
+      "path": "models/supervised/stage_19/leave_one_out__variability_abrupt_change.joblib",
+      "sha256": "78769fb06a3c0db2abfe74966668006402224876328dff0fdc082382079b7a45",
+      "size_bytes": 111325
+    },
+    {
+      "experiment": "LEAVE_ONE_OUT__DIRECTIONAL_TEMPORAL_CHANGE",
+      "path": "models/supervised/stage_19/leave_one_out__directional_temporal_change.joblib",
+      "sha256": "5957569ea5a16e1fa11265cc3057ee1fffda368876a9fcf0f44db2c11accd627",
+      "size_bytes": 118031
+    },
+    {
+      "experiment": "LEAVE_ONE_OUT__LOW_CONSUMPTION_BEHAVIOUR",
+      "path": "models/supervised/stage_19/leave_one_out__low_consumption_behaviour.joblib",
+      "sha256": "84af167e86e85f3d03df7f79abdae1649a5a81ce329669d3b4e33db19b94336a",
+      "size_bytes": 125916
+    },
+    {
+      "experiment": "LEAVE_ONE_OUT__PERSISTENCE_EXCEEDANCE",
+      "path": "models/supervised/stage_19/leave_one_out__persistence_exceedance.joblib",
+      "sha256": "84858835c56ee8cd70590d28fd1a864194b5bc296f3ec007245d748f419850eb",
+      "size_bytes": 126479
+    },
+    {
+      "experiment": "LEAVE_ONE_OUT__LONGITUDINAL_CONTRAST",
+      "path": "models/supervised/stage_19/leave_one_out__longitudinal_contrast.joblib",
+      "sha256": "534fb9344383218ad055409cc25dc4f841fdbefe22bb7d0c642897f32826d50b",
+      "size_bytes": 122699
+    }
+  ]
+}

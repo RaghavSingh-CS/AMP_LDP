@@ -1,0 +1,23 @@
+{
+  "stage": "Stage 19 FULL_48 reproduction gate",
+  "passed_before_family_ablation": true,
+  "maximum_absolute_probability_difference": 9.71445146547012e-17,
+  "ROC_AUC_difference": 0.0,
+  "AP_difference": 5.551115123125783e-17,
+  "tolerance": 1e-12,
+  "reconstructed_matrix_audit": {
+    "DEV_TRAIN_shape": [
+      23724,
+      48
+    ],
+    "DEV_VAL_shape": [
+      5931,
+      48
+    ],
+    "DEV_TRAIN_theft": 2022,
+    "DEV_VAL_theft": 505,
+    "overlap": 0,
+    "feature_names_and_order_exact": true,
+    "persistence_references_exact": true
+  }
+}

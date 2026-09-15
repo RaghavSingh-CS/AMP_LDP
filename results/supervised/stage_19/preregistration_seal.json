@@ -1,0 +1,6 @@
+{
+  "preregistration_path": "results/supervised/stage_19/preregistered_family_ablation.json",
+  "preregistration_sha256": "299c68d49b69c18403021b4a188d530e88f595ef54aebae2def8a252210a3e8d",
+  "mapping_path": "results/supervised/stage_19/feature_family_mapping.csv",
+  "mapping_sha256": "7ddec4b0c015b14ec647f3142d7bf9b1d14dda31bf3a2ea1d9351dfee5ec43ff"
+}
