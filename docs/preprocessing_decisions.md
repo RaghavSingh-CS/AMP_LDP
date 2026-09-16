@@ -1969,3 +1969,58 @@ direct distribution aggregation across development and independent
 confirmation.** This supports the frozen five-seed pipeline and a distribution-
 preservation interpretation; it does not establish external generalization or
 superiority of arbitrary neural models. FINAL_TEST remained closed.
+
+### Stage 27A — final Study 2 freeze and final-evaluation protocol
+
+Stage 27A is design/governance only. It accessed no row-level feature or label
+from the final evaluation cohort with disclosed historical baseline access,
+generated no final prediction, and trained or refit no model. The pre-final
+audit passed on `study2/mil` at
+`d06f33cfe9c663663df018469f6bf56dd6ec8891`; the Stage 25B specification and
+Stage 26 protocol retained hashes
+`006c781899f74f0f62d01282fbf4164ac3ee27d8a61e3f2ea5fcb09b9e445470` and
+`7207a75dfd31d3254aaa3d4507eb9812b38ff87ecda09abfa62178572c8be09b`.
+
+The refit decision is **Option A — frozen development models**. Stage 27B must
+reuse the exact five Stage 25B encoder/HGB pipelines trained on DEV_TRAIN and
+form the primary probability by unweighted arithmetic mean across seeds 42–46.
+The 96-dimensional representation remains per-latent-dimension mean,
+stabilized population SD, q10, median, q90, and maximum. No chronology,
+attention, extra statistic, bag-size feature, new feature, weighting, stacking,
+seed removal, or seed selection is permitted.
+
+Both controls proceed. DIRECT reuses the frozen DEV_TRAIN-fitted Stage 25B HGB
+over the identically aggregated 102-dimensional SUMMARY_17 representation.
+FULL_48 uses the original DEV_TRAIN-fitted Stage 17B HGB and its DEV_TRAIN-
+derived representation references. The later Stage 23B FULL_48 refit used
+DEV_TRAIN+DEV_VAL and is historical Study 1 context only, not the primary paired
+Stage 27B comparator. Thus LATENT, DIRECT, and FULL_48 have symmetric DEV_TRAIN
+training exposure.
+
+Customer ROC-AUC and average precision are primary. Stage 27B freezes paired
+LATENT−FULL_48, LATENT−DIRECT, and DIRECT−FULL_48 comparisons using 2,000
+customer resamples and the already-frozen Study 2 seed 2502. No threshold is
+optimized on the final evaluation cohort with disclosed historical baseline
+access. Individual seeds are reported with mean, population SD, median, minimum,
+and maximum; fewer than 4/5 parity seeds, excessive seed dispersion, or an
+extreme individual-seed deficit is concerning collapse.
+
+Strong final replication requires FULL_48 parity with compatible paired bounds,
+positive learned-encoder value over DIRECT including at least one meaningful
+gain with a lower bound above zero, 4/5 seed parity, and no concerning collapse.
+Failed final replication is triggered by material inferiority to FULL_48, a
+supported AP reversal versus DIRECT, or severe seed collapse. All intermediate
+results are partial/mixed replication. The anchor survives only under strong
+replication, may survive with explicit qualification under the frozen mixed-
+result conditions, and otherwise does not survive.
+
+The exact Stage 27B preregistration has SHA-256
+`ed2457e3a6eaf4b683c3fd8aaf89cf1f1fca63500a68f0427279813533e92702`.
+Stage 27A concludes **B — READY WITH GOVERNANCE LIMITATION**. The required
+disclosure is:
+
+> The final evaluation cohort had been accessed historically in Stage 13 for an obsolete supervised window-level baseline. The learned latent-distribution hypothesis, architecture, pooling rule, five-seed ensemble, controls, and confirmation decision reported in Study 2 were developed and frozen later without Study 2 row-level access to this cohort. We therefore treat it as a governed final evaluation cohort with disclosed historical baseline access, not as a pristine untouched test set.
+
+After Stage 27A, Study 2 model development is closed. Stage 27B is a one-time
+terminal evaluation. No outcome authorizes refitting, tuning, rescue models,
+additional seeds, revised representations, new classifiers, or further search.

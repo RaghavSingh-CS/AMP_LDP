@@ -1,0 +1,24 @@
+{
+  "stage": "Stage 27A anchor-survival freeze",
+  "stage26_anchor": "Distribution-preserving learned window representations reproducibly add customer-level precision-recall signal beyond direct distribution aggregation across development and independent confirmation.",
+  "A_SURVIVES": {
+    "criterion": "Stage 27B is FINAL A — STRONG FINAL REPLICATION.",
+    "allowed_interpretation": "The anchor survives across development, confirmation, and the governed final evaluation."
+  },
+  "B_SURVIVES_WITH_QUALIFICATION": {
+    "all_required": [
+      "Stage 27B is FINAL B — PARTIAL / MIXED FINAL REPLICATION",
+      "LATENT ensemble is not materially inferior to FULL_48 on either metric",
+      "LATENT-minus-DIRECT observed AP is positive",
+      "LATENT-minus-DIRECT AP fraction above zero exceeds 0.5 and its interval upper bound is positive",
+      "At least 3/5 individual seeds satisfy both FULL_48 parity margins"
+    ],
+    "allowed_interpretation": "The development/confirmation anchor remains suggestive but final support is qualified; the paper must state the failed strong-replication condition."
+  },
+  "C_DOES_NOT_SURVIVE_FINAL_EVALUATION": {
+    "criterion": "Stage 27B is FINAL C, or it is FINAL B without every qualification condition above.",
+    "required_interpretation": "The Stage 26 anchor does not survive final evaluation and cannot be used as the paper's principal replicated claim."
+  },
+  "effect_size_policy": "The Stage 26 magnitude need not recur exactly; survival depends on direction, uncertainty, parity, learned-encoder value, and seed robustness.",
+  "numeric_highest_is_insufficient": true
+}

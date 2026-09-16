@@ -1,0 +1,35 @@
+{
+  "stage": "Stage 27A final comparator freeze",
+  "comparators": {
+    "FULL_48_HGB": {
+      "role": "Strong established customer-profile comparator",
+      "model": "models/supervised/stage_17b/hist_gradient_boosting.joblib",
+      "model_sha256": "67ed869858185d8f71d99b3dce8b358c43793178185e5aa50e6997d11b56974b",
+      "representation_preregistration": "results/supervised/stage_16/preregistered_config.json",
+      "representation_preregistration_sha256": "a722299d6207fce06180f71bf96717ce58948e127a85440e04f721c1616fcdf3",
+      "feature_dimension": 48,
+      "training_population": "DEV_TRAIN only",
+      "final_policy": "Generate final-cohort probabilities once with the original frozen Stage 17B model and DEV_TRAIN-derived representation references; do not refit.",
+      "stage23b_refit_policy": "The DEV_TRAIN+DEV_VAL Stage 23B refit and its committed final score are historical Study 1 context only and are not the paired Stage 27B comparator."
+    },
+    "DIRECT_SUMMARY_DISTRIBUTION_HGB": {
+      "role": "Mechanistic control for distribution aggregation without learned encoding",
+      "model": "models/supervised/stage_25b/direct_summary_distribution_hgb.joblib",
+      "model_sha256": "fa11424a6eb5615bc3ce696860a59d992114d891bb9d56bb3423693c172b4a45",
+      "input": "Stage 25B standardized SUMMARY_17 windows",
+      "statistics_in_order": ["mean", "stabilized_population_standard_deviation", "q10", "median", "q90", "maximum"],
+      "feature_dimension": 102,
+      "training_population": "DEV_TRAIN only",
+      "final_policy": "Generate final-cohort probabilities once with the frozen checkpoint; do not refit."
+    }
+  },
+  "fairness_assessment": {
+    "symmetric_training_population": true,
+    "population": "DEV_TRAIN only for LATENT, FULL_48, and DIRECT",
+    "classifier_consistency": "All primary methods use the frozen HGB policy; LATENT and DIRECT checkpoints use the same HGB configuration, and FULL_48 uses the established Stage 17B HGB.",
+    "intended_difference": "Representational information: learned latent distributions versus engineered FULL_48 versus direct SUMMARY_17 distributions.",
+    "known_limit": "FULL_48 contains chronology and persistence features unavailable to the permutation-invariant distribution representations.",
+    "threshold_metrics": "Not part of the primary comparison; no final-cohort threshold selection is allowed."
+  },
+  "additional_models_permitted": false
+}

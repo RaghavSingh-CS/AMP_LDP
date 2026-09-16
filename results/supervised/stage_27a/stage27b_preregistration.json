@@ -1,0 +1,125 @@
+{
+  "stage": "Stage 27B — terminal evaluation of frozen learned distribution representation",
+  "status": "PREREGISTERED_NOT_EXECUTED",
+  "source_stage": "Stage 27A",
+  "purpose": "One terminal evaluation of the frozen Study 2 hypothesis on the final evaluation cohort with disclosed historical baseline access.",
+  "access_gate": {
+    "all_required_before_row_access": [
+      "Stage 27A protocol artifacts committed",
+      "Working tree clean",
+      "Stage 27B source HEAD equals the Stage 27A commit",
+      "This preregistration SHA-256 recorded",
+      "All model and checkpoint hashes match final_model_freeze.json and final_comparator_freeze.json",
+      "Outcome and anchor criteria hashes recorded",
+      "No prior Study 2 Stage 27B final-evaluation access"
+    ],
+    "authorized_access_count": 1,
+    "adaptive_method_changes_after_access": false
+  },
+  "cohort": {
+    "required_name": "final evaluation cohort with disclosed historical baseline access",
+    "governance_role": "FINAL_TEST",
+    "historical_split": "test",
+    "expected_customers_from_committed_aggregate_governance": 6356,
+    "expected_normal_customers": 5814,
+    "expected_theft_customers": 542,
+    "expected_usable_windows": 165020,
+    "new_exclusions": false,
+    "label_dependent_preprocessing": false,
+    "disclosure_artifact": "results/supervised/stage_27a/final_cohort_disclosure.md"
+  },
+  "refit_decision": {
+    "choice": "OPTION A — FROZEN DEVELOPMENT MODELS",
+    "training_population_for_all_primary_models": "DEV_TRAIN only",
+    "retraining": false,
+    "refitting": false,
+    "tuning": false,
+    "reason": "Exact replication of the independently confirmed pipelines, symmetric comparator exposure, and the strongest audit trail outweigh unused pre-final training information."
+  },
+  "primary_model": {
+    "id": "LATENT_DISTRIBUTION_HGB_FIVE_SEED_MEAN",
+    "definition_source": "results/supervised/stage_27a/final_model_freeze.json",
+    "input": "Frozen SUMMARY_17 windows standardized by Stage 25B DEV_TRAIN references",
+    "encoder": "Frozen 17→32→16 encoder per seed",
+    "statistics_in_order": ["mean", "stabilized_population_standard_deviation", "q10", "median", "q90", "maximum"],
+    "representation_dimension": 96,
+    "classifier": "Frozen latent HGB per seed",
+    "seeds": [42, 43, 44, 45, 46],
+    "primary_prediction": "Unweighted arithmetic mean of five seed probabilities",
+    "individual_seed_role": "Secondary robustness evidence only"
+  },
+  "comparators": [
+    {
+      "id": "FULL_48_HGB",
+      "definition_source": "results/supervised/stage_27a/final_comparator_freeze.json",
+      "model_sha256": "67ed869858185d8f71d99b3dce8b358c43793178185e5aa50e6997d11b56974b",
+      "training_population": "DEV_TRAIN only",
+      "prediction_policy": "Generate once using frozen Stage 17B model and DEV_TRAIN-derived FULL_48 references"
+    },
+    {
+      "id": "DIRECT_SUMMARY_DISTRIBUTION_HGB",
+      "definition_source": "results/supervised/stage_27a/final_comparator_freeze.json",
+      "model_sha256": "fa11424a6eb5615bc3ce696860a59d992114d891bb9d56bb3423693c172b4a45",
+      "training_population": "DEV_TRAIN only",
+      "representation_dimension": 102,
+      "prediction_policy": "Generate once using frozen Stage 25B checkpoint"
+    }
+  ],
+  "metrics": {
+    "primary": ["customer ROC-AUC", "customer average precision"],
+    "threshold_optimization": false,
+    "accuracy_primary": false
+  },
+  "comparisons": ["LATENT minus FULL_48", "LATENT minus DIRECT", "DIRECT minus FULL_48"],
+  "uncertainty": {
+    "resamples": 2000,
+    "seed": 2502,
+    "unit": "final-evaluation customer",
+    "paired": true,
+    "interval": "percentile 95%",
+    "outputs": ["observed delta", "bootstrap mean delta", "lower and upper 95% bounds", "fraction above zero"]
+  },
+  "outcome_criteria_source": "results/supervised/stage_27a/final_evaluation_criteria.json",
+  "anchor_criteria_source": "results/supervised/stage_27a/anchor_survival_criteria.json",
+  "seed_reporting": {
+    "report_each": [42, 43, 44, 45, 46],
+    "summaries": ["mean", "population SD", "median", "minimum", "maximum"],
+    "selection": false,
+    "collapse_definition_source": "results/supervised/stage_27a/final_evaluation_criteria.json"
+  },
+  "stability_analysis": {
+    "cohorts": ["DEV_VAL", "CONFIRMATION", "final evaluation cohort with disclosed historical baseline access"],
+    "methods": ["LATENT", "FULL_48", "DIRECT"],
+    "report": ["absolute metric shifts", "method ordering", "effect-size direction and magnitude"],
+    "exact_equality_expected": false
+  },
+  "allowed_claims_if_supported": [
+    "Learned latent-distribution representation",
+    "Customer-level electricity-theft discrimination",
+    "Weak customer-level supervision",
+    "Distribution-preserving aggregation",
+    "Reproducible across development, confirmation, and governed final evaluation",
+    "Improvement over direct distribution aggregation",
+    "Improvement or parity relative to FULL_48"
+  ],
+  "prohibited_claims": [
+    "Theft-window detection or theft-period localization",
+    "Theft probability for individual windows",
+    "State of the art without a protocol-compatible literature comparison",
+    "External generalization",
+    "Utility-wide deployment validity",
+    "Causal identification of theft behaviour",
+    "Pristine, untouched, unseen, never-seen, or completely independent untouched test set"
+  ],
+  "no_rescue_rule": "Regardless of outcome, do not add seeds, refit, tune, change encoder width/depth, statistics, quantiles, chronology, attention, classifier, or model family. Accept and report the terminal result.",
+  "required_outputs": [
+    "pre_access_audit.json",
+    "final_integrity.json",
+    "final_seed_metrics.csv",
+    "final_primary_metrics.csv",
+    "final_bootstrap_comparisons.json",
+    "development_confirmation_final_stability.json",
+    "stage27b_outcome.json",
+    "stage27b_report.md"
+  ]
+}

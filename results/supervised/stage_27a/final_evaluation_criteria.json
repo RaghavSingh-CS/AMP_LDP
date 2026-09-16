@@ -1,0 +1,54 @@
+{
+  "stage": "Stage 27A frozen final evaluation criteria",
+  "primary_metrics": ["customer ROC-AUC", "customer average precision"],
+  "metric_priority_note": "Both are primary; AP is especially important under low theft prevalence.",
+  "threshold_metrics": "Not primary and not required. No threshold may be selected or optimized on the final cohort.",
+  "paired_comparisons": [
+    "LATENT five-seed arithmetic-mean probability minus FULL_48 HGB",
+    "LATENT five-seed arithmetic-mean probability minus DIRECT distribution HGB",
+    "DIRECT distribution HGB minus FULL_48 HGB"
+  ],
+  "bootstrap": {
+    "resamples": 2000,
+    "seed": 2502,
+    "seed_reason": "The already-frozen Stage 25B and Stage 26 Study 2 uncertainty policy fixes seed 2502, so it overrides the Stage 27A fallback seed 42.",
+    "unit": "final-evaluation customer",
+    "paired": true,
+    "interval": "2.5th and 97.5th percentiles",
+    "report_for_each_metric": ["observed delta", "bootstrap mean delta", "95% percentile interval", "fraction of resamples above zero"]
+  },
+  "parity_margins_against_FULL_48": {"ROC_AUC_delta_minimum": -0.005, "average_precision_delta_minimum": -0.010},
+  "material_inferiority_against_FULL_48": {"ROC_AUC_delta_below": -0.015, "average_precision_delta_below": -0.030},
+  "concerning_seed_collapse": {
+    "any_condition": [
+      "Fewer than 4/5 seeds satisfy both FULL_48 parity margins",
+      "Seed ROC-AUC population SD exceeds 0.015",
+      "Seed AP population SD exceeds 0.025",
+      "Any seed is worse than FULL_48 by more than 0.030 ROC-AUC or 0.060 AP"
+    ]
+  },
+  "FINAL_A_STRONG_FINAL_REPLICATION": {
+    "all_required": [
+      "LATENT ensemble ROC-AUC delta versus FULL_48 is at least -0.005",
+      "LATENT ensemble AP delta versus FULL_48 is at least -0.010",
+      "LATENT-minus-FULL paired lower bounds are at least -0.005 ROC-AUC and -0.010 AP",
+      "LATENT-minus-DIRECT observed deltas are positive for both ROC-AUC and AP",
+      "At least one LATENT-minus-DIRECT observed gain is meaningful: ROC-AUC at least +0.005 or AP at least +0.010, and that metric's paired lower bound is above zero",
+      "For the other LATENT-minus-DIRECT metric, the fraction above zero exceeds 0.5 and the interval upper bound is positive",
+      "At least 4/5 individual seeds satisfy both FULL_48 parity margins",
+      "No concerning seed-collapse condition is present"
+    ]
+  },
+  "FINAL_C_FAILED_FINAL_REPLICATION": {
+    "any_sufficient": [
+      "LATENT ensemble ROC-AUC delta versus FULL_48 is below -0.015",
+      "LATENT ensemble AP delta versus FULL_48 is below -0.030",
+      "LATENT-minus-DIRECT observed AP is nonpositive and its paired 95% upper bound is nonpositive",
+      "Two or fewer individual seeds satisfy both FULL_48 parity margins",
+      "The median seed is materially inferior to FULL_48: ROC-AUC delta below -0.015 or AP delta below -0.030"
+    ]
+  },
+  "FINAL_B_PARTIAL_MIXED_FINAL_REPLICATION": "Neither every FINAL A condition nor any FINAL C condition is satisfied.",
+  "evaluation_order": "Compute and persist all frozen predictions and metrics, then apply these criteria mechanically without adaptation.",
+  "additional_outcome_categories": false
+}

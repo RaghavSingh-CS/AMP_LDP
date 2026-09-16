@@ -1,0 +1,33 @@
+{
+  "stage": "Stage 27A — pre-final audit",
+  "audit_timestamp": "2026-09-16T10:55:59.3142100+05:30",
+  "design_only": true,
+  "branch": "study2/mil",
+  "source_HEAD": "d06f33cfe9c663663df018469f6bf56dd6ec8891",
+  "main_HEAD": "d0601c54f6e9d0f11caac2ebd27f7c86a568a863",
+  "git_clean_at_start": true,
+  "stage25b_execution_spec_sha256": "006c781899f74f0f62d01282fbf4164ac3ee27d8a61e3f2ea5fcb09b9e445470",
+  "stage26_confirmation_protocol_sha256": "7207a75dfd31d3254aaa3d4507eb9812b38ff87ecda09abfa62178572c8be09b",
+  "prior_stage_uncommitted_changes": [],
+  "study1_protected_references": {
+    "main_commit": "d0601c54f6e9d0f11caac2ebd27f7c86a568a863",
+    "governance_manifest_sha256": "dae7dba53260a3af6b8e2ddd904b5c7867c3321f27cdff5af5e4060b97c348c0",
+    "stage16_preregistration_sha256": "a722299d6207fce06180f71bf96717ce58948e127a85440e04f721c1616fcdf3",
+    "stage17b_DEV_TRAIN_fitted_FULL_48_HGB_sha256": "67ed869858185d8f71d99b3dce8b358c43793178185e5aa50e6997d11b56974b"
+  },
+  "stage25b_checkpoint_inventory": {
+    "encoder_seeds": [42, 43, 44, 45, 46],
+    "latent_hgb_seeds": [42, 43, 44, 45, 46],
+    "encoder_count": 5,
+    "latent_hgb_count": 5,
+    "direct_hgb_count": 1,
+    "all_hashes_match_stage26_protocol": true
+  },
+  "stage27b_artifacts_present": false,
+  "study2_stage27_final_row_level_access": false,
+  "model_training_or_refitting": false,
+  "final_predictions_generated": false,
+  "historical_access_disclosure_required": true,
+  "required_cohort_term": "final evaluation cohort with disclosed historical baseline access",
+  "audit_result": "ALL_PRE_FINAL_ASSERTIONS_PASSED"
+}

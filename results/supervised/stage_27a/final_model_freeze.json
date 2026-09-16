@@ -1,0 +1,39 @@
+{
+  "stage": "Stage 27A primary Study 2 model freeze",
+  "refit_decision": "OPTION A — FROZEN DEVELOPMENT MODELS",
+  "training_population": "DEV_TRAIN only",
+  "method": {
+    "input": "Frozen SUMMARY_17 windows",
+    "standardization": "Stage 25B feature-wise mean and population SD fitted on DEV_TRAIN windows only",
+    "standardizer_artifact": "results/supervised/stage_25b/bag_integrity.json",
+    "standardizer_artifact_sha256": "fd78f87c85c33c54ba5fce9083a50ea4c0827247a22d0f457be8218e4b00149e",
+    "encoder": ["Linear(17,32)", "ReLU", "Dropout(0.1)", "Linear(32,16)", "ReLU"],
+    "distribution_statistics_in_order": ["mean", "stabilized_population_standard_deviation", "q10", "median", "q90", "maximum"],
+    "quantiles": "torch.sort plus linear interpolation at q*(m-1)",
+    "latent_representation_dimension": 96,
+    "classifier": "Frozen Stage 25B HistGradientBoostingClassifier per seed",
+    "excluded": ["chronology", "attention", "additional statistics", "bag-size feature", "new features"]
+  },
+  "implementation_reference": {
+    "path": "src/analysis/run_stage25b_distribution_experiment.py",
+    "sha256": "64d589552c5d379b6595cc377297efdd5165c79ae6e25af42cc940dc37e2143d"
+  },
+  "seeds": [42, 43, 44, 45, 46],
+  "ensemble": {
+    "primary_prediction": "Arithmetic mean of the five customer probabilities in seed order 42,43,44,45,46",
+    "weighting": false,
+    "stacking": false,
+    "seed_removal": false,
+    "best_seed_selection": false,
+    "justification": "This exact rule was frozen before and positively replicated on CONFIRMATION in Stage 26."
+  },
+  "checkpoints": [
+    {"seed": 42, "encoder": "models/supervised/stage_25b/latent_distribution_e2e/seed_42.pt", "encoder_sha256": "e15e406dcce125eb9b036d68433fba7ff8f23bc746b6d930edf643d171f72cf5", "hgb": "models/supervised/stage_25b/latent_distribution_hgb/seed_42.joblib", "hgb_sha256": "89a3579aab95eb2363df3fb7cddde2f64f8637e21f9bec84753050f374151fb3"},
+    {"seed": 43, "encoder": "models/supervised/stage_25b/latent_distribution_e2e/seed_43.pt", "encoder_sha256": "efa1cafb6f849caa18010bcde6325c424e1a6929f7d17e04cd7cca3ab92f2341", "hgb": "models/supervised/stage_25b/latent_distribution_hgb/seed_43.joblib", "hgb_sha256": "88cdd8ead297d6fba3546bd01a8230c92016a8ef2c2628fd8061fc25bfe990db"},
+    {"seed": 44, "encoder": "models/supervised/stage_25b/latent_distribution_e2e/seed_44.pt", "encoder_sha256": "725a4a4e4d4f4cadb0c45d42d31dd67d94f6c62a3b6ffe7de399aa0d965deb4f", "hgb": "models/supervised/stage_25b/latent_distribution_hgb/seed_44.joblib", "hgb_sha256": "99c57e96bd5453f103c634bd3879647f89eb73bf5f846d239884e259e887b6ac"},
+    {"seed": 45, "encoder": "models/supervised/stage_25b/latent_distribution_e2e/seed_45.pt", "encoder_sha256": "2aafad364b229393f94e6495eda363ef0e3b975fa45b5c2e26eefb8abc31ea31", "hgb": "models/supervised/stage_25b/latent_distribution_hgb/seed_45.joblib", "hgb_sha256": "ce018aeb37e52f88b53bebbc2d90d4fe7ddb1d68c94abb3854e76502c232e3f2"},
+    {"seed": 46, "encoder": "models/supervised/stage_25b/latent_distribution_e2e/seed_46.pt", "encoder_sha256": "851016557fde511e3ed6ca1cf7f10aedcf05bcc3e5c8605f302157d2c64d5a9c", "hgb": "models/supervised/stage_25b/latent_distribution_hgb/seed_46.joblib", "hgb_sha256": "120d19e8c0e4aac0d4657953617670585fad6824af357418ea5631382b1dbf7f"}
+  ],
+  "model_development_closed": true,
+  "refitting_permitted": false
+}

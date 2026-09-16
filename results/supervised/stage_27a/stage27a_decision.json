@@ -1,0 +1,24 @@
+{
+  "stage": "Stage 27A — final Study 2 freeze decision",
+  "decision": "B — READY WITH GOVERNANCE LIMITATION",
+  "reason": "The preregistered learned-distribution hypothesis progressed from development parity to independent positive confirmation with frozen models and controls, so one terminal evaluation is scientifically justified. Historical Stage 13 access prevents describing the cohort as pristine, but the Study 2 hypothesis, architecture, ensemble, controls, and confirmation decision were frozen without Study 2 row-level access to it.",
+  "refit_choice": "OPTION A — FROZEN DEVELOPMENT MODELS",
+  "primary_method": "LATENT_DISTRIBUTION_HGB five-seed arithmetic-mean probability",
+  "comparators": ["DEV_TRAIN-fitted frozen FULL_48 HGB", "DEV_TRAIN-fitted frozen DIRECT_SUMMARY_DISTRIBUTION_HGB"],
+  "training_population_fairness": "DEV_TRAIN only for all three primary methods",
+  "stage27b_preregistration_sha256": "ed2457e3a6eaf4b683c3fd8aaf89cf1f1fca63500a68f0427279813533e92702",
+  "final_model_freeze_sha256": "a5ce3e6db799e3f4053a69d457a7d22a9f45db27bda6e6f08ec87c69b232c14e",
+  "final_comparator_freeze_sha256": "e97724ee4e62519d70810c0054297755e5c48c873e7190eafca2e87622e34f19",
+  "final_evaluation_criteria_sha256": "31ce1b0a7c84ecdfec052fe4a26025075b82d12c6d4fe67d5b3a54cf81cdbb7b",
+  "anchor_survival_criteria_sha256": "60338370876af16c8bdac5c998a75194e6e116ee8bb3dae2d748e3aed58a88f4",
+  "disclosure_sha256": "bcc704b810f38a97b1de4e21ec80f7bf0a574492eef2b72ff26ed392ac40c4b6",
+  "paperworthiness_interpretation": {
+    "LEVEL_1_STRONG_METHODOLOGICAL_RESULT": "FINAL A and anchor SURVIVES: learned-distribution value is robust against FULL_48, DIRECT, uncertainty, and seed checks across all three governed stages.",
+    "LEVEL_2_USEFUL_QUALIFIED_EMPIRICAL_RESULT": "FINAL B and anchor SURVIVES WITH QUALIFICATION: central behavior remains plausible without meeting every strong-replication condition; the failed condition and cohort limitation must be prominent.",
+    "LEVEL_3_DEVELOPMENT_CONFIRMATION_RESULT_WITHOUT_FINAL_SUPPORT": "FINAL C or anchor DOES NOT SURVIVE: development and confirmation remain reportable historical evidence, but no final replicated anchor is claimed."
+  },
+  "model_development_closed": true,
+  "stage27a_model_training_or_refitting": false,
+  "stage27a_final_row_level_access": false,
+  "push_permitted": false
+}
