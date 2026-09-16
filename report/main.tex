@@ -33,9 +33,9 @@
   \orgname{Manipal Institute of Technology},
   \orgaddress{\city{Manipal}, \state{Karnataka}, \country{India}}}
 
-\abstract{\textit{[Stage 30 placeholder: Write the final abstract from the frozen evidence package; do not introduce new results or claims.]}}
+\abstract{Electricity-theft screening from smart-meter histories is often supervised by one customer label, although each record contains many temporal windows and no verified theft-event timestamps. We formulate this as customer-level weak supervision and present AMP-LDP, which encodes 30-day windows represented by 17 behavioural summaries into 16-dimensional latent vectors, preserves six distribution statistics per latent dimension, classifies the resulting 96-dimensional customer profile with histogram gradient boosting, and averages probabilities across five frozen seeds. A matched DIRECT control applies identical distribution statistics and classifier settings to handcrafted window summaries without learned encoding. All Study~2 models were fitted on development-training customers, frozen before confirmation, and evaluated without refitting on confirmation and a governed final evaluation cohort with disclosed historical baseline access. Evaluation used customer-level ROC-AUC and average precision to assess ranking and minority-class retrieval. On the final cohort of 6,356 customers, AMP-LDP achieved ROC-AUC 0.811729 and average precision 0.421863. Relative to DIRECT, the paired improvements were 0.016762 ROC-AUC (95\% bootstrap interval 0.006282--0.027865) and 0.053424 average precision (0.027428--0.077907). The qualitative advantage also appeared in development and confirmation, supporting the conclusion that learned window representations add customer-level discrimination when aggregation is held constant. Evidence remains limited to one SGCC dataset with customer-only labels; it does not establish theft-period localisation, external-utility generalisation, or deployment readiness.}
 
-\keywords{TO BE PROVIDED}
+\keywords{electricity theft detection, smart meters, weak supervision, multiple-instance learning, distribution-preserving aggregation, imbalanced classification}
 
 \maketitle
 
