@@ -1,0 +1,21 @@
+{
+  "stage": "Stage 23B \u2014 frozen final evaluation execution audit",
+  "source_commit": "f61c220591b92a587ce6abc733bd5aec4fa24372",
+  "protocol_sha256": "dbaa2035586c3e9f8f4ed2654d5a129acb2d767d14ded5b168dfc740d8943993",
+  "pre_access_audit_sha256": "6b92d3245b5808c36e77c7f9d8d4485e6447cd18bb9b973cb20f22cca176af09",
+  "training_references_sha256": "b6800fff173f5dd0c0408749a6527d4e00f8860709d4b0007d4965d9c12b4d4c",
+  "training_matrix_integrity_sha256": "4d153439a7ab038c7206f0c56c0e7d224e301c45568f0d32a6f38a92cdb9efcc",
+  "model_sha256": "81aee2324914ef86280d2ec56e12969ee5de5f6bcebd82e454bdd416cee9fbe1",
+  "access_gate_sha256": "7d1e9d5528e5920b75fad036bc3e007394518e6634f785a80f2ec709abb689ca",
+  "test_matrix_integrity_sha256": "efc2eb714da2e9f3f55cbd4fd7aa46e5cd1d0fc2972660ea31300e0ecf34bfde",
+  "predictions_sha256": "0a806f018b1b37235507487096c1639e24139d8f6528dcecea7e6cfd56367a11",
+  "metrics_sha256": "d0d2c6deb65c02ec5ba662fb18a24cf36febb260ba6982e16567185c715c44fe",
+  "bootstrap_samples_sha256": "d293b1f0f29657af7b53baa7aecf2df9ed515678c5cac31e628f93f937b73c8b",
+  "bootstrap_summary_sha256": "b5a0343ff515589f36fc486c94cd97f1dbcbbc75c6db2766bdc4ce20539d3815",
+  "fit_count": 1,
+  "score_count": 1,
+  "valid_bootstrap_replicates": 2000,
+  "methodological_changes_after_access_gate": 0,
+  "result_accepted_without_adaptation": true,
+  "AMP_FROZEN_EXPERIMENT_COMPLETE": true
+}

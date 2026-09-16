@@ -1637,3 +1637,63 @@ and cannot alter the frozen reported experiment.
 **CONFIRMATION ROW-LEVEL DATA NOT ACCESSED DURING STAGE 23A.**
 
 **FINAL_TEST DATA, PREDICTIONS, AND METRICS NOT ACCESSED DURING STAGE 23A.**
+
+## Stage 23B — Frozen final evaluation
+
+Stage 23B executed the sealed Stage 23A protocol from clean commit
+`f61c220591b92a587ce6abc733bd5aec4fa24372`. Every pre-access assertion passed:
+the protocol hash was
+`dbaa2035586c3e9f8f4ed2654d5a129acb2d767d14ded5b168dfc740d8943993`,
+all protected hashes and exact role memberships matched, all role overlaps were
+zero, and the ordered Stage 16 schema contained exactly 48 features.
+
+The final fit used only the 29,655 representation-available customers in
+`DEV_TRAIN + DEV_VAL`. `CONFIRMATION` and `FINAL_TEST` were excluded. The one
+known unusable original-training customer,
+`B08E0670C8A6933E5EC44715F7A80E9D`, remained excluded. Across 768,923 usable
+final-training windows, the four label-free linear q90 references were:
+`maximum=1.5178718566894533`,
+`standard_deviation=0.43910054564476053`,
+`mean_absolute_consecutive_change=0.2782135248184205`, and
+`maximum_absolute_consecutive_change=1.181627273559571`. Strict exceedance and
+all Stage 16 aggregation/chronology semantics were unchanged.
+
+One unweighted `HistGradientBoostingClassifier` was fit once with the exact
+frozen Stage 17B configuration. Fit runtime was `2.197552` seconds. The
+274,176-byte model hash is
+`81aee2324914ef86280d2ec56e12969ee5de5f6bcebd82e454bdd416cee9fbe1`.
+The training-reference artifact and model were serialized before the explicit
+`FINAL_TEST` access gate, whose hash is
+`7d1e9d5528e5920b75fad036bc3e007394518e6634f785a80f2ec709abb689ca`.
+The threshold remained exactly `0.20070617709942135`; it was not rederived or
+recalibrated. Its operating-point metrics are secondary because the combined-
+development refit may shift calibration.
+
+All 6,356 governed `FINAL_TEST` customers had an eligible finite 48-feature
+representation, with 542 theft and 5,814 normal customers (prevalence
+`0.085273757080`). The single frozen model was scored once. Final ROC-AUC was
+`0.792512538128` with a 2,000-replicate seed-42 customer-bootstrap 95%
+percentile interval `[0.771213657298, 0.812646883817]`. Final Average Precision
+was `0.370158599788` with interval
+`[0.328475324466, 0.414294943362]`. Bootstrap means were respectively
+`0.792315557096` and `0.371522297266`; no single-class replicate was rejected.
+
+At the frozen threshold, precision was `0.387543252595`, recall
+`0.413284132841`, and F1 `0.400000000000`, with TN=5,460, FP=354, FN=318, and
+TP=224. These results are descriptively stable against Stage 17B `DEV_VAL`
+ROC-AUC/AP `0.788830821895`/`0.359794590322` and Stage 17C `CONFIRMATION`
+`0.789084048160`/`0.379057855867`, and exceed the historical Stage 13 window
+baseline `0.7023135402`/`0.2193165970`. The final scientific status is
+**A — STRONG STABLE FINAL REPLICATION**.
+
+This population remains a **"final evaluation cohort with disclosed historical
+baseline access"**, not a pristine never-seen test cohort. Stage 13 evaluated an
+obsolete window-level baseline on it; the FULL_48 direct-customer method did not
+yet exist, and Stages 14–22 did not use this population to tune or select the
+frozen current method. This limitation is disclosed without changing the Stage
+23B interpretation.
+
+The final result was accepted as-is. No model, feature, hyperparameter,
+threshold, calibration, subgroup, resampling, GAN/SMOTE, or metric adaptation
+followed access. **AMP FROZEN EXPERIMENT COMPLETE.** Future modelling must be
+explicitly separated from the frozen AMP experiment.

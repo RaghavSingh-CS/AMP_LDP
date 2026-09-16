@@ -1,0 +1,22 @@
+{
+  "method": "customer-level nonparametric percentile bootstrap",
+  "valid_replicates": 2000,
+  "seed": 42,
+  "sampling_attempts": 2000,
+  "invalid_single_class_replicates": 0,
+  "same_replicate_indices_for_both_metrics": true,
+  "metrics": {
+    "ROC_AUC": {
+      "observed_estimate": 0.7925125381284772,
+      "bootstrap_mean": 0.7923155570958004,
+      "percentile_95_CI_lower": 0.7712136572977617,
+      "percentile_95_CI_upper": 0.8126468838168199
+    },
+    "PR_AUC_average_precision": {
+      "observed_estimate": 0.37015859978842647,
+      "bootstrap_mean": 0.3715222972664631,
+      "percentile_95_CI_lower": 0.3284753244656228,
+      "percentile_95_CI_upper": 0.4142949433619917
+    }
+  }
+}

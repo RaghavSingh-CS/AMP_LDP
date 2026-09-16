@@ -1,0 +1,20 @@
+{
+  "stage": "Stage 23B \u2014 frozen final-training persistence references",
+  "created_before_final_test_access": true,
+  "source_population": [
+    "DEV_TRAIN",
+    "DEV_VAL"
+  ],
+  "source_original_split": "train",
+  "eligible_window_count": 768923,
+  "label_use": false,
+  "quantile": 0.9,
+  "interpolation": "linear",
+  "comparison": "strictly_greater_than",
+  "values": {
+    "maximum": 1.5178718566894533,
+    "standard_deviation": 0.43910054564476053,
+    "mean_absolute_consecutive_change": 0.2782135248184205,
+    "maximum_absolute_consecutive_change": 1.181627273559571
+  }
+}

@@ -1,0 +1,286 @@
+{
+  "stage": "Stage 23B \u2014 frozen final evaluation pre-access audit",
+  "status": "ALL_PRE_ACCESS_ASSERTIONS_PASSED",
+  "created_before_final_test_features_labels_predictions_or_metrics_were_loaded": true,
+  "timestamp": "2026-09-16T07:11:48.091125+05:30",
+  "source_commit": "f61c220591b92a587ce6abc733bd5aec4fa24372",
+  "protocol_path": "results/supervised/stage_23a/final_evaluation_protocol.json",
+  "protocol_sha256": "dbaa2035586c3e9f8f4ed2654d5a129acb2d767d14ded5b168dfc740d8943993",
+  "verified_artifacts": {
+    "final_method": {
+      "path": "results/supervised/stage_23a/final_method.json",
+      "expected_sha256": "c68512ad348d01dfc2dddf43e49301ec964d83de44746a428841edb2b1632113",
+      "actual_sha256": "c68512ad348d01dfc2dddf43e49301ec964d83de44746a428841edb2b1632113"
+    },
+    "stage_17a_governance_manifest": {
+      "path": "results/governance/stage_17a/research_protocol_manifest.csv",
+      "expected_sha256": "dae7dba53260a3af6b8e2ddd904b5c7867c3321f27cdff5af5e4060b97c348c0",
+      "actual_sha256": "dae7dba53260a3af6b8e2ddd904b5c7867c3321f27cdff5af5e4060b97c348c0"
+    },
+    "historical_split_manifest": {
+      "path": "data/processed/split_manifest.parquet",
+      "expected_sha256": "6ad1132bbaef0c6f6ccc5bdc973844b805c4291612ac7170ec165f273835959c",
+      "actual_sha256": "6ad1132bbaef0c6f6ccc5bdc973844b805c4291612ac7170ec165f273835959c"
+    },
+    "stage_16_feature_specification": {
+      "path": "results/supervised/stage_16/preregistered_config.json",
+      "expected_sha256": "a722299d6207fce06180f71bf96717ce58948e127a85440e04f721c1616fcdf3",
+      "actual_sha256": "a722299d6207fce06180f71bf96717ce58948e127a85440e04f721c1616fcdf3"
+    },
+    "stage_17b_configuration": {
+      "path": "results/supervised/stage_17b/preregistered_benchmark_config.json",
+      "expected_sha256": "605eb1f482123a24a14c0929c951f400c37b3fbc2d2bb2e4d46d2ce834698046",
+      "actual_sha256": "605eb1f482123a24a14c0929c951f400c37b3fbc2d2bb2e4d46d2ce834698046"
+    },
+    "stage_17b_model": {
+      "path": "models/supervised/stage_17b/hist_gradient_boosting.joblib",
+      "expected_sha256": "67ed869858185d8f71d99b3dce8b358c43793178185e5aa50e6997d11b56974b",
+      "actual_sha256": "67ed869858185d8f71d99b3dce8b358c43793178185e5aa50e6997d11b56974b"
+    },
+    "stage_17b_validation_decision": {
+      "path": "results/supervised/stage_17b/validation_decision.json",
+      "expected_sha256": "11e15f18e2521ffed8e7dbaacee469284ee356acedea1d8f34ffcf48785a68fa",
+      "actual_sha256": "11e15f18e2521ffed8e7dbaacee469284ee356acedea1d8f34ffcf48785a68fa"
+    },
+    "preprocessing_scaler": {
+      "path": "models/preprocessing/scaler.joblib",
+      "expected_sha256": "34bbc0491465fb5ba627df70ee95706e71bc92fa21c6fa8a32048048a855d0bc",
+      "actual_sha256": "34bbc0491465fb5ba627df70ee95706e71bc92fa21c6fa8a32048048a855d0bc"
+    }
+  },
+  "governance": {
+    "role_counts": {
+      "DEV_TRAIN": 23725,
+      "FINAL_TEST": 6356,
+      "CONFIRMATION": 6355,
+      "DEV_VAL": 5931
+    },
+    "pairwise_overlap_counts": {
+      "DEV_TRAIN__DEV_VAL": 0,
+      "DEV_TRAIN__CONFIRMATION": 0,
+      "DEV_TRAIN__FINAL_TEST": 0,
+      "DEV_VAL__CONFIRMATION": 0,
+      "DEV_VAL__FINAL_TEST": 0,
+      "CONFIRMATION__FINAL_TEST": 0
+    },
+    "final_training_roles": [
+      "DEV_TRAIN",
+      "DEV_VAL"
+    ],
+    "final_training_governed_count": 29656,
+    "final_training_representation_available_count": 29655,
+    "excluded_unusable_customer": [
+      {
+        "CONS_NO": "B08E0670C8A6933E5EC44715F7A80E9D",
+        "original_split": "train",
+        "research_role": "DEV_TRAIN",
+        "stage16_representation_available": false
+      }
+    ],
+    "confirmation_in_final_training": false,
+    "final_test_in_final_training": false
+  },
+  "implementation_requires_unsealed_methodological_choice": false,
+  "final_test_accessed": false,
+  "assertions": [
+    {
+      "assertion": "git_status_clean",
+      "passed": true,
+      "detail": "no tracked or untracked changes"
+    },
+    {
+      "assertion": "expected_stage_23a_head",
+      "passed": true,
+      "detail": "f61c220591b92a587ce6abc733bd5aec4fa24372"
+    },
+    {
+      "assertion": "protocol_exists",
+      "passed": true,
+      "detail": "results\\supervised\\stage_23a\\final_evaluation_protocol.json"
+    },
+    {
+      "assertion": "protocol_sha256",
+      "passed": true,
+      "detail": "dbaa2035586c3e9f8f4ed2654d5a129acb2d767d14ded5b168dfc740d8943993"
+    },
+    {
+      "assertion": "final_method_sha256",
+      "passed": true,
+      "detail": "c68512ad348d01dfc2dddf43e49301ec964d83de44746a428841edb2b1632113"
+    },
+    {
+      "assertion": "stage_17a_governance_manifest_sha256",
+      "passed": true,
+      "detail": "dae7dba53260a3af6b8e2ddd904b5c7867c3321f27cdff5af5e4060b97c348c0"
+    },
+    {
+      "assertion": "historical_split_manifest_sha256",
+      "passed": true,
+      "detail": "6ad1132bbaef0c6f6ccc5bdc973844b805c4291612ac7170ec165f273835959c"
+    },
+    {
+      "assertion": "stage_16_feature_specification_sha256",
+      "passed": true,
+      "detail": "a722299d6207fce06180f71bf96717ce58948e127a85440e04f721c1616fcdf3"
+    },
+    {
+      "assertion": "stage_17b_configuration_sha256",
+      "passed": true,
+      "detail": "605eb1f482123a24a14c0929c951f400c37b3fbc2d2bb2e4d46d2ce834698046"
+    },
+    {
+      "assertion": "stage_17b_model_sha256",
+      "passed": true,
+      "detail": "67ed869858185d8f71d99b3dce8b358c43793178185e5aa50e6997d11b56974b"
+    },
+    {
+      "assertion": "stage_17b_validation_decision_sha256",
+      "passed": true,
+      "detail": "11e15f18e2521ffed8e7dbaacee469284ee356acedea1d8f34ffcf48785a68fa"
+    },
+    {
+      "assertion": "preprocessing_scaler_sha256",
+      "passed": true,
+      "detail": "34bbc0491465fb5ba627df70ee95706e71bc92fa21c6fa8a32048048a855d0bc"
+    },
+    {
+      "assertion": "stage16_exact_feature_count",
+      "passed": true,
+      "detail": 48
+    },
+    {
+      "assertion": "stage16_exact_feature_order",
+      "passed": true,
+      "detail": "all three ordered schemas match"
+    },
+    {
+      "assertion": "stage17b_hgb_configuration",
+      "passed": true,
+      "detail": {
+        "learning_rate": 0.1,
+        "max_iter": 100,
+        "max_leaf_nodes": 15,
+        "min_samples_leaf": 100,
+        "l2_regularization": 1.0,
+        "class_weight": null,
+        "early_stopping": false,
+        "random_state": 42
+      }
+    },
+    {
+      "assertion": "stage17b_selected_hgb",
+      "passed": true,
+      "detail": "hist_gradient_boosting"
+    },
+    {
+      "assertion": "frozen_threshold_exact",
+      "passed": true,
+      "detail": 0.20070617709942135
+    },
+    {
+      "assertion": "no_methodological_choices_remaining",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "assertion": "governance_columns",
+      "passed": true,
+      "detail": [
+        "CONS_NO",
+        "original_split",
+        "research_role",
+        "stage16_representation_available"
+      ]
+    },
+    {
+      "assertion": "governance_customer_ids_unique",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "assertion": "governance_roles_exact",
+      "passed": true,
+      "detail": [
+        "CONFIRMATION",
+        "DEV_TRAIN",
+        "DEV_VAL",
+        "FINAL_TEST"
+      ]
+    },
+    {
+      "assertion": "governance_role_counts",
+      "passed": true,
+      "detail": {
+        "DEV_TRAIN": 23725,
+        "FINAL_TEST": 6356,
+        "CONFIRMATION": 6355,
+        "DEV_VAL": 5931
+      }
+    },
+    {
+      "assertion": "role_to_historical_split_mapping",
+      "passed": true,
+      "detail": {
+        "DEV_TRAIN": "train",
+        "DEV_VAL": "train",
+        "CONFIRMATION": "val",
+        "FINAL_TEST": "test"
+      }
+    },
+    {
+      "assertion": "all_role_overlaps_zero",
+      "passed": true,
+      "detail": {
+        "DEV_TRAIN__DEV_VAL": 0,
+        "DEV_TRAIN__CONFIRMATION": 0,
+        "DEV_TRAIN__FINAL_TEST": 0,
+        "DEV_VAL__CONFIRMATION": 0,
+        "DEV_VAL__FINAL_TEST": 0,
+        "CONFIRMATION__FINAL_TEST": 0
+      }
+    },
+    {
+      "assertion": "final_training_roles_exact",
+      "passed": true,
+      "detail": [
+        "DEV_TRAIN",
+        "DEV_VAL"
+      ]
+    },
+    {
+      "assertion": "final_training_eligible_count",
+      "passed": true,
+      "detail": 29655
+    },
+    {
+      "assertion": "one_unusable_original_train_customer",
+      "passed": true,
+      "detail": [
+        "B08E0670C8A6933E5EC44715F7A80E9D"
+      ]
+    },
+    {
+      "assertion": "confirmation_excluded_from_training",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "assertion": "final_test_excluded_from_training",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "assertion": "final_train_final_test_overlap_zero",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "assertion": "final_training_population_protocol",
+      "passed": true,
+      "detail": [
+        "DEV_TRAIN",
+        "DEV_VAL"
+      ]
+    }
+  ]
+}

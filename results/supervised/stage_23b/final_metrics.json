@@ -1,0 +1,36 @@
+{
+  "count": 6356,
+  "normal_count": 5814,
+  "theft_count": 542,
+  "positive_prevalence": 0.08527375707992448,
+  "threshold": 0.20070617709942135,
+  "threshold_rule": "predicted_probability >= threshold",
+  "ROC_AUC": 0.7925125381284772,
+  "PR_AUC_average_precision": 0.37015859978842647,
+  "precision": 0.3875432525951557,
+  "recall": 0.4132841328413284,
+  "F1": 0.4,
+  "TN": 5460,
+  "FP": 354,
+  "FN": 318,
+  "TP": 224,
+  "stage": "Stage 23B \u2014 single frozen FINAL_TEST evaluation",
+  "primary_metrics": [
+    "ROC_AUC",
+    "PR_AUC_average_precision"
+  ],
+  "secondary_metrics": [
+    "precision",
+    "recall",
+    "F1",
+    "TN",
+    "FP",
+    "FN",
+    "TP"
+  ],
+  "model_sha256": "81aee2324914ef86280d2ec56e12969ee5de5f6bcebd82e454bdd416cee9fbe1",
+  "access_gate_sha256": "7d1e9d5528e5920b75fad036bc3e007394518e6634f785a80f2ec709abb689ca",
+  "model_modified_after_scoring": false,
+  "threshold_optimized_on_final_test": false,
+  "result_accepted_without_adaptation": true
+}

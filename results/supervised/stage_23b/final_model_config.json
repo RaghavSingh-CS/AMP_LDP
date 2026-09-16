@@ -1,0 +1,33 @@
+{
+  "stage": "Stage 23B \u2014 final model configuration and fit record",
+  "class": "sklearn.ensemble.HistGradientBoostingClassifier",
+  "package_version": "1.9.0",
+  "parameters": {
+    "learning_rate": 0.1,
+    "max_iter": 100,
+    "max_leaf_nodes": 15,
+    "min_samples_leaf": 100,
+    "l2_regularization": 1.0,
+    "class_weight": null,
+    "early_stopping": false,
+    "random_state": 42
+  },
+  "sample_weight": null,
+  "class_weights": null,
+  "fit_count": 1,
+  "training_population": [
+    "DEV_TRAIN",
+    "DEV_VAL"
+  ],
+  "training_customer_count": 29655,
+  "fit_runtime_seconds": 2.197551599999997,
+  "model_artifact": "models/supervised/stage_23b/final_full_48_hgb.joblib",
+  "model_sha256": "81aee2324914ef86280d2ec56e12969ee5de5f6bcebd82e454bdd416cee9fbe1",
+  "serialized_size_bytes": 274176,
+  "training_probabilities_finite": true,
+  "serialized_before_final_test_access": true,
+  "frozen_threshold": 0.20070617709942135,
+  "threshold_rederived_after_refit": false,
+  "threshold_metrics_are_secondary": true,
+  "threshold_interpretation": "Combined-development refitting may shift calibration; operating-point metrics are secondary/descriptive."
+}

@@ -46,6 +46,11 @@ preventing preprocessing leakage.
 - Stage 17C — Confirmation Gate #1: complete (strong confirmation; final test closed)
 - Stage 18 — Customer-stratum robustness: complete (generally robust; low-consumption threshold limitation)
 - Stage 19 — Customer feature-family ablation: complete (strong signal; high family redundancy)
+- Stages 20A–20B — Label/objective formulation controls: complete (mixed/inconclusive)
+- Stage 21 — Supervised model-family benchmark: complete (representation robust across strong learners)
+- Stage 22 — Compact representation test: complete (FULL_48 retained; development frozen)
+- Stage 23A — Research freeze and final protocol: complete
+- Stage 23B — Frozen final evaluation: complete (strong stable final replication)
 
 
 Stage 3B compares candidate missingness thresholds without changing the
@@ -324,4 +329,21 @@ are under `results/supervised/stage_23a/`.
 **AMP MODEL DEVELOPMENT IS CLOSED AFTER STAGE 22.** Stage 23B cannot trigger
 further tuning or method revision; future modelling is a separate follow-up
 study.
+
+Stage 23B executed the frozen protocol once. All pre-access gates passed before
+the final cohort was opened; the model was fit once on the 29,655 eligible
+`DEV_TRAIN + DEV_VAL` customers and serialized before the access gate. On all
+6,356 eligible `FINAL_TEST` customers (542 theft), final ROC-AUC was
+`0.792513` (95% customer-bootstrap CI `0.771214–0.812647`) and Average Precision
+was `0.370159` (CI `0.328475–0.414295`). At the unchanged secondary threshold
+`0.20070617709942135`, precision/recall/F1 were
+`0.387543`/`0.413284`/`0.400000`. The result is classified descriptively as
+**A — STRONG STABLE FINAL REPLICATION** and was accepted without adaptation.
+
+The cohort is reported as a **final evaluation cohort with disclosed historical
+baseline access** because Stage 13 evaluated an obsolete window baseline on the
+same population. Full audit, matrices, predictions, bootstrap outputs, and the
+final report are under `results/supervised/stage_23b/`.
+
+**AMP FROZEN EXPERIMENT COMPLETE.**
 

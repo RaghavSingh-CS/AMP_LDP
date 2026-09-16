@@ -1,0 +1,10 @@
+{
+  "stage": "Stage 23B \u2014 research closure",
+  "scientific_status_code": "A",
+  "scientific_status_label": "STRONG STABLE FINAL REPLICATION",
+  "classification_is_descriptive_only": true,
+  "result_accepted_without_adaptation": true,
+  "historical_access_disclosure": "final evaluation cohort with disclosed historical baseline access",
+  "AMP_FROZEN_EXPERIMENT_COMPLETE": true,
+  "future_work_must_be_separated": true
+}
