@@ -1,0 +1,17 @@
+\subsection{Bounded research gap}
+
+The reviewed literature establishes a rich set of customer-supervised classifiers but exposes recurring limitations. Full-history CNN, recurrent, graph, and contrastive models learn useful representations, yet most papers do not isolate whether an improvement comes from the encoder, the aggregation rule, the classifier, balancing, or hyperparameter search. Autoencoder components are commonly embedded in supervised pipelines, while reconstruction error by itself is not guaranteed to align with customer theft discrimination. Class-balancing strategies alter the effective training distribution, and heterogeneous SGCC partitions prevent direct comparison of headline metrics.
+
+More fundamentally, the measurement and label granularities differ. SGCC supplies one customer \texttt{FLAG}, not verified theft-event timing. A 30-day window is therefore an unlabeled instance. Treating every window from a flagged customer as positive assumes that theft spans the whole history and turns a bag label into pseudo instance labels. Conversely, collapsing all windows into a single mean, maximum, or attention vector can remove variability, tails, and extremes that distinguish customer behaviour. Weak supervision defines the first problem; distribution-preserving aggregation addresses the second.
+
+The matched-control requirement follows from this distinction. If a latent distribution model is compared only with single-vector MIL, any gain may reflect the richer six-statistic aggregation rather than learned encoding. AMP therefore compares two representations under the same statistics and HGB classifier: DIRECT aggregates the 17 handcrafted window summaries, while AMP-LDP aggregates 16 learned latent dimensions. FULL\_48 supplies a separate strong engineered profile. This design permits the narrower question, ``Does learned encoding add value once aggregation is held constant?''
+
+Evaluation governance is equally important. Development evidence can motivate a hypothesis but can also be optimistic. AMP consequently separates DEV\_VAL, CONFIRMATION, and terminal final-evaluation roles; freezes model, seed, ensemble, comparator, metric, and bootstrap policies before opening later cohorts; and uses paired customer comparisons. This evidence chain does not make the final cohort pristine: it had disclosed historical access for an obsolete baseline. It does make the current Study 2 comparison auditable and prevents post-result rescue experiments.
+
+Within the 24 verified journal articles, no paper was found that simultaneously combines customer-only labels, unlabeled temporal windows, learned window representations, matched direct-versus-latent distribution aggregation, and frozen replication across three governed cohort roles. This is a bounded observation about the verified set, not a claim that AMP-LDP is the first such method in all published literature.
+
+\subsection{Primary research question}
+
+\begin{quote}
+Under customer-level SGCC theft labels and no verified theft-event timestamps, does learning representations of unlabeled consumption windows before distribution-preserving customer aggregation improve customer-level discrimination beyond applying the same aggregation directly to handcrafted window features?
+\end{quote}
