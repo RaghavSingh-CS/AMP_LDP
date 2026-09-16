@@ -1,3 +1,161 @@
 \section{Results and Discussion}\label{sec:results-discussion}
 
-\reportplaceholder{Populate only from committed aggregate evidence indexed in docs/paper/; preserve Study 1 versus Study 2 comparator distinctions and the final-cohort disclosure.}
+\subsection{Reconstruction-based baseline findings}
+
+The first experimental question was whether reconstruction error from normal-only autoencoders could separate theft-labelled consumption. Table~\ref{tab:reconstruction-results} summarizes the frozen historical evaluation. The fully connected (FC) model was strongest, but all three architectures remained close to chance at window level and only modestly higher after customer-level aggregation. The CNN achieved a lower validation reconstruction loss than the FC model, while the LSTM added temporal capacity, yet neither improved discrimination. Better reconstruction of normal consumption therefore did not translate into better ranking of customers carrying the SGCC \texttt{FLAG} under these formulations.
+
+% Source: results/model_comparison/fc_vs_cnn_vs_lstm/architecture_comparison.csv
+\begin{table}[t]
+\caption{Frozen reconstruction-model discrimination. Customer values aggregate window reconstruction errors by the 95th percentile. AP denotes Average Precision, not trapezoidal PR-AUC.}
+\label{tab:reconstruction-results}
+\centering
+\small
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+& \multicolumn{2}{c}{Window level} & \multicolumn{2}{c}{Customer p95} \\
+\cmidrule(lr){2-3}\cmidrule(l){4-5}
+Model & ROC-AUC & AP & ROC-AUC & AP \\
+\midrule
+FC autoencoder   & 0.5617 & 0.1144 & 0.5993 & 0.1686 \\
+CNN autoencoder  & 0.5557 & 0.1048 & 0.5795 & 0.1440 \\
+LSTM autoencoder & 0.5577 & 0.1044 & 0.5806 & 0.1485 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+These results concern the evaluated reconstruction scores, not anomaly detection in general. They also do not validate any window as a theft event. The subsequent supervised Stage~13 diagnostic reached 0.7023 ROC-AUC and 0.2193 AP after customer-mean aggregation, establishing that customer labels carried usable signal even though reconstruction error captured it weakly. This motivated direct customer-supervised representation learning rather than further reconstruction architectures.
+
+\subsection{Single-vector aggregation diagnostics}
+
+Weakly supervised mean, maximum, and gated-attention MIL each encoded \textsc{summary\_17} windows and trained from one customer label, but reduced the bag to one vector. Their five-seed mean individual-run metrics are shown in Table~\ref{tab:aggregation-diagnostic}. The best ROC-AUC belonged to gated attention, whereas maximum pooling produced the strongest AP among these three; none approached the distribution representations on both metrics.
+
+% Sources: results/supervised/stage_24b/primary_metrics_summary.csv and
+% results/supervised/stage_25b/primary_metrics_summary.csv
+\begin{table}[t]
+\caption{DEV\_VAL representation diagnostic. Neural rows report the mean of five individual-seed metrics. DIRECT is one frozen HGB fit. Differences between the single-vector neural heads and HGB rows are diagnostic rather than a perfectly controlled causal ablation.}
+\label{tab:aggregation-diagnostic}
+\centering
+\small
+\begin{tabular}{@{}p{0.28\linewidth}p{0.47\linewidth}rr@{}}
+\toprule
+Method & Customer representation & ROC-AUC & AP \\
+\midrule
+MEAN\_MIL & One mean-pooled latent vector & 0.7399 & 0.2678 \\
+MAX\_MIL & One maximum-pooled latent vector & 0.7567 & 0.3146 \\
+GATED\_ATTENTION\_MIL & One attention-weighted latent vector & 0.7581 & 0.2975 \\
+DIRECT & Six statistics per SUMMARY dimension & 0.7882 & 0.3492 \\
+AMP-LDP & Six statistics per latent dimension & \textbf{0.7908} & \textbf{0.3678} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Both DIRECT and AMP-LDP retain location, dispersion, quantiles, and maxima rather than one representative vector. Their stronger development metrics are consistent with an information bottleneck in the evaluated single-vector pools. However, classifier form and representation size also change between the MIL and distribution rows, so Table~\ref{tab:aggregation-diagnostic} cannot attribute the entire difference causally to aggregation. The controlled representational comparison is AMP-LDP versus DIRECT: both use the identical six-statistic implementation and HGB configuration, while only AMP-LDP inserts the learned encoder.
+
+\subsection{AMP-LDP development results}
+
+On DEV\_VAL, the five latent-HGB runs had mean individual-seed ROC-AUC 0.790809 and AP 0.367837. The frozen FULL\_48 comparator scored 0.788831 and 0.359795, while DIRECT scored 0.788233 and 0.349244. Thus, the seed-metric means placed AMP-LDP 0.0020 ROC-AUC and 0.0080 AP above FULL\_48, and 0.0026 ROC-AUC and 0.0186 AP above DIRECT. All five seeds satisfied the preregistered FULL\_48 parity margins, but only two exceeded FULL\_48 on both metrics. Stage~25B was consequently classified as representation parity rather than a development-stage breakthrough.
+
+Table~\ref{tab:governed-cohort-results} preserves an important reporting distinction. The AMP-LDP DEV\_VAL entries are arithmetic means of five separately computed seed metrics. The confirmation and final entries are metrics computed after averaging the five customer-probability vectors. Stage~25B used the averaged predictions for its paired bootstrap, but no standalone DEV\_VAL ensemble ROC-AUC or AP was stored in a frozen aggregate artifact. It is therefore not reconstructed here, and the three AMP-LDP columns should not be read as a strictly like-for-like ensemble trajectory.
+
+% Sources: results/supervised/stage_25b/primary_metrics_summary.csv,
+% results/supervised/stage_17b/validation_decision.json,
+% results/supervised/stage_26/confirmation_primary_metrics.csv, and
+% results/supervised/stage_27b/final_primary_metrics.csv
+\begin{table*}[t]
+\caption{Customer-level discrimination across governed roles. AMP-LDP development values are mean individual-seed metrics; its confirmation and final values are metrics of the frozen five-probability arithmetic ensemble. FULL\_48 and DIRECT are single frozen models.}
+\label{tab:governed-cohort-results}
+\centering
+\small
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+& \multicolumn{2}{c}{DEV\_VAL} & \multicolumn{2}{c}{CONFIRMATION} & \multicolumn{2}{c}{Final evaluation} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(l){6-7}
+Method & ROC-AUC & AP & ROC-AUC & AP & ROC-AUC & AP \\
+\midrule
+FULL\_48 & 0.7888 & 0.3598 & 0.7891 & 0.3791 & 0.7979 & 0.3853 \\
+DIRECT & 0.7882 & 0.3492 & 0.7870 & 0.3557 & 0.7950 & 0.3684 \\
+AMP-LDP & \textbf{0.7908} & \textbf{0.3678} & \textbf{0.8118} & \textbf{0.4153} & \textbf{0.8117} & \textbf{0.4219} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+The FULL\_48 row is the original Stage~17B model fitted on \textsc{dev\_train}, not the Study~1 terminal refit. For historical context, the separately refitted Study~1 FULL\_48 model, trained on \textsc{dev\_train}+\textsc{dev\_val}, reached 0.7925 ROC-AUC and 0.3702 AP in its terminal evaluation. That checkpoint had different training exposure and is not substituted into the paired Study~2 comparisons.
+
+\subsection{Independent confirmation}
+
+The frozen AMP-LDP ensemble was next evaluated once on 6,355 confirmation customers without refitting or seed selection. It reached 0.811791 ROC-AUC and 0.415287 AP, compared with 0.789084 and 0.379058 for FULL\_48 and 0.787000 and 0.355725 for DIRECT. The observed AMP-LDP gains over FULL\_48 were 0.022707 ROC-AUC and 0.036229 AP; the paired 95\% percentile intervals were [0.009839, 0.035194] and [0.009530, 0.062749]. Against DIRECT, observed gains were 0.024792 and 0.059563, with intervals [0.013757, 0.035633] and [0.034935, 0.083791]. All five individual seeds met the frozen parity margins on this cohort.
+
+This result supplied independent Study~2 support for the learned-distribution hypothesis: the same checkpoints, aggregation, HGB models, and ensemble rule improved over the matched DIRECT control after leaving development. The confirmation effect was larger than the development seed-metric difference. That change may reflect cohort sampling or the different development reporting definition; it should not be interpreted as evidence that the model intrinsically improves when transferred to later cohorts.
+
+\subsection{Final evaluation}
+
+The terminal evaluation contained 6,356 customers, including 542 theft-labelled customers, and applied the already-confirmed pipelines without training, calibration, threshold optimization, or model selection. As reported in Table~\ref{tab:governed-cohort-results}, AMP-LDP achieved 0.811729 ROC-AUC and 0.421863 AP. FULL\_48 achieved 0.797863 and 0.385326, while DIRECT achieved 0.794967 and 0.368439. The method ordering AMP-LDP $>$ FULL\_48 $>$ DIRECT therefore held for both primary metrics in development, confirmation, and final aggregate records, although the development AMP-LDP definition differs as noted above.
+
+\textbf{Final evaluation cohort with disclosed historical baseline access.} The final evaluation cohort had been accessed historically in Stage~13 for an obsolete supervised window-level baseline. The learned latent-distribution hypothesis, architecture, pooling rule, five-seed ensemble, controls, and confirmation decision reported in Study~2 were developed and frozen later without Study~2 row-level access to this cohort. We therefore treat it as a governed final evaluation cohort with disclosed historical baseline access, not as a pristine untouched test set.
+
+This governance supports a terminal, frozen within-SGCC assessment but not an external validation claim. Stage~27B mechanically satisfied every preregistered FINAL~A condition, so the result was classified as strong final replication. The classification reflects the frozen margins, paired uncertainty, learned-encoding comparison, and seed audit; it is not a post hoc label based only on the highest point estimate.
+
+\subsection{Paired uncertainty and seed robustness}
+
+Final uncertainty used 2,000 paired customer-bootstrap resamples with seed 2502. Every resample used identical customer indices for all compared methods, and the 95\% intervals are the 2.5th and 97.5th percentiles of the paired metric differences. No p-values or parametric significance tests were computed. Table~\ref{tab:final-paired-effects} and Figure~\ref{fig:final-paired-effects} show the frozen results.
+
+% Source: results/supervised/stage_27b/final_bootstrap_comparisons.json
+\begin{table*}[t]
+\caption{Final paired customer-level effects. Fractions report the proportion of bootstrap differences above zero.}
+\label{tab:final-paired-effects}
+\centering
+\small
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+& \multicolumn{3}{c}{ROC-AUC difference} & \multicolumn{3}{c}{AP difference} \\
+\cmidrule(lr){2-4}\cmidrule(l){5-7}
+Comparison & Observed & 95\% interval & Fraction $>0$ & Observed & 95\% interval & Fraction $>0$ \\
+\midrule
+AMP-LDP $-$ FULL\_48 & +0.0139 & [+0.0005, +0.0275] & 0.9770 & +0.0365 & [+0.0080, +0.0652] & 0.9950 \\
+AMP-LDP $-$ DIRECT & +0.0168 & [+0.0063, +0.0279] & 0.9980 & +0.0534 & [+0.0274, +0.0779] & 1.0000 \\
+DIRECT $-$ FULL\_48 & $-0.0029$ & [$-0.0161$, +0.0101] & 0.3335 & $-0.0169$ & [$-0.0436$, +0.0124] & 0.1330 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{figure}[t]
+\centering
+\input{figures/final_paired_effects}
+\caption{Observed final customer-level differences with paired 95\% percentile bootstrap intervals. Positive values favour the first method. The zero line denotes no paired difference.}
+\label{fig:final-paired-effects}
+\end{figure}
+
+Both lower bounds for AMP-LDP versus FULL\_48 were positive, as were both lower bounds versus DIRECT. DIRECT versus FULL\_48 crossed zero on both metrics, so the final data did not establish a clear ordering between those controls through paired uncertainty alone.
+
+% Source: results/supervised/stage_27b/final_seed_metrics.csv and final_outcome.json
+\begin{table}[t]
+\caption{Final AMP-LDP individual-seed robustness relative to frozen FULL\_48. Parity required ROC-AUC difference at least $-0.005$ and AP difference at least $-0.010$.}
+\label{tab:final-seed-robustness}
+\centering
+\small
+\begin{tabular}{@{}rrrrrl@{}}
+\toprule
+Seed & ROC-AUC & AP & $\Delta$ROC & $\Delta$AP & Parity \\
+\midrule
+42 & 0.7999 & 0.3990 & +0.0020 & +0.0137 & Yes \\
+43 & 0.7947 & 0.3898 & $-0.0031$ & +0.0044 & Yes \\
+44 & 0.8001 & 0.3751 & +0.0023 & $-0.0103$ & No \\
+45 & 0.8043 & 0.3941 & +0.0064 & +0.0087 & Yes \\
+46 & 0.7943 & 0.3875 & $-0.0035$ & +0.0022 & Yes \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:final-seed-robustness} shows that four of five seeds met both margins. Seed~44 missed the AP margin slightly; it must not be counted as an individual success under the frozen rule. Across seeds, ROC-AUC was $0.7987\pm0.0037$ and AP was $0.3891\pm0.0080$, where dispersion is population standard deviation. No preregistered collapse condition fired: at least four seeds met parity, ROC-AUC SD was below 0.015, AP SD was below 0.025, and no seed was more than 0.030 ROC-AUC or 0.060 AP below FULL\_48. The ensemble was numerically higher than every individual seed on both metrics, but this observation supports the preregistered ensemble only; it does not establish that ensembling will always improve a new model or dataset.
+
+\subsection{Discussion and inference}
+
+The full evidence chain supports a bounded representational conclusion. Reconstruction objectives successfully modelled common consumption structure but aligned poorly with the customer discrimination target. Customer-supervised single-vector MIL improved the alignment of the loss with \texttt{FLAG}, yet its mean, maximum, and attention pools retained only one learned vector per customer. Multi-statistic aggregation recovered information associated with variation, tails, and extremes. This pattern is consistent with distribution preservation addressing the evaluated pooling bottleneck, but the diagnostic MIL comparison changes both aggregation and classifier form and therefore does not prove a unique causal mechanism.
+
+The DIRECT comparison provides the sharper inference. Because DIRECT and AMP-LDP use the same standardised \textsc{summary\_17} inputs, six aggregation statistics, HGB configuration, and \textsc{dev\_train} population, their difference isolates the practical value of passing windows through the learned encoder within this frozen design. AMP-LDP's AP advantage over DIRECT appeared in development and was larger, with positive paired lower bounds, in confirmation and final evaluation. This supports the claim that learned window representations added customer-level information beyond identical aggregation of handcrafted window summaries. It does not show which individual latent coordinate caused the gain or that any high-scoring window corresponds to a verified theft period.
+
+FULL\_48 supplies a different test. It is a strong engineered benchmark containing chronology and persistence information absent from the permutation-invariant AMP-LDP profile. Development supported parity, while confirmation and final point metrics favoured AMP-LDP; final paired lower bounds were positive. The comparison shows that the learned distribution representation was competitive with and, under the terminal Study~2 protocol, improved upon that frozen benchmark. It does not show universal superiority over engineered features or published SGCC methods.
+
+Effect magnitude varied across roles: AMP-LDP's recorded differences over FULL\_48 were +0.0020/+0.0080, +0.0227/+0.0362, and +0.0139/+0.0365 for ROC-AUC/AP in development, confirmation, and final evaluation. Against DIRECT they were +0.0026/+0.0186, +0.0248/+0.0596, and +0.0168/+0.0534. The direction persisted, while the size did not remain constant. Because development uses mean seed metrics and later roles use ensemble metrics, and because all roles are internal SGCC cohorts, the defensible inference is reproducible qualitative advantage under governed evaluation rather than a fixed effect size or external-generalization guarantee.
+
+Accordingly, the terminal evidence supports the frozen anchor: \emph{Learning window representations before distribution-preserving customer aggregation adds reproducible customer-level discrimination beyond identical direct aggregation across development, confirmation, and the governed final evaluation.} It supports customer ranking under customer-level weak supervision. It does not support window-level theft detection, theft-event localization, calibrated window probabilities, causal identification, deployment validity, external-dataset generalization, or a universal first-ever or state-of-the-art claim.

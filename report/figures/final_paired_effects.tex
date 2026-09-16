@@ -1,0 +1,35 @@
+% Frozen aggregate values from results/supervised/stage_27b/final_bootstrap_comparisons.json.
+% No row-level predictions or metrics are recomputed by this figure.
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[x=700mm,y=7mm,font=\sffamily\scriptsize]
+  \draw[gray!70,dashed] (0,0.35) -- (0,6.65);
+  \draw[->] (-0.05,0.55) -- (0.082,0.55) node[right]{Difference};
+  \foreach \x/\lab in {-0.04/$-0.04$,-0.02/$-0.02$,0/$0$,0.02/$0.02$,0.04/$0.04$,0.06/$0.06$,0.08/$0.08$} {
+    \draw (\x,0.45) -- (\x,0.65) node[below=2pt]{\lab};
+  }
+
+  \node[anchor=east] at (-0.052,6) {AMP-LDP $-$ FULL\_48, ROC};
+  \draw[blue!75!black,very thick] (0.000466,6) -- (0.027511,6);
+  \fill[blue!75!black] (0.013867,6) circle[radius=1.6pt];
+
+  \node[anchor=east] at (-0.052,5) {AMP-LDP $-$ FULL\_48, AP};
+  \draw[purple!75!black,very thick] (0.007993,5) -- (0.065214,5);
+  \fill[purple!75!black] (0.036538,5) circle[radius=1.6pt];
+
+  \node[anchor=east] at (-0.052,4) {AMP-LDP $-$ DIRECT, ROC};
+  \draw[blue!75!black,very thick] (0.006282,4) -- (0.027865,4);
+  \fill[blue!75!black] (0.016762,4) circle[radius=1.6pt];
+
+  \node[anchor=east] at (-0.052,3) {AMP-LDP $-$ DIRECT, AP};
+  \draw[purple!75!black,very thick] (0.027428,3) -- (0.077907,3);
+  \fill[purple!75!black] (0.053424,3) circle[radius=1.6pt];
+
+  \node[anchor=east] at (-0.052,2) {DIRECT $-$ FULL\_48, ROC};
+  \draw[blue!75!black,very thick] (-0.016124,2) -- (0.010103,2);
+  \fill[blue!75!black] (-0.002895,2) circle[radius=1.6pt];
+
+  \node[anchor=east] at (-0.052,1) {DIRECT $-$ FULL\_48, AP};
+  \draw[purple!75!black,very thick] (-0.043593,1) -- (0.012386,1);
+  \fill[purple!75!black] (-0.016886,1) circle[radius=1.6pt];
+\end{tikzpicture}%
+}
