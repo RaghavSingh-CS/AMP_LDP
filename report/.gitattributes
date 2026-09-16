@@ -1,0 +1,5 @@
+# Preserve the official Springer files byte-for-byte and suppress content diffs
+# for vendored upstream assets. Provenance and SHA-256 hashes are documented in
+# SPRINGER_TEMPLATE_SOURCE.md.
+sn-jnl.cls binary
+sn-mathphys-num.bst binary

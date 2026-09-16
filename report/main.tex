@@ -1,0 +1,54 @@
+% AMP final-report foundation. Substantive manuscript text is intentionally deferred.
+\documentclass[pdflatex,sn-mathphys-num]{sn-jnl}
+
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{xcolor}
+
+\newcommand{\reportplaceholder}[1]{%
+  \par\noindent\textcolor{gray}{\textit{[Stage 30 placeholder: #1]}}\par
+}
+
+\begin{document}
+
+\input{cover}
+
+\title[AMP-LDP for Customer-Level Electricity Theft Detection]
+{Weakly Supervised Latent Distribution Profiling for Customer-Level Electricity Theft Detection}
+
+\author*[1]{\fnm{Raghav} \sur{Singh}}
+\email{TO BE PROVIDED}
+
+\author[1]{\fnm{Aditya} \sur{Poddar}}
+\email{TO BE PROVIDED}
+
+\author[1]{\fnm{Dwijesh} \sur{P}}
+\email{TO BE PROVIDED}
+
+\affil*[1]{\orgdiv{School of Computer Science and Engineering},
+  \orgname{Manipal Institute of Technology},
+  \orgaddress{\city{Manipal}, \state{Karnataka}, \country{India}}}
+
+\abstract{\textit{[Stage 30 placeholder: Write the final abstract from the frozen evidence package; do not introduce new results or claims.]}}
+
+\keywords{TO BE PROVIDED}
+
+\maketitle
+
+\tableofcontents
+
+\input{sections/01_introduction}
+\input{sections/02_literature_survey}
+\input{sections/03_research_gap_objectives}
+\input{sections/04_methodology}
+\input{sections/05_implementation_details}
+\input{sections/06_results_discussion}
+\input{sections/07_limitations}
+\input{sections/08_conclusion_future_scope}
+
+% Stage 30 integration check: render all 24 verified entries until substantive
+% Stage 31 prose supplies an explicit citation for each entry.
+\nocite{*}
+\bibliography{references/AMP_VERIFIED_REFERENCES}
+
+\end{document}
