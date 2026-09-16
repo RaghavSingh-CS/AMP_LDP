@@ -1,0 +1,106 @@
+{
+  "stage": "Stage 24B — preregistered weakly supervised MIL development experiment",
+  "status": "SEALED_BEFORE_TRAINING_OR_DEV_VAL_SCORING",
+  "source_commit": "e8aefe96369633612f07ae3a774fb3baded8c912",
+  "branch": "study2/mil",
+  "stage24a_inputs": {
+    "architecture_spec_sha256": "3ae58a5df36e01914c78348fc047582b64c354abe123d021f66520fc69b77029",
+    "governance_sha256": "4a065391b23fb80eae8a3d9c73096c3c1f9708048295ea73ed98f0f51637b345",
+    "bag_statistics_sha256": "258a95741f1c89e2327b4f32dd59455212bf72554b74dc95d52670d0f53a3320",
+    "draft_preregistration_sha256": "b5a324d18167e82b7bdda8c53416cd735c14ec2769b604c4761048bab3ee0b07",
+    "anchor_criteria_sha256": "38d5358e3f1544340b915d256b69fabd38ec95f9465d9cde2b41d202e17c4726"
+  },
+  "data": {
+    "fit_role": "DEV_TRAIN",
+    "evaluation_role": "DEV_VAL",
+    "closed_roles": ["CONFIRMATION", "FINAL_TEST"],
+    "representation": "SUMMARY_17 in exact frozen Stage 14 order",
+    "representation_dimension": 17,
+    "standardization": "Feature-wise mean and population standard deviation fitted on all DEV_TRAIN instances only; apply unchanged to DEV_VAL; replace zero scales with 1",
+    "eligible_windows": "Existing usable stride-30 windows only",
+    "instance_target": null,
+    "loss_unit": "customer bag",
+    "new_preprocessing_or_features": false,
+    "truncation": false,
+    "window_duplication": false,
+    "label_dependent_window_sampling": false
+  },
+  "architecture": {
+    "encoder": "Linear(17,32)-ReLU-Dropout(0.1)-Linear(32,16)-ReLU",
+    "classifier": "Linear(16,1)",
+    "normalization": "none",
+    "pooling_arms": ["MEAN_MIL", "MAX_MIL", "GATED_ATTENTION_MIL"],
+    "gated_attention": "softmax_j(w^T[tanh(Vh_ij) elementwise_multiply sigmoid(Uh_ij)]), V/U=Linear(16,16,bias=True), w=Linear(16,1,bias=False)",
+    "expected_parameter_counts": {"MEAN_MIL": 1121, "MAX_MIL": 1121, "GATED_ATTENTION_MIL": 1681},
+    "initialization": "Xavier uniform linear weights; zero linear biases"
+  },
+  "batching": {
+    "batch_size_customers": 64,
+    "method": "batch-local padding with boolean valid-instance masks",
+    "mean_denominator": "valid instances only",
+    "max_padding_value": "negative infinity before reduction",
+    "attention_normalization": "masked softmax over valid instances only"
+  },
+  "training": {
+    "optimizer": "AdamW",
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "epochs": 50,
+    "early_stopping": false,
+    "loss": "unweighted BCEWithLogitsLoss at customer/bag level",
+    "gradient_clip_global_norm": 5.0,
+    "seeds": [42, 43, 44, 45, 46],
+    "seed_note": "The Stage 24B authorization explicitly replaces the Stage 24A draft seed list before training; no outcome was observed before this seal",
+    "fits": 15,
+    "device": "CPU",
+    "determinism": "Seed Python, NumPy, and PyTorch; deterministic algorithms enabled"
+  },
+  "primary_evaluation": {
+    "unit": "DEV_VAL customer",
+    "metrics": ["ROC_AUC", "average_precision"],
+    "summary": ["mean", "population_std", "median", "min", "max"],
+    "arm_selection_rule": "Highest five-seed mean average precision, then highest five-seed mean ROC_AUC; never select a seed",
+    "threshold_metrics": "none",
+    "secondary_metric": "Brier score",
+    "paired_bootstrap": {"resamples": 2000, "seed": 2402, "unit": "DEV_VAL customer", "interval": "percentile 95%", "comparison_probability": "five-seed mean probability versus committed FULL_48 HGB probability"}
+  },
+  "comparators": {
+    "FULL_48_HGB": {"source": "committed Stage 17B DEV_VAL evidence", "ROC_AUC": 0.7888308218953116, "average_precision": 0.35979459032174654},
+    "PROPAGATED_WINDOW_HGB_CUSTOMER_BALANCED_Q90": {"source": "committed Stage 20B DEV_VAL evidence", "ROC_AUC": 0.7417742953801463, "average_precision": 0.27569278388909063}
+  },
+  "outcome_gates": {
+    "A": "Mean deltas >= +0.010 ROC_AUC and +0.020 AP, at least 4/5 seeds positive on both, and paired seed-ensemble bootstrap intervals above zero for both",
+    "B": "Mean deltas >= -0.010 ROC_AUC and -0.020 AP, at least 4/5 seeds meet both margins, plus reproducible concentration, top-removal greater than random with paired interval above zero, and relevance stability above matched random expectation",
+    "C": "Neither A nor B, or relevance is no more stable/informative than its controls"
+  },
+  "attention_analysis": {
+    "metrics": ["entropy", "normalized_entropy", "effective_number", "top1_mass", "top10_percent_mass"],
+    "top10_rounding": "k = ceil(0.10 * bag_size), minimum 1",
+    "stability": ["pairwise-seed top-set Jaccard", "within-bag Spearman rank correlation", "prediction Spearman correlation"],
+    "matched_random_jaccard": "Exact hypergeometric expectation for two independent size-k subsets of a size-m bag",
+    "classes": ["FLAG=0", "FLAG=1"]
+  },
+  "perturbation": {
+    "population": "Every DEV_VAL bag with at least two instances",
+    "remove_count": "min(ceil(0.10 * bag_size), bag_size - 1)",
+    "conditions": ["TOP", "RANDOM", "BOTTOM"],
+    "random_repeats": 100,
+    "metric": "baseline customer probability minus post-removal customer probability; positive means removal lowers the prediction",
+    "no_retraining": true,
+    "paired_intervals": "2000 customer bootstrap resamples, seed 2402, percentile 95%"
+  },
+  "trivial_controls": {
+    "bag_size_strata": ["1-10", "11-27", "28-34"],
+    "short_bag_definition": "bag_size <= 5",
+    "feature_associations": "Spearman attention association with each frozen SUMMARY_17 feature, overall and by customer class",
+    "padding_test": "For eight fixed DEV_VAL bags per run, append seven masked zero rows; maximum absolute logit change tolerance 1e-7",
+    "attention_test": "Valid attention sums within 1e-6 of 1 and padded attention is exactly 0"
+  },
+  "interpretation": {
+    "allowed": ["decision-relevant window", "high-attention instance", "model-relevant temporal segment", "relative contribution to customer representation", "predictive evidence used by the model"],
+    "forbidden": ["fraudulent window", "theft window", "window theft probability", "detected theft period", "theft start/end", "localization accuracy", "true anomalous period"]
+  },
+  "post_seal_adaptation": false,
+  "confirmation_access": false,
+  "final_test_access": false
+}

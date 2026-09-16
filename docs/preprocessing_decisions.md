@@ -1749,3 +1749,62 @@ The authoritative Stage 24A design artifacts are under
 complete Study 2 method and claim to be frozen first. `FINAL_TEST` remains
 sealed until a successful, separately governed Study 2 reaches a final-method
 stage.
+
+### Stage 24B — first preregistered MIL development experiment
+
+Stage 24B executed the first fixed weakly supervised MIL experiment on
+`DEV_TRAIN → DEV_VAL`. Its immutable execution specification has SHA-256
+`15b815e32742540903977bae52d942bf7da438b11e7625f524b7a9e3cc16635f`.
+The Stage 24B authorization fixed five seeds `42–46` before training. No
+`CONFIRMATION` or `FINAL_TEST` row-level data was loaded.
+
+Each customer bag contained all existing eligible stride-30 `SUMMARY_17`
+windows. The 17-feature standardizer was fit on `DEV_TRAIN` instances only.
+There were 23,724 training customers/614,976 windows and 5,931 validation
+customers/153,947 windows, with no overlap, duplicate window IDs, nonfinite
+features, truncation, duplication, or label-dependent sampling. No
+instance-level target was created: unweighted binary cross-entropy was applied
+once per customer bag.
+
+The shared architecture was exactly `17→32→16` with ReLU, dropout 0.1 after the
+first layer, and a linear `16→1` customer classifier. Mean and max pooling had
+1,121 parameters; the frozen gated-attention pool had 1,681. All 15 models used
+AdamW (`lr=0.001`, `weight_decay=0.0001`), batch size 64, global gradient clip
+5.0, exactly 50 epochs, no early stopping, and the complete five-seed grid.
+Batch-local padding was masked from every pool. All padding-invariance and
+attention-normalization tests passed exactly.
+
+Five-seed mean±population-SD ROC-AUC/AP were:
+
+- `MEAN_MIL`: `0.739867±0.002881` / `0.267821±0.003126`;
+- `MAX_MIL`: `0.756667±0.007127` / `0.314566±0.015653`; and
+- `GATED_ATTENTION_MIL`: `0.758053±0.002211` / `0.297462±0.007598`.
+
+The frozen arm-selection rule chose `MAX_MIL` by mean AP. Relative to the
+committed `FULL_48` HGB DEV_VAL comparator (`0.788831/0.359795`), its mean
+deltas were `-0.032164/-0.045229`; zero seeds met both comparable margins.
+
+Attention showed real model-behaviour structure but not competitive
+discrimination. Normal/theft-labelled top-10%-window attention mass averaged
+`0.4038/0.4633`, and effective attended-window counts averaged `16.36/13.11`.
+Across seed pairs, mean top-set Jaccard was `0.4458` versus matched-random
+`0.0794`; mean rank correlation was `0.5919`. Removing top-attention windows
+reduced customer probabilities by `0.02309` overall versus `0.00013` for 100
+matched random removals and `-0.00123` for bottom removal. The top-minus-random
+effect was `0.02296` with paired 95% interval `[0.02174,0.02419]`. These results
+show model dependence on high-attention instances, not theft localization.
+
+Prediction–bag-size association was small for attention (`rho=0.012` overall)
+but stronger for max pooling (`rho=-0.163`). No consumption/variability summary
+approached the predeclared `|rho|>=0.90` reducibility threshold; the strongest
+individual pooled association was attention with standard deviation among
+theft-labelled customers (`rho=0.423`). Max pooling exceeded attention AP by
+`0.0171`, so simple sparse-instance selection remains a credible mechanism.
+The ≤5-window subgroup contained only 14 customers and one positive and is not
+interpretable beyond that limitation.
+
+Stage 24B is **C — WEAK RESULT**. **ANCHOR_EARNED = NO.** Stable,
+perturbation-supported relevance was insufficient because MIL was materially
+worse than the frozen conventional baseline. No confirmation gate is warranted
+from this result, and no adaptive architecture or representation change is made
+within Stage 24B.

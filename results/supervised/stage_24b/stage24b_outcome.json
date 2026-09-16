@@ -1,0 +1,37 @@
+{
+  "outcome": "C",
+  "outcome_label": "WEAK RESULT",
+  "selected_arm_by_frozen_rule": "MAX_MIL",
+  "selected_mean_ROC_AUC": 0.7566669829533634,
+  "selected_mean_average_precision": 0.31456603604844124,
+  "delta_vs_FULL_48_HGB": {
+    "ROC_AUC": -0.032163838941948186,
+    "average_precision": -0.0452285542733053
+  },
+  "seeds_positive_on_both_metrics": 0,
+  "seeds_within_both_comparable_margins": 0,
+  "paired_bootstrap": {
+    "resamples": 2000,
+    "seed": 2402,
+    "ROC_AUC_delta": {
+      "mean": -0.01606119074586149,
+      "lower_95": -0.03527053126880309,
+      "upper_95": 0.0028238038684215505
+    },
+    "average_precision_delta": {
+      "mean": -0.020098310309700246,
+      "lower_95": -0.05455716564536674,
+      "upper_95": 0.01354559813280156
+    }
+  },
+  "attention_relevance_stable_above_random": true,
+  "top_removal_exceeds_random_with_positive_interval": true,
+  "outcome_A_passed": false,
+  "outcome_B_passed": false,
+  "ANCHOR_EARNED": "NO",
+  "anchor_sentence": null,
+  "anchor_policy": "A final sentence is written only after inspecting which preregistered criterion passed; no sentence is manufactured for Outcome C.",
+  "instance_level_FLAG_loss_used": false,
+  "confirmation_accessed": false,
+  "final_test_accessed": false
+}

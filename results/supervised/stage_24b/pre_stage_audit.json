@@ -1,0 +1,19 @@
+{
+  "stage": "Stage 24B pre-stage audit",
+  "branch": "study2/mil",
+  "source_HEAD": "e8aefe96369633612f07ae3a774fb3baded8c912",
+  "git_clean_before_stage": true,
+  "execution_spec_sha256": "15b815e32742540903977bae52d942bf7da438b11e7625f524b7a9e3cc16635f",
+  "stage24a_artifact_hashes": {
+    "anchor_result_criteria.json": "38d5358e3f1544340b915d256b69fabd38ec95f9465d9cde2b41d202e17c4726",
+    "bag_statistics.json": "258a95741f1c89e2327b4f32dd59455212bf72554b74dc95d52670d0f53a3320",
+    "instance_representation_audit.csv": "8efc9675c16eb0eb2fb6acc642661b07161cb3b5bfced30b774ddaefd7fa2fce",
+    "mil_architecture_spec.json": "3ae58a5df36e01914c78348fc047582b64c354abe123d021f66520fc69b77029",
+    "mil_feasibility_report.md": "7f777e48e8c52911bd26b100e99355f58228b122073b38d588b223c40b75d825",
+    "stage24b_preregistration_draft.json": "b5a324d18167e82b7bdda8c53416cd735c14ec2769b604c4761048bab3ee0b07",
+    "study2_governance.json": "4a065391b23fb80eae8a3d9c73096c3c1f9708048295ea73ed98f0f51637b345"
+  },
+  "stage1_protected_path_changes": [],
+  "confirmation_row_level_access": false,
+  "final_test_row_level_access": false
+}
