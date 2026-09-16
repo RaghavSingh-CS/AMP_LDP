@@ -1,3 +1,68 @@
 \section{Implementation Details}\label{sec:implementation}
 
-\reportplaceholder{Document the verified preprocessing, split governance, model configuration, and reproducibility details; do not rerun or modify experiments.}
+\subsection{Software and execution environment}
+
+The pipeline was implemented as a Python package with executable modules under \texttt{src/}. The exact Python interpreter version used for the frozen Study~2 runs was not recorded and is therefore not asserted. The committed \texttt{requirements.txt} pins the principal numerical stack to NumPy 2.5.2, pandas 3.0.5, PyArrow 25.0.1, scikit-learn 1.9.0, Joblib 1.5.3, SciPy 1.18.0, Matplotlib 3.11.1, tqdm 4.70.0, LightGBM 4.7.0, and PyTorch 2.13.0. The pre-execution MIL audit specifically records PyTorch 2.13.0 as a CPU-only build with no CUDA device. It also records 16 logical CPUs and 13.85~GiB of memory for the audited environment, but not the processor model or operating-system build. These hardware observations describe that execution environment only and are not inferred from the machine used to prepare this report.
+
+AMP-LDP itself uses NumPy and pandas for tabular operations, PyArrow-backed Parquet for derived tables, PyTorch for the encoder and differentiable bag aggregation, and scikit-learn's \texttt{HistGradientBoostingClassifier} for customer classification. Joblib serializes scikit-learn estimators. The five neural runs executed on CPU. Reproducibility controls set the Python, NumPy, and PyTorch random generators to the run seed, enable deterministic PyTorch algorithms, initialise linear layers explicitly, and use a seeded permutation of all eligible training customers in every epoch. Dependency pins are separated into \texttt{requirements.txt} and \texttt{requirements-dev.txt}; the latter adds notebook tooling without defining a different modelling stack.
+
+\subsection{Implemented data pipeline}
+
+The processing stages are independent command-line modules rather than an implicit notebook sequence. \texttt{src/preprocessing/clean\_data.py} first validates that every non-metadata column in the source CSV is a uniquely parseable date. It loads identifiers as strings, labels as 8-bit integers, and daily readings as 32-bit floats. Calendar repair, empty-customer removal, interpolation, nearest-value edge filling, $\log(1+x)$ transformation, missing-mask creation, finite-value checks, and source-file checksum verification occur before atomic, Zstandard-compressed Parquet output. The original CSV is never overwritten.
+
+\texttt{src/preprocessing/split\_and\_scale.py} creates the deterministic customer-level 70/15/15 historical assignment with two stratified \texttt{train\_test\_split} calls. The same row indices split the consumption table and missingness mask. A scikit-learn \texttt{StandardScaler} is fitted on historical-training customers only, then applied without refitting to validation and test tables. The split manifest, scaled tables, masks, and scaler are written separately, and validation asserts customer exclusivity, chronological feature order, aligned identifiers, binary masks, and finite float32 outputs.
+
+\texttt{src/preprocessing/generate\_windows.py} creates reference manifests rather than duplicating every 30-value vector. For each customer it records deterministic window identifiers, inclusive start and end indices, dates, customer \texttt{FLAG}, and missing-count metadata. At stride 30, the 1,034 positions yield 34 complete windows and 14 unused trailing positions. \texttt{src/preprocessing/filter\_windows.py} writes an order-preserving manifest subset containing only windows with fewer than 30 originally missing readings. The label retained in these manifests is used to recover the customer bag label and audit consistency; it is not supplied as a window feature or instance loss.
+
+Model-time loading is implemented by \texttt{src/analysis/supervised\_signal\_utils.py}. It combines processed customer arrays with manifest indices, reconstructs each dense 30-value window, and verifies the expected 1,034 chronological columns, valid indices, unique window identifiers, customer-label consistency, eligibility rule, and finite values. The raw and derived datasets are intentionally ignored by Git and are not claimed to be redistributed with the source repository.
+
+The frozen \textsc{summary\_17} transformation is the \texttt{behavioural\_features} function in \texttt{src/analysis/run\_stage14\_representation.py}. Its code fixes feature order, float32 output, population standard deviations, linearly interpolated quantiles, first differences, and the slope calculation. Stage~25B recomputes these deterministic summaries from the established window matrix, checks the exact expected shape, and standardises each summary column with \textsc{dev\_train}-window mean and population standard deviation stored in \texttt{results/supervised/stage\_25b/bag\_integrity.json}.
+
+Customer bags are formed by grouping the manifest by customer and sorting by \texttt{window\_number\_within\_customer}. The implementation preallocates a float32 tensor and boolean mask up to the verified maximum of 34 windows, with zero-valued storage at padded positions. Each training or inference batch is cropped to that batch's largest valid bag before encoding. The mask determines valid counts, excludes padded values from means and variances, replaces padded values by positive infinity before sorted quantile gathering, and prevents padding from affecting maximum selection. Numerical tests cover one- and two-instance bags, linear quantile interpolation, padding invariance, gradient propagation only through valid instances, and the exact neural parameter count.
+
+\subsection{AMP-LDP training and inference workflow}
+
+The executable development implementation is \texttt{src/analysis/run\_stage25b\_distribution\_experiment.py}. Its sealed JSON specification is loaded and checked before fitting, including architecture, dimensions, seeds, parameter counts, pooling order, classifier settings, data roles, and the prohibition on instance targets. The implementation then follows four steps for each seed in \{42, 43, 44, 45, 46\}.
+
+First, a \texttt{DistributionModel} creates the $17\rightarrow32\rightarrow16$ encoder and temporary $96\rightarrow1$ linear head. Xavier-uniform weights and zero biases are applied to every linear layer. Second, the complete network is trained for 50 epochs with AdamW and one unweighted \texttt{BCEWithLogitsLoss} value per customer. Every representation-available \textsc{dev\_train} customer appears once per epoch; there is no class-dependent customer or window sampling. Third, evaluation mode disables dropout and extracts a 96-value distribution profile for every training and development-validation customer. Fourth, an unweighted HGB is fitted to the training profiles and customer labels. The saved neural checkpoint contains the full training state dictionary and metadata, but primary inference calls the checkpoint's \texttt{represent} method and passes its profile to the paired seed-specific HGB; the temporary linear head does not generate the reported primary probability.
+
+At inference, \texttt{torch.load} maps checkpoints to CPU and loads weights without executing a training step. Each frozen encoder produces 16-dimensional embeddings for all valid windows. The mask-aware \texttt{masked\_distribution} function orders features dimension-major as mean, $\sqrt{\mathrm{population\ variance}+10^{-8}}$, q10, median, q90, and maximum. A seed-specific Joblib HGB returns the customer probability. Confirmation and terminal evaluators assert a 96-column finite profile, finite probabilities within $[0,1]$, exact customer counts, and exact seed order before computing the unweighted arithmetic mean. No calibration, seed selection, weighting, or stacking is implemented.
+
+\begin{table}[t]
+\caption{Frozen AMP-LDP implementation configuration.}
+\label{tab:implementation-configuration}
+\centering
+\small
+\begin{tabular}{@{}p{0.29\linewidth}p{0.64\linewidth}@{}}
+\toprule
+Component & Verified implementation \\
+\midrule
+Window input & 30 scaled daily values transformed to ordered \textsc{summary\_17}; summary standardisation fitted on \textsc{dev\_train} windows only \\
+Encoder & Linear 17--32, ReLU, dropout 0.1, Linear 32--16, ReLU; 1,104 parameters \\
+Training head & Linear 96--1; 97 parameters; used only for customer-bag encoder training \\
+Neural optimisation & AdamW; learning rate $10^{-3}$; weight decay $10^{-4}$; 50 epochs; 64 customer bags; gradient-norm cap 5; no early stopping \\
+Aggregation & Six statistics for each of 16 latent dimensions; 96 customer features; no chronology or bag-size feature \\
+Customer classifier & Unweighted scikit-learn HGB; learning rate 0.1; 100 iterations; 15 maximum leaf nodes; minimum 100 samples per leaf; $L_2=1$; no early stopping \\
+Seed policy & Encoder seeds 42--46; paired frozen HGB per encoder; arithmetic mean of five probabilities \\
+Evaluation controls & Customer ROC-AUC and Average Precision; paired 2,000-resample bootstrap with seed 2502; no terminal threshold optimisation \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Comparator implementation and experiment control}
+
+DIRECT is constructed in the same Stage~25B executable. It calls the identical \texttt{masked\_distribution} function on the standardised 17-dimensional input bags instead of encoder outputs, asserts the resulting 102 columns, and fits one HGB with the same configuration on \textsc{dev\_train}. Consequently, differences between DIRECT and AMP-LDP are not caused by alternative quantile code, aggregation order, classifier settings, or training population.
+
+The Study~2 FULL\_48 comparator is loaded from \texttt{models/supervised/stage\_17b/hist\_gradient\_boosting.joblib}. Its 48-column construction is implemented in \texttt{src/analysis/run\_stage16\_customer\_aggregation.py}, with train-derived persistence thresholds and feature order frozen by the Stage~16 and Stage~17B specifications. Confirmation could reuse committed Stage~17C comparator predictions; terminal evaluation rebuilt the frozen 48 features, aligned customer order, and applied the original \textsc{dev\_train}-fitted model once. The separate Study~1 checkpoint refitted on \textsc{dev\_train}+\textsc{dev\_val} is never substituted into this comparison.
+
+Earlier reconstruction models are isolated under \texttt{src/models/}, \texttt{src/training/}, and \texttt{src/evaluation/}; they are not imported by AMP-LDP. The single-vector MIL implementation is \texttt{src/analysis/run\_stage24b\_mil\_experiment.py}. It shares the customer-bag supervision pattern but implements mean, maximum, and gated-attention pooling followed by a linear classifier. Keeping each experimental family in a stage-specific executable allowed its preregistration, access boundaries, outputs, and stop decision to remain auditable without turning historical models into hidden components of the final pipeline.
+
+\subsection{Artifact lineage and reproducibility}
+
+The authoritative Stage~25B configuration is \texttt{results/supervised/stage\_25b/stage25b\_execution\_spec.json}. Five PyTorch checkpoints are stored under \texttt{models/supervised/stage\_25b/latent\_distribution\_e2e/}, their paired HGB files under \texttt{models/supervised/stage\_25b/latent\_distribution\_hgb/}, and the DIRECT checkpoint at \texttt{models/supervised/stage\_25b/direct\_summary\_distribution\_hgb.joblib}. \texttt{results/supervised/stage\_27a/final\_model\_freeze.json} records every seed-to-checkpoint pairing and SHA-256 digest; \texttt{final\_comparator\_freeze.json} records the DIRECT and FULL\_48 identities and hashes.
+
+Execution records are organised in stage-specific directories. The Stage~25B directory contains bag integrity, model-run, bootstrap, outcome, and report artifacts. Stage~26 adds the sealed confirmation protocol, pre-access audit, integrity record, seed and primary metrics, paired uncertainty, and decision. Stage~27B similarly records the final access event, pre-access and integrity audits, seed and primary metrics, paired bootstrap, stability, outcome, anchor, claim audit, and report. These later stages persisted aggregate evidence rather than unnecessary large row-level prediction exports. Where historical prediction files exist, they remain audit artifacts rather than the source for manuscript transcription.
+
+Evaluation logic is separated into \texttt{src/evaluation/evaluate\_stage26\_confirmation.py} and \texttt{evaluate\_stage27b\_terminal.py}. Both verify hashes and cohort integrity before loading frozen objects, run encoders in evaluation mode, and prohibit fitting. Stage~27B additionally checks the exact arithmetic ensemble and uses shared bootstrap indices for paired comparisons. Paper-facing facts are mapped to aggregate source artifacts in \texttt{docs/paper/AMP\_PAPER\_EVIDENCE\_INDEX.md}; this prevents values from being reconstructed ad hoc from prediction rows.
+
+Git commits bind code, specifications, documentation, and aggregate results to the experimental chronology. Pre-stage audits assert the expected branch and source commit, while SHA-256 inventories protect models and sealed protocols against silent replacement. The source repository therefore provides code, dependency manifests, small fitted objects, protocols, and evidence records needed to audit the workflow. It does not claim to redistribute the complete SGCC dataset or ignored derived customer tables, which must be obtained and prepared separately under the applicable data terms.
