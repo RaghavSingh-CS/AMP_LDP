@@ -1,3 +1,108 @@
 \section{Methodology}\label{sec:methodology}
 
-\reportplaceholder{Describe only the frozen AMP-LDP method and its governed comparators using docs/paper/ as the authoritative evidence source.}
+\subsection{Dataset, preprocessing, and prediction unit}
+
+The study uses the publicly distributed State Grid Corporation of China (SGCC) smart-meter benchmark, a customer-by-day table with a customer identifier, a binary \texttt{FLAG}, and chronological electricity-consumption readings. The repository contains the source as an immutable CSV and verifies its content by checksum. Prior SGCC studies establish the dataset's use for customer-level electricity-theft classification \cite{Zheng2018WideDeep,Shehzad2022GeneticETD}. The repository does not independently establish the utility's collection procedure, inspection process, geographical scope, or event-level annotation procedure; those details are therefore not inferred here.
+
+Cleaning produced 42,367 customers: 38,755 labelled normal and 3,612 labelled theft-associated. Five source rows with no observed consumption across the cleaned calendar were removed. The chronological range contains 1,034 daily positions after removing 3 October 2014, which was almost entirely unobserved, and inserting 18 September 2016 as an explicitly missing calendar position. Missing values were linearly interpolated only between observations within each customer series; leading and trailing gaps were filled from the nearest available value. Consumption was transformed with $\log(1+x)$ without manual clipping or winsorisation, while a separate binary mask retained whether each source cell had originally been missing. Thus, an imputed value is a numerical input, not an assertion that a meter reading was observed.
+
+Customers were assigned once to disjoint historical train, validation, and test partitions by deterministic 70/15/15, customer-level, \texttt{FLAG}-stratified sampling with seed 42. A feature-wise standard scaler was fitted only to historical-training customers and applied unchanged to all three partitions. This scaler operates on the 1,034 chronological daily positions. The later research hierarchy retained those assignments. The 29,655 historical-training customers with a usable window were sorted by identifier and divided 80/20 into \textsc{dev\_train} and \textsc{dev\_val} using stratified sampling with seed 42; historical validation became \textsc{confirmation}; and historical test became the \emph{final evaluation cohort with disclosed historical baseline access}. The four roles contain 23,725, 5,931, 6,355, and 6,356 governed customers, respectively, with zero pairwise customer overlap. One theft-labelled \textsc{dev\_train} customer had no usable window and was retained in the governance manifest but excluded from representation fitting, leaving 23,724 representation-available training customers. The committed record establishes only the absence of a usable window and does not support a more specific explanation.
+
+Each scaled customer sequence was divided into complete, non-overlapping 30-day windows (length 30, stride 30). Any incomplete trailing fragment was unused. The original missingness mask was used only to identify window eligibility: a window was retained when at least one of its 30 source positions had been observed. Fully originally missing windows were removed even though interpolation had produced finite numerical values. No missingness count, mask, customer identifier, split indicator, date, or label was included in the AMP-LDP window representation.
+
+The supplied \texttt{FLAG} is observed once per customer. It does not identify a theft date, duration, or verified theft-containing window. Let customer $i$ have retained windows
+\begin{equation}
+  \mathcal{B}_i=\{\mathbf{w}_{ij}\in\mathbb{R}^{30}:j=1,\ldots,m_i\}
+  \quad\text{and}\quad y_i\in\{0,1\}.
+  \label{eq:customer-bag}
+\end{equation}
+Here $y_i$ labels the bag $\mathcal{B}_i$, not its instances. Window timestamps describe measurement coverage only. AMP-LDP therefore predicts one customer probability $\hat p_i$ and never constructs an instance-level theft target or loss.
+
+\subsection{Methodological motivation}
+
+The project began by testing whether reconstruction error from fully connected, convolutional, and recurrent autoencoders could identify theft-associated consumption. These models learned recurring consumption structure, but their aggregated anomaly scores provided weak customer discrimination under the evaluated formulations. A later supervised diagnostic established that the histories contained discriminative signal, showing that reconstruction abnormality and theft-associated customer ranking were different objectives. Study~1 then demonstrated the value of aligning the prediction unit with the customer label through an engineered 48-feature customer profile.
+
+The first weakly supervised neural formulation treated a customer as a bag of \textsc{summary\_17} windows and reduced the bag to one mean-, maximum-, or attention-pooled vector. Those evaluated single-vector MIL models remained below the strong engineered comparator. This did not imply that MIL or attention is generally ineffective. It motivated the narrower aggregation hypothesis: one vector can discard within-customer dispersion, tails, and occasional extremes even when the window encoder is useful. AMP-LDP consequently retains a small empirical distribution for every learned latent coordinate rather than choosing one representative bag vector.
+
+\subsection{Window representation and standardisation}
+
+For every retained window, a deterministic map $\phi:\mathbb{R}^{30}\rightarrow\mathbb{R}^{17}$ computes
+\begin{equation}
+  \mathbf{s}_{ij}=\phi(\mathbf{w}_{ij}),
+  \label{eq:summary17}
+\end{equation}
+where \textsc{summary\_17}, in frozen order, contains the mean, median, minimum, maximum, 10th and 90th percentiles, population standard deviation, range, interquartile range, mean absolute deviation, signed and absolute first-to-last change, mean and maximum absolute consecutive change, least-squares linear slope, fraction at or below $-1$ in the established scaled space, and the second-half minus first-half mean. Quantiles use linear interpolation. These are summaries of scaled consumption behaviour, not theft indicators.
+
+Before neural training, each of the 17 summary dimensions was standardised using its mean and population standard deviation across all \textsc{dev\_train} windows. A zero scale would be replaced by one. These references were then applied unchanged to \textsc{dev\_val}, \textsc{confirmation}, and the final evaluation cohort. This second standardisation is distinct from the earlier per-date consumption scaling: the first establishes scaled daily inputs, whereas the second normalises window-summary dimensions for Study~2.
+
+\subsection{AMP-LDP encoder and customer representation}
+
+For seed $r\in\{42,43,44,45,46\}$, the standardised window summary is transformed by
+\begin{equation}
+  \mathbf{z}_{ij}^{(r)}=\mathop{\mathrm{ReLU}}\!\left(
+  \mathbf{W}_{2}^{(r)}\mathop{\mathrm{Drop}}_{0.1}\!\left[
+  \mathop{\mathrm{ReLU}}\!\left(\mathbf{W}_{1}^{(r)}\tilde{\mathbf{s}}_{ij}
+  +\mathbf{b}_{1}^{(r)}\right)\right]+\mathbf{b}_{2}^{(r)}\right)
+  \in\mathbb{R}^{16},
+  \label{eq:encoder}
+\end{equation}
+with dimensions $17\rightarrow32\rightarrow16$. The encoder has 1,104 parameters. Linear weights were initialised with Xavier uniform draws and biases with zeros. The network contains no batch or layer normalisation.
+
+The encoder was learned with customer supervision. During training, valid window embeddings were pooled by the differentiable distribution operator below, followed by a 97-parameter linear $96\rightarrow1$ head, giving 1,201 trainable neural parameters. Unweighted binary cross-entropy with logits was computed once per customer bag:
+\begin{equation}
+  \mathcal{L}^{(r)}=-\frac{1}{N}\sum_{i=1}^{N}
+  \left[y_i\log\sigma(a_i^{(r)})+(1-y_i)\log\{1-\sigma(a_i^{(r)})\}\right].
+  \label{eq:bag-loss}
+\end{equation}
+No $y_i$ was copied into an instance-level loss. Training used AdamW for 50 fixed epochs, learning rate $10^{-3}$, weight decay $10^{-4}$, customer-bag batches of 64, no early stopping, and global gradient-norm clipping at 5. Python, NumPy, and PyTorch were seeded for each run and deterministic PyTorch algorithms were enabled. Variable-size bags were padded only within computation batches; boolean masks excluded every padded value from pooling and loss computation.
+
+For latent dimension $k$, let $Z_{ik}^{(r)}=\{z_{ijk}^{(r)}:j=1,\ldots,m_i\}$. AMP-LDP calculates the ordered statistic vector
+\begin{equation}
+  \mathbf{g}_{ik}^{(r)}=\left[
+  \mu(Z_{ik}^{(r)}),
+  \sqrt{m_i^{-1}\!\sum_j(z_{ijk}^{(r)}-\mu)^2+10^{-8}},
+  Q_{0.10},Q_{0.50},Q_{0.90},\max Z_{ik}^{(r)}
+  \right].
+  \label{eq:distribution-pooling}
+\end{equation}
+Quantiles are obtained after sorting valid instances and linearly interpolating at position $q(m_i-1)$. The stabilising constant makes the standard-deviation entry $10^{-4}$ for a one-window bag. Concatenating the six values dimension-by-dimension produces
+\begin{equation}
+  \mathbf{g}_{i}^{(r)}=\mathop{\mathrm{concat}}_{k=1}^{16}\mathbf{g}_{ik}^{(r)}
+  \in\mathbb{R}^{96}.
+  \label{eq:latent-profile}
+\end{equation}
+The fixed linear head was used only to learn each encoder through the customer-bag objective. Encoder inference and profile extraction used evaluation mode, which disabled dropout. After training, the corresponding 96-dimensional \textsc{dev\_train} profiles were extracted and used to fit one unweighted \texttt{HistGradientBoostingClassifier} per seed. Its frozen configuration was learning rate 0.1, 100 iterations, at most 15 leaf nodes, minimum 100 samples per leaf, $L_2$ regularisation 1.0, no early stopping, and classifier random state 42. The final method uses the trained encoder and its paired HGB; it does not use the neural linear head for reported primary predictions.
+
+For customer $i$, seed $r$ produces
+\begin{equation}
+  p_i^{(r)}=h^{(r)}(\mathbf{g}_i^{(r)}),
+  \qquad
+  \hat p_i=\frac{1}{5}\sum_{r\in\{42,43,44,45,46\}}p_i^{(r)}.
+  \label{eq:ensemble}
+\end{equation}
+The arithmetic mean was frozen before confirmation. No seed is selected, removed, or weighted from evaluation performance.
+
+\begin{figure*}[t]
+  \centering
+  \input{figures/amp_ldp_architecture}
+  \caption{Frozen AMP-LDP architecture and matched DIRECT control. The customer-level \texttt{FLAG} supervises the bag-level encoder objective; it is not attached to individual 30-day windows. Each seed-specific encoder and HGB produces one probability, and the primary AMP-LDP prediction is their unweighted arithmetic mean. DIRECT bypasses the learned encoder while retaining the same six distribution statistics.}
+  \label{fig:amp-ldp-architecture}
+\end{figure*}
+
+\subsection{Matched controls and comparator roles}
+
+The \textsc{direct\_summary\_distribution\_hgb} control applies the identical mean, stabilised population standard deviation, 10th percentile, median, 90th percentile, and maximum directly to every standardised \textsc{summary\_17} dimension. Its vector therefore has $17\times6=102$ entries. One HGB with the same frozen configuration was fitted on \textsc{dev\_train}. Because DIRECT and AMP-LDP share window eligibility, initial summaries, standardisation, six-statistic pooling, classifier family, and training population, their comparison isolates the contribution of learned encoding as closely as the completed design permits.
+
+\textsc{full\_48\_hgb} is a broader engineered customer-profile benchmark. Its features aggregate level, variability, within-window change, low-consumption behaviour, training-referenced exceedance, and early-to-late chronology. Study~2 used the original Stage~17B HGB fitted on \textsc{dev\_train}, together with its training-derived references. It did \emph{not} use the later Study~1 terminal model refitted on \textsc{dev\_train}+\textsc{dev\_val}. This distinction preserves symmetric Study~2 training exposure for AMP-LDP, DIRECT, and FULL\_48. Unlike the matched DIRECT comparison, FULL\_48 tests performance against an established profile containing chronology and persistence information not available to the permutation-invariant distribution representations.
+
+The earlier mean-, maximum-, and gated-attention MIL arms used the same 17-dimensional window inputs and customer-bag loss but compressed each bag to one 16-dimensional vector before a linear classifier. They are diagnostic baselines for the aggregation bottleneck, not components of AMP-LDP and not perfectly classifier-matched to its HGB stage.
+
+\subsection{Frozen development and evaluation protocol}
+
+All proposed-method encoders, latent HGB classifiers, the DIRECT HGB, and the Study~2 FULL\_48 comparator were fitted using representation-available \textsc{dev\_train} customers only. \textsc{dev\_val} was used for the preregistered development assessment. At that stage, the principal latent summary was the mean of the five individual-seed metric values; it was not silently redefined as the metric of an averaged probability vector. Before opening \textsc{confirmation}, the primary prediction rule was frozen as the arithmetic mean of the five customer probabilities in Equation~\ref{eq:ensemble}. The same five frozen encoder--HGB pipelines were then evaluated without refitting or seed selection. Although this cohort had supported earlier exploratory Studies~13--16, Study~2 opened it only through the recorded frozen confirmation gate. After positive confirmation, Stage~27A froze the no-refit policy, comparators, criteria, model hashes, and ensemble rule before the single terminal evaluation.
+
+The terminal cohort is described throughout as the \emph{final evaluation cohort with disclosed historical baseline access}. It had been accessed in Stage~13 for an obsolete supervised window-level baseline. The AMP-LDP hypothesis, encoder, pooling rule, five-seed ensemble, controls, and confirmation decision were developed and frozen later without Study~2 row-level access to that cohort. It is consequently a governed final evaluation, not a pristine, untouched, unseen, or never-accessed test set. No model was retrained, calibrated, tuned, or threshold-optimised on \textsc{confirmation} or the final cohort.
+
+The primary evaluation unit was the customer, and the primary measures were ROC-AUC and Average Precision. ROC-AUC measures ranking across positive--negative customer pairs, whereas Average Precision emphasizes retrieval quality for the minority theft-labelled class. Threshold-dependent accuracy was not a primary measure, and no terminal threshold was selected. Primary paired comparisons were AMP-LDP minus FULL\_48, AMP-LDP minus DIRECT, and DIRECT minus FULL\_48. Uncertainty was estimated using 2,000 customer bootstrap resamples with seed 2502. Within each resample, identical customer indices were used for both methods; the recorded outputs were the observed difference, bootstrap mean difference, 2.5th and 97.5th percentile bounds, and the fraction of resampled differences above zero. Individual seeds were reported as secondary robustness evidence without choosing a representative seed.
+
+After the terminal evaluation, both experimental studies were closed. The frozen protocol prohibits rescue through refitting, additional seeds, alternative encoders, revised quantiles, new statistics, attention hybrids, classifier search, or threshold search. The resulting evidence concerns customer-level discrimination on the governed SGCC cohorts and does not establish theft-period localisation, individual-window theft probabilities, causality, deployment validity, or external-utility generalisation.
