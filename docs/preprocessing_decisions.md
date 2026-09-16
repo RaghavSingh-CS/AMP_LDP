@@ -2085,3 +2085,34 @@ aggregation. This supports customer-level weak supervision; it does not verify
 individual windows or theft periods. Study 2 model development is permanently
 closed. No outcome authorizes a rescue experiment, refit, tuning, added seed,
 new statistic, architecture, classifier, or threshold search.
+
+### Stage 28 — terminal evidence consolidation and paper freeze
+
+Stage 28 used committed aggregate evidence and metadata only. It did not load
+row-level DEV_VAL, CONFIRMATION, or final-evaluation data; train, fit, score, or
+evaluate a model; generate predictions; recompute metrics from predictions; or
+change any historical outcome.
+
+The authoritative paper-facing package is under `docs/paper/`. It freezes the
+experiment ledger, proposed AMP–Latent Distribution Profiling (`AMP-LDP`)
+method, central results and four-decimal reporting policy, claim matrix,
+manuscript narrative, table/figure plan, limitations, abstract blueprint, and a
+source index mapping every proposed numerical claim to committed aggregate
+evidence. It explicitly distinguishes the Study 1 Stage 23B refitted FULL_48
+result (`0.7925/0.3702`) from the Study 2 frozen DEV_TRAIN-fitted FULL_48
+comparator (`0.7979/0.3853`).
+
+The terminal anchor remains unchanged: **Learning window representations before
+distribution-preserving customer aggregation adds reproducible customer-level
+discrimination beyond identical direct aggregation across development,
+confirmation, and the governed final evaluation.** Claims remain customer-level
+and internal to SGCC; theft localization, external generalization, causality,
+unsupported state-of-the-art status, and pristine final-cohort language are
+prohibited. The STL-Net figures supplied for context were not traceable to a
+tracked citation and remain excluded from paper-facing quantitative comparison.
+
+The repository audit found no push-blocking issue and records
+**A — SAFE TO PUSH AFTER STAGE 28 COMMIT**, while recommending later review of
+large tracked artifacts, intentional duplicates, and literature-source
+provenance. Stage 28 does not itself authorize a push. Study 1 experimental work
+and Study 2 experimental work both remain closed.
