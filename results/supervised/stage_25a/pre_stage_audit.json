@@ -1,0 +1,23 @@
+{
+  "stage": "Stage 25A — pre-stage governance audit",
+  "branch": "study2/mil",
+  "expected_HEAD": "07b63db323870d190a8282c8c9bcac6d6c2bcc7a",
+  "observed_HEAD": "07b63db323870d190a8282c8c9bcac6d6c2bcc7a",
+  "git_clean_before_stage": true,
+  "study1_protected_path_changes": [],
+  "stage24a_path_changes_since_stage24a_commit": [],
+  "committed_evidence_hashes": {
+    "stage14_report": "36ee69ac40a048a870ddbdd709ef57ef532752139fde56ce8159c39e908a2dde",
+    "stage16_report": "0a6735efaf2b7713c9f5ef2b331a6a4918239307b45f8981c0a45a6ec70aee18",
+    "stage19_report": "d2490d8bc43159cccf5efa2c7d3341151925b60f0e390262dd5e970ebab1464c",
+    "stage22_report": "3a113968b0c0f0c4897d03870f1d3fc818b0c2cada0901af63b3c81820a034a5",
+    "stage24b_execution_spec": "15b815e32742540903977bae52d942bf7da438b11e7625f524b7a9e3cc16635f",
+    "stage24b_report": "d6670c9ebee12e1b4f35c1d3cb86913f385d66df37d8149650503c630435344f",
+    "stage24b_outcome": "7c40cd8c67cdf7cabc9b6f66a9c5545237428271769a881ff0e338661f398e24"
+  },
+  "stage25a_scope": "DESIGN_ONLY",
+  "new_model_training": false,
+  "new_DEV_VAL_scoring": false,
+  "confirmation_row_level_access": false,
+  "final_test_row_level_access": false
+}

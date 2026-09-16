@@ -1808,3 +1808,52 @@ perturbation-supported relevance was insufficient because MIL was materially
 worse than the frozen conventional baseline. No confirmation gate is warranted
 from this result, and no adaptive architecture or representation change is made
 within Stage 24B.
+
+### Stage 25A — learned customer-distribution hypothesis audit
+
+Stage 25A is design only and concludes **B — GO WITH LIMITATIONS**. No model was
+trained and no new `DEV_VAL`, `CONFIRMATION`, or `FINAL_TEST` scoring occurred.
+
+The bounded hypothesis is that customer discrimination depends partly on
+across-window location, dispersion, tails, and extremes discarded by Stage
+24B's single mean, maximum, or attention-weighted latent vector. This is
+substantively distinct from Stage 24B because it changes the aggregation
+information bottleneck, not the encoder or head capacity. The motivation is
+committed evidence: Stage 16's explicit customer aggregation produced a large
+gain; Stage 19 identified level/distribution as strongest while retaining
+useful non-level signal; Stage 22 showed that correlated aggregates were not
+safely removable; and Stage 24B's instance relevance did not close the
+`FULL_48` gap.
+
+The novelty is limited. `FULL_48` already represents customer distributions
+with human-specified aggregates. A learned model could simply recreate those
+features less transparently, exploit a higher-dimensional representation, or
+benefit from HGB. It also cannot recover the four chronology-dependent
+latest-third-minus-earliest-third features or exact train-q90 exceedance
+fractions. Stage 25 therefore remains permutation invariant and does not add a
+sequence model, positional encoding, or chronology-aware pooling.
+
+The Stage 25B draft freezes `SUMMARY_17`, the exact Stage 24B
+`17→32→16` encoder, and one six-statistic distribution operator per latent
+dimension: mean, epsilon-stabilized population standard deviation, exact linear
+q10, median, q90, and maximum. This yields 96 features. Quantiles use
+mask-aware sort and linear interpolation; they are piecewise differentiable,
+while mean/std provide dense encoder gradients. The customer neural head is a
+single `Linear(96,1)`, giving 1,201 total neural parameters.
+
+The crucial control applies the identical statistics directly to the 17 frozen
+window summaries, yielding 102 features, then fits the unchanged Stage 17B HGB.
+Five end-to-end encoders, five frozen-latent HGB fits, and one direct-control HGB
+produce exactly 11 new fits. The primary candidate is classifier-matched
+`LATENT_DISTRIBUTION_HGB`; committed `FULL_48_HGB` is not retrained.
+
+Anchor-candidate performance requires mean gains of at least `+0.010` ROC-AUC
+and `+0.020` AP over `FULL_48`, reproducibility and paired intervals above zero,
+plus classifier-matched gains over the direct control. Representation parity
+uses strict `-0.005/-0.010` ROC/AP margins and still requires evidence that the
+learned encoder adds value. Merely beating Stage 24B is not success.
+
+If Stage 25B fails these criteria, explicit `FULL_48` customer profiling remains
+stronger under the evaluated setup and this neural representation direction
+stops. Failure does not authorize more dimensions, deeper encoders, additional
+quantiles, attention hybrids, LSTM/Transformer models, or hyperparameter sweeps.

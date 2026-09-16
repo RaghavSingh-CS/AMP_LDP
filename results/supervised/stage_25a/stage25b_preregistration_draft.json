@@ -1,0 +1,129 @@
+{
+  "stage": "Stage 25B — learned customer-distribution representation experiment",
+  "status": "DRAFT_FOR_ONE_FINAL_BOUNDED_EXPERIMENT",
+  "stage25a_decision": "B — GO WITH LIMITATIONS",
+  "hypothesis": "Customer-level theft discrimination depends partly on across-window location, dispersion, tail, and extreme structure that a single mean, maximum, or attention-weighted latent vector cannot preserve; under the same SUMMARY_17 input and Stage 24B encoder, fixed multi-statistic pooling of learned latent dimensions will improve customer discrimination, and a classifier-matched direct-distribution control will determine whether any gain is attributable to learned latent behaviours rather than distribution pooling alone.",
+  "data": {
+    "fit": "DEV_TRAIN only",
+    "evaluate_once": "DEV_VAL only after final code/configuration seal",
+    "closed": ["CONFIRMATION", "FINAL_TEST"],
+    "eligible_windows": "Existing Stage 3C usable stride-30 windows only",
+    "instance_representation": "Frozen SUMMARY_17",
+    "instance_labels": false,
+    "new_preprocessing": false,
+    "truncation": false,
+    "window_duplication": false,
+    "label_dependent_sampling": false
+  },
+  "representations_and_models": [
+    {
+      "id": "LATENT_DISTRIBUTION_E2E",
+      "fits": 5,
+      "seeds": [42, 43, 44, 45, 46],
+      "definition": "Stage 24B 17→32→16 encoder; fixed six-statistic 96-dimensional latent distribution; linear 96→1 head; train end to end with bag-level BCE",
+      "role": "Learn the encoder and report the minimal neural readout"
+    },
+    {
+      "id": "LATENT_DISTRIBUTION_HGB",
+      "fits": 5,
+      "seeds": [42, 43, 44, 45, 46],
+      "definition": "Freeze each trained encoder, extract its 96-dimensional DEV_TRAIN/DEV_VAL latent-distribution representation, and fit the unchanged Stage 17B HGB on DEV_TRAIN",
+      "role": "Primary classifier-matched test of the learned representation; HGB feedback must not alter the encoder"
+    },
+    {
+      "id": "DIRECT_SUMMARY_DISTRIBUTION_HGB",
+      "fits": 1,
+      "seeds": [42],
+      "definition": "Apply the identical six statistics directly to each of the 17 frozen SUMMARY_17 dimensions, yielding 102 customer features, then fit the unchanged Stage 17B HGB",
+      "role": "Crucial control separating distribution pooling from learned latent behaviour"
+    }
+  ],
+  "total_new_model_fits": 11,
+  "reused_comparator": {
+    "id": "FULL_48_HGB",
+    "retrain": false,
+    "DEV_VAL_ROC_AUC": 0.7888308218953116,
+    "DEV_VAL_average_precision": 0.35979459032174654,
+    "probabilities_source": "Committed Stage 17B evidence"
+  },
+  "distribution_pooling_source": "results/supervised/stage_25a/distribution_pooling_spec.json",
+  "neural_training": {
+    "loss": "Unweighted BCEWithLogitsLoss once per customer bag",
+    "instance_level_loss": false,
+    "optimizer": "AdamW",
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "epochs": 50,
+    "early_stopping": false,
+    "batch_size_customers": 64,
+    "gradient_clip_global_norm": 5.0,
+    "initialization": "Xavier uniform linear weights; zero biases",
+    "batching": "Batch-local padding plus boolean masks; no padding contribution"
+  },
+  "hgb_configuration": {
+    "implementation": "sklearn.ensemble.HistGradientBoostingClassifier",
+    "learning_rate": 0.1,
+    "max_iter": 100,
+    "max_leaf_nodes": 15,
+    "min_samples_leaf": 100,
+    "l2_regularization": 1.0,
+    "class_weight": null,
+    "early_stopping": false,
+    "random_state": 42
+  },
+  "primary_candidate": "LATENT_DISTRIBUTION_HGB",
+  "primary_metrics": ["customer ROC-AUC", "customer average precision"],
+  "secondary_metrics": ["Brier score"],
+  "threshold_selection": "none",
+  "seed_reporting": "All five encoder seeds individually plus mean, population SD, median, min, and max; never select the best seed",
+  "paired_uncertainty": {
+    "resamples": 2000,
+    "seed": 2502,
+    "unit": "DEV_VAL customer",
+    "comparisons": [
+      "five-seed mean LATENT_DISTRIBUTION_HGB probability minus FULL_48_HGB",
+      "five-seed mean LATENT_DISTRIBUTION_HGB probability minus DIRECT_SUMMARY_DISTRIBUTION_HGB"
+    ],
+    "interval": "percentile 95%"
+  },
+  "outcome_criteria": {
+    "A_ANCHOR_CANDIDATE_PERFORMANCE": {
+      "all_required": [
+        "Five-seed mean LATENT_DISTRIBUTION_HGB ROC-AUC delta versus FULL_48_HGB >= +0.010",
+        "Five-seed mean AP delta versus FULL_48_HGB >= +0.020",
+        "At least 4/5 seeds improve both primary metrics versus FULL_48_HGB",
+        "Paired seed-ensemble bootstrap lower bounds exceed zero for both metrics versus FULL_48_HGB",
+        "Mean latent-HGB gains over DIRECT_SUMMARY_DISTRIBUTION_HGB are >= +0.005 ROC-AUC and >= +0.010 AP, with both paired lower bounds above zero"
+      ]
+    },
+    "B_REPRESENTATION_PARITY": {
+      "all_required": [
+        "Five-seed mean ROC-AUC delta versus FULL_48_HGB >= -0.005",
+        "Five-seed mean AP delta versus FULL_48_HGB >= -0.010",
+        "At least 4/5 seeds satisfy both parity margins",
+        "Paired seed-ensemble lower bounds exceed -0.005 ROC-AUC and -0.010 AP",
+        "Latent-HGB is non-worse than the direct control on both mean metrics and has at least one meaningful gain: ROC-AUC >= +0.005 or AP >= +0.010, with the corresponding paired lower bound above zero"
+      ]
+    },
+    "C_WEAK_RESULT": "Outcome A and Outcome B are not both fully satisfied; explicitly flag material inferiority when mean ROC-AUC delta < -0.015 or mean AP delta < -0.030"
+  },
+  "comparison_interpretation": {
+    "latent_HGB_vs_FULL_48_HGB": "Tests learned representation against the strongest classifier-matched conventional representation",
+    "latent_HGB_vs_direct_distribution_HGB": "Tests whether encoder learning adds value beyond multi-statistic aggregation",
+    "E2E_vs_latent_HGB": "Describes classifier/readout contribution; it is not a classifier search"
+  },
+  "abort_conditions": [
+    "Execution spec or any Stage 25A source hash changes after sealing",
+    "Any required input count/hash/schema differs from the frozen development artifacts",
+    "Any CONFIRMATION or FINAL_TEST row enters a matrix",
+    "Any nonfinite representation value occurs",
+    "Parameter count differs from 1201",
+    "Quantile gradient, attention-free pooling, mask, single-instance, or padding-invariance tests fail",
+    "Any run uses an instance-level FLAG target",
+    "The 11-fit grid or five-seed reporting is incomplete"
+  ],
+  "adaptive_changes_after_DEV_VAL": false,
+  "failure_policy": "If Outcome C occurs, stop this neural representation direction. Do not add dimensions, depth, sequence models, more quantiles, attention hybrids, or hyperparameter searches without a qualitatively new external hypothesis.",
+  "confirmation_access": false,
+  "final_test_access": false
+}

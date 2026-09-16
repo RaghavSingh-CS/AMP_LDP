@@ -1,0 +1,84 @@
+{
+  "stage": "Stage 25A — proposed latent-distribution pooling specification",
+  "status": "DESIGN_ONLY_NOT_EXECUTED",
+  "input": {
+    "representation": "SUMMARY_17",
+    "ordered_schema_source": "results/supervised/stage_14/preregistered_config.json",
+    "dimension": 17,
+    "standardization": "Feature-wise mean and population standard deviation fitted on DEV_TRAIN windows only and applied unchanged to DEV_VAL",
+    "new_features": false
+  },
+  "encoder": {
+    "architecture": [
+      {"type": "Linear", "in_features": 17, "out_features": 32, "parameters": 576},
+      {"type": "ReLU"},
+      {"type": "Dropout", "probability": 0.1},
+      {"type": "Linear", "in_features": 32, "out_features": 16, "parameters": 528},
+      {"type": "ReLU"}
+    ],
+    "embedding_dimension": 16,
+    "parameter_count": 1104,
+    "reason_for_reuse": "Exact Stage 24B encoder reuse isolates the aggregation bottleneck"
+  },
+  "pooling": {
+    "name": "MASKED_MARGINAL_LATENT_DISTRIBUTION",
+    "per_latent_dimension_order": ["mean", "standard_deviation", "q10", "median", "q90", "maximum"],
+    "output_dimension": 96,
+    "permutation_invariant": true,
+    "mask_aware": true,
+    "truncation": false,
+    "bag_size_feature_included": false,
+    "statistics_rationale": {
+      "mean": "location and dense gradient to every valid instance",
+      "standard_deviation": "dispersion and dense gradient to every valid instance",
+      "q10": "lower-tail behaviour without an unstable minimum",
+      "median": "robust central location",
+      "q90": "upper-tail behaviour and persistence proxy",
+      "maximum": "isolated extreme retained because Stage 16/24 evidence makes extremes relevant"
+    },
+    "excluded_statistics": {
+      "minimum": "q10 already represents the lower tail and minimum is more sensitive to one window",
+      "skewness_and_kurtosis": "unstable in short bags and unnecessary for the bounded hypothesis",
+      "additional_quantiles": "would create an unprincipled aggregation search",
+      "covariance": "would greatly expand the representation and test a different joint-distribution hypothesis",
+      "attention": "would confound distribution preservation with learned reweighting"
+    }
+  },
+  "exact_implementation": {
+    "mean": "Arithmetic mean over valid embeddings",
+    "standard_deviation": "sqrt(population_variance + 1e-8); the same epsilon-stabilized definition is used by the direct control",
+    "quantiles": "For each valid bag and latent dimension, torch.sort embeddings; at position u=q*(m-1), linearly interpolate sorted[floor(u)] and sorted[ceil(u)] for q in {0.10,0.50,0.90}",
+    "maximum": "Last value of the valid sorted embedding",
+    "single_instance_bag": "mean/q10/median/q90/maximum equal the sole embedding; stabilized standard deviation equals 1e-4",
+    "padding": "Invalid rows are removed before sorting/statistics and cannot affect values or gradients"
+  },
+  "differentiability": {
+    "supported": true,
+    "explanation": "torch.sort and indexed linear interpolation are piecewise differentiable with gradients routed to the selected order statistics. Rank/order changes and ties are nondifferentiable boundaries, as with max pooling, but autograd supplies valid local subgradients. Mean and stabilized standard deviation provide dense gradients to all valid instances, so encoder learning does not depend only on sparse quantile gradients.",
+    "smooth_quantile_approximation_used": false,
+    "non_differentiable_detach_used": false
+  },
+  "customer_classifier": {
+    "architecture": [{"type": "Linear", "in_features": 96, "out_features": 1, "parameters": 97}],
+    "hidden_layers": 0,
+    "activation": null,
+    "dropout": 0.0,
+    "reason": "Keep the experiment about representation rather than head capacity"
+  },
+  "neural_parameter_count": {
+    "encoder": 1104,
+    "pooling": 0,
+    "classifier": 97,
+    "total": 1201
+  },
+  "chronology": {
+    "policy": "deliberately excluded",
+    "reason": "Test distribution representation only; no sequence model or positional input",
+    "known_unrecoverable_FULL_48_information": [
+      "mean__late_third_minus_early_third",
+      "maximum__late_third_minus_early_third",
+      "standard_deviation__late_third_minus_early_third",
+      "mean_absolute_consecutive_change__late_third_minus_early_third"
+    ]
+  }
+}

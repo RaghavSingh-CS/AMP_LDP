@@ -1,0 +1,16 @@
+{
+  "stage": "Stage 25A — learned customer-distribution representation audit",
+  "decision": "B",
+  "decision_label": "GO WITH LIMITATIONS",
+  "hypothesis_genuinely_distinct_from_stage24b": true,
+  "reason": "The proposed model changes the bag information bottleneck from one latent location/extreme vector to a fixed multi-statistic description of latent location, dispersion, tails, and extremes. This directly tests the distribution-preservation mechanism implicated by Stages 16, 19, 22, and the Stage 24B gap. The novelty is limited because FULL_48 already performs human-specified distributional aggregation, chronology and persistence remain incompletely represented, and a positive result could otherwise be dismissed as a higher-dimensional customer representation or HGB effect. One bounded classifier-matched experiment with a direct-distribution control is defensible; unconstrained architecture escalation is not.",
+  "exact_hypothesis": "Customer-level theft discrimination depends partly on across-window location, dispersion, tail, and extreme structure that a single mean, maximum, or attention-weighted latent vector cannot preserve; under the same SUMMARY_17 input and Stage 24B encoder, fixed multi-statistic pooling of learned latent dimensions will improve customer discrimination, and a classifier-matched direct-distribution control will determine whether any gain is attributable to learned latent behaviours rather than distribution pooling alone.",
+  "chronology_decision": "Remain permutation invariant; explicitly accept inability to recover FULL_48 late-third-minus-early-third contrasts.",
+  "frozen_instance_representation": "SUMMARY_17",
+  "stage25b_total_new_fits": 11,
+  "stage25b_is_final_neural_experiment_in_direction_if_weak": true,
+  "model_training_performed": false,
+  "new_DEV_VAL_scoring_performed": false,
+  "confirmation_accessed": false,
+  "final_test_accessed": false
+}
