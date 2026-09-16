@@ -1,0 +1,62 @@
+{
+  "END_TO_END_DISTRIBUTION": {
+    "MEAN_MIL": {
+      "ROC_AUC_improvement": 0.037486957658943165,
+      "average_precision_improvement": 0.0829813264421626,
+      "ROC_deficit_fraction_recovered_toward_FULL_48": 0.7656052205053188,
+      "AP_deficit_fraction_recovered_toward_FULL_48": 0.9022299352659087
+    },
+    "MAX_MIL": {
+      "ROC_AUC_improvement": 0.02068695765894324,
+      "average_precision_improvement": 0.03623632644216257,
+      "ROC_deficit_fraction_recovered_toward_FULL_48": 0.6431747360831728,
+      "AP_deficit_fraction_recovered_toward_FULL_48": 0.8011818671416704
+    },
+    "ATTENTION_MIL": {
+      "ROC_AUC_improvement": 0.01930095765894324,
+      "average_precision_improvement": 0.05334032644216258,
+      "ROC_deficit_fraction_recovered_toward_FULL_48": 0.6271060286395165,
+      "AP_deficit_fraction_recovered_toward_FULL_48": 0.8557373625391155
+    }
+  },
+  "LATENT_DISTRIBUTION_HGB": {
+    "MEAN_MIL": {
+      "ROC_AUC_improvement": 0.05094215868955121,
+      "average_precision_improvement": 0.10001636705395028,
+      "ROC_deficit_fraction_recovered_toward_FULL_48": 1.040404051760287,
+      "AP_deficit_fraction_recovered_toward_FULL_48": 1.087446588787804
+    },
+    "MAX_MIL": {
+      "ROC_AUC_improvement": 0.03414215868955128,
+      "average_precision_improvement": 0.05327136705395025,
+      "ROC_deficit_fraction_recovered_toward_FULL_48": 1.0615081379532205,
+      "AP_deficit_fraction_recovered_toward_FULL_48": 1.1778250587734245
+    },
+    "ATTENTION_MIL": {
+      "ROC_AUC_improvement": 0.032756158689551285,
+      "average_precision_improvement": 0.07037536705395026,
+      "ROC_deficit_fraction_recovered_toward_FULL_48": 1.064277998650093,
+      "AP_deficit_fraction_recovered_toward_FULL_48": 1.1290300417596757
+    }
+  },
+  "DIRECT_SUMMARY_DISTRIBUTION_HGB": {
+    "MEAN_MIL": {
+      "ROC_AUC_improvement": 0.04836640498443501,
+      "average_precision_improvement": 0.08142305217184742,
+      "ROC_deficit_fraction_recovered_toward_FULL_48": 0.9877988096567731,
+      "AP_deficit_fraction_recovered_toward_FULL_48": 0.8852873078783732
+    },
+    "MAX_MIL": {
+      "ROC_AUC_improvement": 0.03156640498443508,
+      "average_precision_improvement": 0.034678052171847384,
+      "ROC_deficit_fraction_recovered_toward_FULL_48": 0.9814258108746822,
+      "AP_deficit_fraction_recovered_toward_FULL_48": 0.7667285653865206
+    },
+    "ATTENTION_MIL": {
+      "ROC_AUC_improvement": 0.030180404984435083,
+      "average_precision_improvement": 0.05178205217184739,
+      "ROC_deficit_fraction_recovered_toward_FULL_48": 0.9805893700695058,
+      "AP_deficit_fraction_recovered_toward_FULL_48": 0.830738012082609
+    }
+  }
+}

@@ -1857,3 +1857,65 @@ If Stage 25B fails these criteria, explicit `FULL_48` customer profiling remains
 stronger under the evaluated setup and this neural representation direction
 stops. Failure does not authorize more dimensions, deeper encoders, additional
 quantiles, attention hybrids, LSTM/Transformer models, or hyperparameter sweeps.
+
+### Stage 25B — learned customer-distribution experiment
+
+Stage 25B executed the one final bounded neural-representation experiment on
+`DEV_TRAIN → DEV_VAL`. The execution specification was sealed before training
+with SHA-256
+`006c781899f74f0f62d01282fbf4164ac3ee27d8a61e3f2ea5fcb09b9e445470`.
+No method was changed after validation results became available.
+
+Each customer retained all eligible `SUMMARY_17` windows. DEV_TRAIN contained
+23,724 customers/614,976 windows; DEV_VAL contained 5,931 customers/153,947
+windows. Membership and window hashes matched the prior-stage reconstruction,
+there was no split overlap or nonfinite input, and `CONFIRMATION` and
+`FINAL_TEST` remained closed. No instance-level `FLAG` target or loss was used.
+
+The neural architecture was exactly `17→32→16` with ReLU, dropout 0.1, and
+1,104 encoder parameters. For each of 16 latent dimensions it concatenated
+mean, epsilon-stabilized population SD, q10, median, q90, and maximum, yielding
+96 features. Exact mask-aware `torch.sort` plus linear interpolation was used
+for quantiles. A single `Linear(96,1)` head added 97 parameters, for exactly
+1,201 trainable parameters. The direct control applied the same six statistics
+to the 17 input dimensions, yielding 102 features. Single-/two-instance,
+interpolation, mask, padding, and gradient-flow checks all passed.
+
+Exactly five neural models used seeds 42–46, AdamW (`lr=0.001`,
+`weight_decay=0.0001`), batch size 64, 50 fixed epochs, global gradient clipping
+at 5.0, and no early stopping. Each trained encoder supplied one frozen
+96-dimensional representation for the unchanged HGB policy; one additional HGB
+was fit on the direct 102-dimensional representation. Exactly 11 models were
+fitted.
+
+Seed-level end-to-end ROC-AUC/AP results were `42: 0.787797/0.376655`,
+`43: 0.779190/0.351480`, `44: 0.762317/0.331907`,
+`45: 0.778715/0.349588`, and `46: 0.778750/0.344381`. Their mean±population-SD
+was `0.777354±0.008275 / 0.350802±0.014619`.
+
+Seed-level latent-HGB results were `42: 0.794037/0.378558`,
+`43: 0.787755/0.365537`, `44: 0.788919/0.354154`,
+`45: 0.786804/0.367526`, and `46: 0.796531/0.373413`. Their mean±population-SD
+was `0.790809±0.003797 / 0.367837±0.008230`. The direct-distribution HGB scored
+`0.788233/0.349244`; frozen FULL_48 scored `0.788831/0.359795`.
+
+Mean latent-HGB deltas were `+0.001978/+0.008043` versus FULL_48 and
+`+0.002576/+0.018593` versus the direct control. All five latent-HGB seeds met
+both parity margins, but only two improved both metrics over FULL_48. Under the
+preregistered five-seed mean-probability customer bootstrap, 95% intervals
+versus FULL_48 were `[0.000181,0.029310]` ROC and `[0.007365,0.064951]` AP;
+versus direct aggregation they were `[0.003552,0.026893]` ROC and
+`[0.017151,0.072318]` AP.
+
+Latent-HGB improved over MEAN_MIL by `+0.050942/+0.100016`, over MAX_MIL by
+`+0.034142/+0.053271`, and over ATTENTION_MIL by `+0.032756/+0.070375`.
+Multi-statistic pooling therefore recovered the single-vector MIL deficit, but
+the near-parity direct control shows that distribution aggregation itself
+explains much of that recovery. Learned encoding added its clearest value in AP,
+not a large ROC gain.
+
+The preregistered result is **B — REPRESENTATION PARITY**. Material inferiority
+was not triggered. **ANCHOR_EARNED = NO** because the FULL_48 effect-size and
+4/5-seed improvement criteria for Outcome A were not met. The Stage 25B
+Outcome-C stop rule therefore does not activate, but this result does not
+authorize unregistered model expansion or a paper-anchor claim.

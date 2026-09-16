@@ -1,0 +1,36 @@
+{
+  "policy": {
+    "resamples": 2000,
+    "seed": 2502,
+    "unit": "DEV_VAL customer",
+    "seed_handling": "mean probability across five encoder seeds before customer bootstrap"
+  },
+  "LATENT_DISTRIBUTION_HGB_minus_FULL_48_HGB": {
+    "resamples": 2000,
+    "seed": 2502,
+    "ROC_AUC_delta": {
+      "mean": 0.014522479053030198,
+      "lower_95": 0.00018109128885429875,
+      "upper_95": 0.029309745763456525
+    },
+    "average_precision_delta": {
+      "mean": 0.03559871571190484,
+      "lower_95": 0.0073654617988806155,
+      "upper_95": 0.06495096347793029
+    }
+  },
+  "LATENT_DISTRIBUTION_HGB_minus_DIRECT_SUMMARY_DISTRIBUTION_HGB": {
+    "resamples": 2000,
+    "seed": 2502,
+    "ROC_AUC_delta": {
+      "mean": 0.014991779606095977,
+      "lower_95": 0.003551504000152206,
+      "upper_95": 0.026893063829950048
+    },
+    "average_precision_delta": {
+      "mean": 0.0448635470934373,
+      "lower_95": 0.017151080400312105,
+      "upper_95": 0.07231801932607627
+    }
+  }
+}

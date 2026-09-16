@@ -1,0 +1,20 @@
+{
+  "direct_representation_dimensions": 102,
+  "latent_representation_dimensions": 96,
+  "DIRECT_SUMMARY_DISTRIBUTION_HGB": {
+    "model": "DIRECT_SUMMARY_DISTRIBUTION_HGB",
+    "seed": 42,
+    "ROC_AUC": 0.7882334049844351,
+    "average_precision": 0.3492440521718474,
+    "Brier_score": 0.06598182499343189
+  },
+  "LATENT_DISTRIBUTION_HGB_mean": {
+    "ROC_AUC": 0.7908091586895513,
+    "average_precision": 0.36783736705395026
+  },
+  "latent_minus_direct": {
+    "ROC_AUC": 0.0025757537051162016,
+    "average_precision": 0.018593314882102863
+  },
+  "interpretation_case": "CASE 1: learned representation adds value"
+}

@@ -1,0 +1,86 @@
+{
+  "stage": "Stage 25B — preregistered learned customer-distribution experiment",
+  "status": "SEALED_BEFORE_TRAINING",
+  "source_commit": "d6ec2726ca34050780adf52aaeaf1c40b053daf6",
+  "hypothesis": "Customer discrimination partly depends on across-window location, dispersion, tails, and extremes discarded by single-vector pooling; fixed multi-statistic pooling over learned latent window representations may recover that information under customer-level supervision.",
+  "data": {
+    "fit": "DEV_TRAIN only",
+    "evaluate": "DEV_VAL only",
+    "closed_roles": ["CONFIRMATION", "FINAL_TEST"],
+    "window_representation": "SUMMARY_17",
+    "new_preprocessing": false,
+    "instance_level_targets": false,
+    "bag_truncation": false,
+    "label_dependent_sampling": false
+  },
+  "encoder": {
+    "layers": ["Linear(17,32)", "ReLU", "Dropout(0.1)", "Linear(32,16)", "ReLU"],
+    "parameters": 1104
+  },
+  "pooling": {
+    "statistics_in_order": ["mean", "population_standard_deviation", "q10", "median", "q90", "maximum"],
+    "quantile_algorithm": "torch.sort plus linear interpolation at q*(m-1)",
+    "standard_deviation": "sqrt(population_variance + 1e-8)",
+    "latent_dimensions": 16,
+    "latent_output_dimensions": 96,
+    "direct_input_dimensions": 17,
+    "direct_output_dimensions": 102,
+    "attention": false,
+    "chronology": false,
+    "bag_size_feature": false
+  },
+  "neural_head": {
+    "layers": ["Linear(96,1)"],
+    "parameters": 97,
+    "total_trainable_parameters": 1201
+  },
+  "training": {
+    "seeds": [42, 43, 44, 45, 46],
+    "loss": "BCEWithLogitsLoss once per customer bag",
+    "optimizer": "AdamW",
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "batch_size_customers": 64,
+    "epochs": 50,
+    "early_stopping": false,
+    "gradient_clip_global_norm": 5.0,
+    "initialization": "Xavier uniform linear weights; zero biases"
+  },
+  "hgb": {
+    "implementation": "sklearn.ensemble.HistGradientBoostingClassifier",
+    "learning_rate": 0.1,
+    "max_iter": 100,
+    "max_leaf_nodes": 15,
+    "min_samples_leaf": 100,
+    "l2_regularization": 1.0,
+    "class_weight": null,
+    "early_stopping": false,
+    "random_state": 42
+  },
+  "fit_grid": {
+    "end_to_end_neural": 5,
+    "latent_distribution_hgb": 5,
+    "direct_summary_distribution_hgb": 1,
+    "total": 11
+  },
+  "comparators": {
+    "FULL_48_HGB": {"ROC_AUC": 0.7888308218953116, "average_precision": 0.35979459032174654},
+    "MEAN_MIL": {"ROC_AUC": 0.739867, "average_precision": 0.267821},
+    "MAX_MIL": {"ROC_AUC": 0.756667, "average_precision": 0.314566},
+    "ATTENTION_MIL": {"ROC_AUC": 0.758053, "average_precision": 0.297462}
+  },
+  "paired_uncertainty": {
+    "resamples": 2000,
+    "seed": 2502,
+    "unit": "DEV_VAL customer",
+    "interval": "percentile 95%",
+    "comparisons": ["mean latent-HGB probability minus FULL_48 HGB", "mean latent-HGB probability minus direct-distribution HGB"]
+  },
+  "outcomes": {
+    "A": "Mean latent-HGB deltas versus FULL_48 >= +0.010 ROC and +0.020 AP; at least 4/5 seeds improve both; both paired lower bounds > 0; gains over direct HGB >= +0.005 ROC and +0.010 AP with both lower bounds > 0.",
+    "B": "Mean latent-HGB deltas versus FULL_48 >= -0.005 ROC and -0.010 AP; at least 4/5 seeds within both margins; paired lower bounds exceed those margins; latent HGB non-worse than direct on both means and gains >= +0.005 ROC or +0.010 AP with corresponding lower bound > 0.",
+    "C": "Neither A nor B; material inferiority if mean ROC delta < -0.015 or mean AP delta < -0.030."
+  },
+  "adaptive_changes_after_dev_val": false,
+  "failure_policy": "Outcome C ends the neural representation direction unless a qualitatively new external hypothesis is introduced."
+}

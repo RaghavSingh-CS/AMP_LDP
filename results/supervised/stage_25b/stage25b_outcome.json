@@ -1,0 +1,36 @@
+{
+  "outcome": "B",
+  "outcome_label": "REPRESENTATION PARITY",
+  "A_satisfied": false,
+  "B_satisfied": true,
+  "material_inferiority_triggered": false,
+  "seed_counts": {
+    "improve_both_over_FULL_48": 2,
+    "within_both_parity_margins": 5
+  },
+  "mean_deltas": {
+    "end_to_end_minus_FULL_48": {
+      "ROC_AUC": -0.0114768642363684,
+      "average_precision": -0.008992263879583962
+    },
+    "latent_HGB_minus_FULL_48": {
+      "ROC_AUC": 0.0019783367942396435,
+      "average_precision": 0.008042776732203716
+    },
+    "direct_HGB_minus_FULL_48": {
+      "ROC_AUC": -0.0005974169108765581,
+      "average_precision": -0.010550538149899147
+    },
+    "latent_HGB_minus_direct_HGB": {
+      "ROC_AUC": 0.0025757537051162016,
+      "average_precision": 0.018593314882102863
+    }
+  },
+  "ANCHOR_EARNED": "NO",
+  "anchor_sentence": null,
+  "neural_representation_stop_rule_activated": false,
+  "total_new_model_fits": 11,
+  "confirmation_access": false,
+  "final_test_access": false,
+  "instance_level_FLAG_supervision": false
+}
