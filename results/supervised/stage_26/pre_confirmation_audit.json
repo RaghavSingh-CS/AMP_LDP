@@ -1,0 +1,30 @@
+{
+  "stage": "Stage 26 pre-confirmation audit",
+  "created_before_confirmation_row_level_access": true,
+  "audit_timestamp": "2026-09-16T10:38:01.2170875+05:30",
+  "branch": "study2/mil",
+  "source_HEAD": "4b7741b6126aa09380627a9a0845d3a95f066d55",
+  "main_HEAD": "d0601c54f6e9d0f11caac2ebd27f7c86a568a863",
+  "git_clean_at_stage_start": true,
+  "stage26_confirmation_protocol_sha256": "7207a75dfd31d3254aaa3d4507eb9812b38ff87ecda09abfa62178572c8be09b",
+  "stage25b_execution_spec_sha256": "006c781899f74f0f62d01282fbf4164ac3ee27d8a61e3f2ea5fcb09b9e445470",
+  "protected_study1_path_changes": [],
+  "stage24a_24b_25a_25b_uncommitted_changes": [],
+  "historical_FULL_48_confirmation_metrics_verified": {
+    "ROC_AUC": 0.789084048160282,
+    "average_precision": 0.3790578558669986
+  },
+  "frozen_checkpoints_verified": 11,
+  "frozen_encoder_seeds": [42, 43, 44, 45, 46],
+  "frozen_latent_hgb_seeds": [42, 43, 44, 45, 46],
+  "direct_hgb_verified": true,
+  "confirmation_expected": {
+    "customers": 6355,
+    "normal_customers": 5813,
+    "theft_customers": 542,
+    "windows": 165541
+  },
+  "confirmation_row_level_access_at_audit_time": false,
+  "final_test_row_level_access": false,
+  "planned_confirmation_access_event": "After this audit and protocol seal, load historical val exactly once as governed CONFIRMATION for frozen prediction only."
+}

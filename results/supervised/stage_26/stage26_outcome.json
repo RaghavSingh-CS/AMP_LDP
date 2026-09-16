@@ -1,0 +1,41 @@
+{
+  "confirmation_classification": "A",
+  "classification_label": "POSITIVE REPLICATION",
+  "reason": "Complete positive-replication criterion satisfied.",
+  "parity_seed_count": 5,
+  "seed_summary": {
+    "ROC_AUC": {
+      "mean": 0.797541837451748,
+      "std_population": 0.003513448332839449,
+      "median": 0.7969126014157097,
+      "min": 0.7930751344327481,
+      "max": 0.8038762526796093
+    },
+    "average_precision": {
+      "mean": 0.38419305512063284,
+      "std_population": 0.006292290721104054,
+      "median": 0.38651938773008343,
+      "min": 0.37268051180738554,
+      "max": 0.39150817990536013
+    }
+  },
+  "observed_deltas": {
+    "LATENT_minus_FULL_48": {
+      "ROC_AUC": 0.022707406671520824,
+      "average_precision": 0.0362294858712397
+    },
+    "LATENT_minus_DIRECT": {
+      "ROC_AUC": 0.024791741122296873,
+      "average_precision": 0.05956275192698984
+    },
+    "DIRECT_minus_FULL_48": {
+      "ROC_AUC": -0.0020843344507760486,
+      "average_precision": -0.023333266055750146
+    }
+  },
+  "ANCHOR_EARNED": "YES",
+  "anchor_sentence": "Distribution-preserving learned window representations reproducibly add customer-level precision-recall signal beyond direct distribution aggregation across development and independent confirmation.",
+  "no_retraining_or_tuning": true,
+  "instance_level_FLAG_supervision": false,
+  "final_test_access": false
+}

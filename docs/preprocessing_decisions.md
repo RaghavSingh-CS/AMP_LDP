@@ -1919,3 +1919,53 @@ was not triggered. **ANCHOR_EARNED = NO** because the FULL_48 effect-size and
 4/5-seed improvement criteria for Outcome A were not met. The Stage 25B
 Outcome-C stop rule therefore does not activate, but this result does not
 authorize unregistered model expansion or a paper-anchor claim.
+
+### Stage 26 — independent confirmation of learned distribution representation
+
+Before any Stage 26 confirmation row was loaded, the confirmation policy was
+sealed with SHA-256
+`7207a75dfd31d3254aaa3d4507eb9812b38ff87ecda09abfa62178572c8be09b`.
+It froze the five Stage 25B encoder/HGB pipelines for seeds 42–46, arithmetic
+mean probability as the primary prediction, the direct-distribution HGB, and
+committed FULL_48 confirmation probabilities. Stage 25B's explicit uncertainty
+seed 2502 was authoritative over Stage 26's fallback seed 42; all three paired
+comparisons used 2,000 confirmation-customer resamples.
+
+CONFIRMATION was opened exactly once for Stage 26 at
+`2026-09-16T10:41:09.316234+05:30`. The governed and eligible cohorts both
+contained 6,355 customers: 5,813 normal and 542 theft-labelled, prevalence
+0.085287, with 165,541 eligible windows and no exclusions. Membership, window,
+schema, class, uniqueness, finiteness, and split-overlap checks passed. This was
+inference only: no model, preprocessing step, seed weight, threshold, or
+hyperparameter was fitted or selected using confirmation.
+
+Individual latent-HGB confirmation ROC-AUC/AP results were
+`42: 0.796431/0.383587`, `43: 0.803876/0.391508`,
+`44: 0.796913/0.386670`, `45: 0.797414/0.386519`, and
+`46: 0.793075/0.372681`. Their mean±population-SD was
+`0.797542±0.003513 / 0.384193±0.006292`; all five seeds satisfied both frozen
+FULL_48 parity margins. The frozen five-seed mean-prediction pipeline scored
+`0.811791/0.415287`.
+
+The exact committed FULL_48 confirmation comparator scored
+`0.789084/0.379058`; the frozen direct SUMMARY_17 distribution HGB scored
+`0.787000/0.355725`. LATENT-minus-FULL observed deltas were
+`+0.022707/+0.036229`, with paired 95% intervals `[0.009839,0.035194]` ROC and
+`[0.009530,0.062749]` AP. LATENT-minus-DIRECT deltas were
+`+0.024792/+0.059563`, with intervals `[0.013757,0.035633]` and
+`[0.034935,0.083791]`. Fractions above zero were 1.000/0.996 versus FULL_48 and
+1.000/1.000 versus DIRECT. DIRECT-minus-FULL was `-0.002084/-0.023333`, with
+both intervals crossing zero.
+
+DEV_VAL→CONFIRMATION shifts were `+0.020982/+0.047450` for LATENT,
+`+0.000253/+0.019263` for FULL_48, and `-0.001234/+0.006481` for DIRECT. The
+ordering `LATENT > FULL_48 > DIRECT` replicated for both ROC and AP. The exact
+effect magnitude increased, so magnitude stability should not be inferred.
+
+Stage 26 is **CONFIRMATION A — POSITIVE REPLICATION**. **ANCHOR_EARNED = YES.**
+The single defensible anchor is: **Distribution-preserving learned window
+representations reproducibly add customer-level precision-recall signal beyond
+direct distribution aggregation across development and independent
+confirmation.** This supports the frozen five-seed pipeline and a distribution-
+preservation interpretation; it does not establish external generalization or
+superiority of arbitrary neural models. FINAL_TEST remained closed.

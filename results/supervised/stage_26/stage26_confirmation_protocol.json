@@ -1,0 +1,85 @@
+{
+  "stage": "Stage 26 — independent confirmation of learned distribution representation",
+  "status": "SEALED_BEFORE_CONFIRMATION_ROW_ACCESS",
+  "source_commit": "4b7741b6126aa09380627a9a0845d3a95f066d55",
+  "purpose": "One frozen replication evaluation on the governed CONFIRMATION cohort; no development, fitting, tuning, selection, or threshold optimization.",
+  "data": {
+    "evaluation_role": "CONFIRMATION",
+    "historical_source_split": "val",
+    "expected_customers": 6355,
+    "expected_normal_customers": 5813,
+    "expected_theft_customers": 542,
+    "expected_windows": 165541,
+    "expected_prevalence": 0.08528717545239968,
+    "final_test_access": false,
+    "new_exclusions": false,
+    "label_dependent_preprocessing": false
+  },
+  "models": {
+    "LATENT_DISTRIBUTION_HGB": {
+      "role": "primary Study 2 candidate",
+      "seeds": [42, 43, 44, 45, 46],
+      "primary_prediction": "arithmetic mean of the five seed probabilities",
+      "best_seed_selection": false,
+      "encoder_architecture": ["Linear(17,32)", "ReLU", "Dropout(0.1)", "Linear(32,16)", "ReLU"],
+      "pooling_statistics_in_order": ["mean", "population_standard_deviation", "q10", "median", "q90", "maximum"],
+      "representation_dimension": 96,
+      "checkpoints": [
+        {"seed": 42, "encoder": "models/supervised/stage_25b/latent_distribution_e2e/seed_42.pt", "encoder_sha256": "e15e406dcce125eb9b036d68433fba7ff8f23bc746b6d930edf643d171f72cf5", "hgb": "models/supervised/stage_25b/latent_distribution_hgb/seed_42.joblib", "hgb_sha256": "89a3579aab95eb2363df3fb7cddde2f64f8637e21f9bec84753050f374151fb3"},
+        {"seed": 43, "encoder": "models/supervised/stage_25b/latent_distribution_e2e/seed_43.pt", "encoder_sha256": "efa1cafb6f849caa18010bcde6325c424e1a6929f7d17e04cd7cca3ab92f2341", "hgb": "models/supervised/stage_25b/latent_distribution_hgb/seed_43.joblib", "hgb_sha256": "88cdd8ead297d6fba3546bd01a8230c92016a8ef2c2628fd8061fc25bfe990db"},
+        {"seed": 44, "encoder": "models/supervised/stage_25b/latent_distribution_e2e/seed_44.pt", "encoder_sha256": "725a4a4e4d4f4cadb0c45d42d31dd67d94f6c62a3b6ffe7de399aa0d965deb4f", "hgb": "models/supervised/stage_25b/latent_distribution_hgb/seed_44.joblib", "hgb_sha256": "99c57e96bd5453f103c634bd3879647f89eb73bf5f846d239884e259e887b6ac"},
+        {"seed": 45, "encoder": "models/supervised/stage_25b/latent_distribution_e2e/seed_45.pt", "encoder_sha256": "2aafad364b229393f94e6495eda363ef0e3b975fa45b5c2e26eefb8abc31ea31", "hgb": "models/supervised/stage_25b/latent_distribution_hgb/seed_45.joblib", "hgb_sha256": "ce018aeb37e52f88b53bebbc2d90d4fe7ddb1d68c94abb3854e76502c232e3f2"},
+        {"seed": 46, "encoder": "models/supervised/stage_25b/latent_distribution_e2e/seed_46.pt", "encoder_sha256": "851016557fde511e3ed6ca1cf7f10aedcf05bcc3e5c8605f302157d2c64d5a9c", "hgb": "models/supervised/stage_25b/latent_distribution_hgb/seed_46.joblib", "hgb_sha256": "120d19e8c0e4aac0d4657953617670585fad6824af357418ea5631382b1dbf7f"}
+      ]
+    },
+    "DIRECT_SUMMARY_DISTRIBUTION_HGB": {
+      "role": "mechanistic control",
+      "checkpoint": "models/supervised/stage_25b/direct_summary_distribution_hgb.joblib",
+      "sha256": "fa11424a6eb5615bc3ce696860a59d992114d891bb9d56bb3423693c172b4a45",
+      "pooling_statistics_in_order": ["mean", "population_standard_deviation", "q10", "median", "q90", "maximum"],
+      "representation_dimension": 102
+    },
+    "FULL_48_HGB": {
+      "role": "principal frozen Study 1 comparator",
+      "confirmation_predictions": "results/supervised/stage_17c/confirmation_customer_probabilities.csv",
+      "predictions_sha256": "edf1410f9c6a4eec4ffedf568efd7380d957584e708512f1c905418ae3387343",
+      "confirmation_metrics": "results/supervised/stage_17c/confirmation_metrics.csv",
+      "metrics_sha256": "800534d0283089ff673958c9a2c1f4c38a1abbe86e7c501d998394ac317f08a1",
+      "expected_ROC_AUC": 0.789084048160282,
+      "expected_average_precision": 0.3790578558669986
+    }
+  },
+  "inputs": {
+    "governance_manifest": "results/governance/stage_17a/research_protocol_manifest.csv",
+    "governance_sha256": "dae7dba53260a3af6b8e2ddd904b5c7867c3321f27cdff5af5e4060b97c348c0",
+    "window_manifest": "data/windows/stride_30/usable/val_windows.parquet",
+    "window_manifest_sha256": "8d0d5563ba010dde0897df1e7f62acc7f702c19074eb4d56af33107507b31f58",
+    "summary17_schema": "results/supervised/stage_14/preregistered_config.json",
+    "summary17_schema_sha256": "0cb8ae776ead003c7beb84dc8958af738f8d8917e78ebc433f7414b12dabd0d3",
+    "stage25b_execution_spec_sha256": "006c781899f74f0f62d01282fbf4164ac3ee27d8a61e3f2ea5fcb09b9e445470"
+  },
+  "metrics": ["customer ROC-AUC", "customer average precision"],
+  "paired_bootstrap": {
+    "resamples": 2000,
+    "seed": 2502,
+    "seed_reason": "Stage 25B sealed uncertainty specification explicitly fixes 2502, overriding the Stage 26 fallback seed 42.",
+    "unit": "CONFIRMATION customer",
+    "interval": "percentile 95%",
+    "report": ["observed delta", "bootstrap mean delta", "percentile interval", "fraction above zero"],
+    "comparisons": ["LATENT mean prediction minus FULL_48", "LATENT mean prediction minus DIRECT", "DIRECT minus FULL_48"]
+  },
+  "development_references": {
+    "LATENT_DISTRIBUTION_HGB": {"ROC_AUC": 0.7908091586895513, "average_precision": 0.36783736705395026},
+    "FULL_48_HGB": {"ROC_AUC": 0.7888308218953116, "average_precision": 0.35979459032174654},
+    "DIRECT_SUMMARY_DISTRIBUTION_HGB": {"ROC_AUC": 0.7882334049844351, "average_precision": 0.3492440521718474}
+  },
+  "classification": {
+    "A_POSITIVE_REPLICATION": "LATENT mean prediction deltas versus FULL_48 are at least -0.005 ROC and -0.010 AP; at least 4/5 individual seeds satisfy both margins; observed LATENT-minus-DIRECT AP is positive, its paired fraction above zero exceeds 0.5, and its 95% interval upper bound is positive.",
+    "C_FAILED_REPLICATION": "LATENT is materially inferior to FULL_48 (ROC delta < -0.015 or AP delta < -0.030), or learned-encoder advantage reverses with observed LATENT-minus-DIRECT AP <= 0 and its paired 95% interval upper bound <= 0.",
+    "B_PARTIAL_MIXED_REPLICATION": "Neither A nor C."
+  },
+  "anchor_policy": "A tiny parity result cannot earn an anchor. YES would require independently reproducible, non-tiny learned-encoder value in addition to the Stage 25B development evidence.",
+  "model_fitting_on_confirmation": false,
+  "adaptive_changes_after_confirmation": false,
+  "final_test_access": false
+}
