@@ -1,0 +1,34 @@
+{
+  "canonical_artifact": "final_stage_stability.json",
+  "metrics": {
+    "LATENT": {
+      "DEV_VAL": {"ROC_AUC": 0.7908091586895513, "average_precision": 0.36783736705395026},
+      "CONFIRMATION": {"ROC_AUC": 0.8117914548318028, "average_precision": 0.4152873417382383},
+      "FINAL": {"ROC_AUC": 0.8117294176037735, "average_precision": 0.42186322254778824},
+      "FINAL_minus_DEV_VAL": {"ROC_AUC": 0.020920258914222223, "average_precision": 0.05402585549383798},
+      "FINAL_minus_CONFIRMATION": {"ROC_AUC": -0.00006203722802933243, "average_precision": 0.006575880809549961}
+    },
+    "FULL_48": {
+      "DEV_VAL": {"ROC_AUC": 0.7888308218953116, "average_precision": 0.35979459032174654},
+      "CONFIRMATION": {"ROC_AUC": 0.789084048160282, "average_precision": 0.3790578558669986},
+      "FINAL": {"ROC_AUC": 0.7978625838889967, "average_precision": 0.3853256447732082},
+      "FINAL_minus_DEV_VAL": {"ROC_AUC": 0.00903176199368505, "average_precision": 0.025531054451461643},
+      "FINAL_minus_CONFIRMATION": {"ROC_AUC": 0.008778535728714676, "average_precision": 0.006267788906209604}
+    },
+    "DIRECT": {
+      "DEV_VAL": {"ROC_AUC": 0.7882334049844351, "average_precision": 0.3492440521718474},
+      "CONFIRMATION": {"ROC_AUC": 0.7869997137095059, "average_precision": 0.35572458981124844},
+      "FINAL": {"ROC_AUC": 0.7949673266082506, "average_precision": 0.3684394274673042},
+      "FINAL_minus_DEV_VAL": {"ROC_AUC": 0.006733921623815586, "average_precision": 0.019195375295456785},
+      "FINAL_minus_CONFIRMATION": {"ROC_AUC": 0.007967612898744703, "average_precision": 0.012714837656055744}
+    }
+  },
+  "ordering_all_stages_and_metrics": ["LATENT", "FULL_48", "DIRECT"],
+  "effects": {
+    "DEV_VAL": {"LATENT_minus_FULL_48": {"ROC_AUC": 0.0019783367942396435, "average_precision": 0.008042776732203716}, "LATENT_minus_DIRECT": {"ROC_AUC": 0.0025757537051162016, "average_precision": 0.018593314882102863}},
+    "CONFIRMATION": {"LATENT_minus_FULL_48": {"ROC_AUC": 0.022707406671520824, "average_precision": 0.0362294858712397}, "LATENT_minus_DIRECT": {"ROC_AUC": 0.024791741122296873, "average_precision": 0.05956275192698984}},
+    "final evaluation cohort with disclosed historical baseline access": {"LATENT_minus_FULL_48": {"ROC_AUC": 0.013866833714776816, "average_precision": 0.036537577774580055}, "LATENT_minus_DIRECT": {"ROC_AUC": 0.016762090995522838, "average_precision": 0.05342379508048406}}
+  },
+  "qualitative_direction_persists": true,
+  "final_effects_positive": true
+}

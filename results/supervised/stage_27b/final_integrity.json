@@ -1,0 +1,28 @@
+{
+  "stage": "Stage 27B final integrity",
+  "cohort_terminology": "final evaluation cohort with disclosed historical baseline access",
+  "governed_customers": 6356,
+  "eligible_customers": 6356,
+  "normal_customers": 5814,
+  "theft_customers": 542,
+  "prevalence": 0.08527375707992448,
+  "eligible_windows": 165020,
+  "exclusions": 0,
+  "duplicate_window_ids": 0,
+  "nonfinite_SUMMARY_17": 0,
+  "nonfinite_FULL_48": 0,
+  "split_overlaps": {
+    "DEV_TRAIN": 0,
+    "DEV_VAL": 0,
+    "CONFIRMATION": 0
+  },
+  "customer_membership_sha256": "ba5fd170f32752428a768674a4a326a3840c8ec1d2dac6e629f7b78f607dbaf4",
+  "window_membership_sha256": "f13ca721031c4f57556bb22601a59ea62030fd0657ad98a1adb5bb7caec25999",
+  "labels_sha256": "c6af95845b225740a6a0704f3030ae9f4032631819950e3eafd91ad386d12dd0",
+  "SUMMARY_17_dimension": 17,
+  "FULL_48_dimension": 48,
+  "max_bag_size": 34,
+  "new_exclusion_rule": false,
+  "label_dependent_preprocessing": false,
+  "access_event_timestamp": "2026-09-16T11:14:39.840891+05:30"
+}

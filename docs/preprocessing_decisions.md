@@ -2024,3 +2024,64 @@ disclosure is:
 After Stage 27A, Study 2 model development is closed. Stage 27B is a one-time
 terminal evaluation. No outcome authorizes refitting, tuning, rescue models,
 additional seeds, revised representations, new classifiers, or further search.
+
+### Stage 27B — terminal evaluation of frozen learned distribution representation
+
+Stage 27B executed the committed preregistration with SHA-256
+`ed2457e3a6eaf4b683c3fd8aaf89cf1f1fca63500a68f0427279813533e92702`.
+Every pre-access assertion passed before the final evaluation cohort with
+disclosed historical baseline access was opened exactly once at
+`2026-09-16T11:14:39.840891+05:30`. No model was trained, refit, calibrated,
+tuned, selected, or threshold-optimized.
+
+The required disclosure remains:
+
+> The final evaluation cohort had been accessed historically in Stage 13 for an obsolete supervised window-level baseline. The learned latent-distribution hypothesis, architecture, pooling rule, five-seed ensemble, controls, and confirmation decision reported in Study 2 were developed and frozen later without Study 2 row-level access to this cohort. We therefore treat it as a governed final evaluation cohort with disclosed historical baseline access, not as a pristine untouched test set.
+
+The governed and eligible cohorts both contained 6,356 customers: 5,814 normal
+and 542 theft-labelled, prevalence 0.085274, with 165,020 eligible windows and
+zero exclusions. Customer/window uniqueness, membership, class counts,
+finiteness, 96/102/48 feature dimensions, and zero overlap with DEV_TRAIN,
+DEV_VAL, and CONFIRMATION were verified.
+
+Individual latent-HGB ROC-AUC/AP results were `42: 0.799877/0.399000`,
+`43: 0.794723/0.389762`, `44: 0.800114/0.375061`,
+`45: 0.804291/0.394060`, and `46: 0.794317/0.387527`. Their
+mean±population-SD was `0.798664±0.003732 / 0.389082±0.008033`; median/min/max
+were `0.799877/0.794317/0.804291` ROC and
+`0.389762/0.375061/0.399000` AP. Four of five seeds met both parity margins,
+and no concerning seed-collapse condition triggered.
+
+The frozen arithmetic-mean LATENT ensemble scored `0.811729/0.421863`.
+The original DEV_TRAIN-fitted FULL_48 scored `0.797863/0.385326`, and frozen
+DIRECT scored `0.794967/0.368439`. LATENT-minus-FULL_48 was
+`+0.013867/+0.036538`, with paired 95% intervals
+`[+0.000466,+0.027511] / [+0.007993,+0.065214]`. LATENT-minus-DIRECT was
+`+0.016762/+0.053424`, with intervals
+`[+0.006282,+0.027865] / [+0.027428,+0.077907]`. DIRECT-minus-FULL_48 was
+`-0.002895/-0.016886`, with both intervals crossing zero. All bootstraps used
+the frozen 2,000 paired resamples, seed 2502, and shared customer indices.
+
+LATENT final-minus-DEV_VAL shifts were `+0.020920/+0.054026`; final-minus-
+CONFIRMATION shifts were `-0.000062/+0.006576`. The ordering
+`LATENT > FULL_48 > DIRECT` held for ROC and AP at all three stages. LATENT's
+gains over FULL_48 were `+0.001978/+0.008043`,
+`+0.022707/+0.036229`, and `+0.013867/+0.036538` across DEV_VAL,
+CONFIRMATION, and final evaluation. Gains over DIRECT were
+`+0.002576/+0.018593`, `+0.024792/+0.059563`, and
+`+0.016762/+0.053424`. The direction is stable; exact magnitudes vary.
+
+Every frozen FINAL A condition passed and no FINAL C condition did. Stage 27B
+is **FINAL A — STRONG FINAL REPLICATION**; **A — ANCHOR SURVIVES**. The single
+final anchor sentence is: **Learning window representations before
+distribution-preserving customer aggregation adds reproducible customer-level
+discrimination beyond identical direct aggregation across development,
+confirmation, and the governed final evaluation.** Paperworthiness is
+**LEVEL 1 — strong methodological result**.
+
+Distribution preservation resolved the Stage 24B single-vector bottleneck, and
+learned encoding added reproducible information beyond identical direct
+aggregation. This supports customer-level weak supervision; it does not verify
+individual windows or theft periods. Study 2 model development is permanently
+closed. No outcome authorizes a rescue experiment, refit, tuning, added seed,
+new statistic, architecture, classifier, or threshold search.

@@ -1,0 +1,50 @@
+{
+  "classification": "FINAL A \u2014 STRONG FINAL REPLICATION",
+  "FINAL_A_criterion_audit": {
+    "LATENT_ROC_within_FULL_48_parity": true,
+    "LATENT_AP_within_FULL_48_parity": true,
+    "LATENT_FULL_ROC_lower_bound_within_margin": true,
+    "LATENT_FULL_AP_lower_bound_within_margin": true,
+    "LATENT_DIRECT_both_observed_positive": true,
+    "LATENT_DIRECT_meaningful_supported_gain": true,
+    "LATENT_DIRECT_other_metric_supportive": true,
+    "at_least_4_of_5_parity_seeds": true,
+    "no_concerning_seed_collapse": true
+  },
+  "FINAL_C_criterion_audit": {
+    "LATENT_ROC_materially_inferior_to_FULL_48": false,
+    "LATENT_AP_materially_inferior_to_FULL_48": false,
+    "LATENT_DIRECT_AP_supported_nonpositive": false,
+    "two_or_fewer_parity_seeds": false,
+    "median_seed_materially_inferior": false
+  },
+  "seed_collapse_audit": {
+    "fewer_than_4_of_5_parity_seeds": false,
+    "ROC_population_SD_above_0.015": false,
+    "AP_population_SD_above_0.025": false,
+    "any_seed_ROC_more_than_0.030_below_FULL_48": false,
+    "any_seed_AP_more_than_0.060_below_FULL_48": false
+  },
+  "parity_seed_count": 4,
+  "concerning_seed_collapse": false,
+  "cohort_terminology": "final evaluation cohort with disclosed historical baseline access",
+  "seed_summary": {
+    "ROC_AUC": {
+      "mean": 0.7986644402047736,
+      "std_population": 0.0037324679329850015,
+      "median": 0.79987674489748,
+      "min": 0.7943170956477367,
+      "max": 0.8042906357856148
+    },
+    "average_precision": {
+      "mean": 0.3890819528983215,
+      "std_population": 0.008032677275692568,
+      "median": 0.38976180600483146,
+      "min": 0.3750610883472242,
+      "max": 0.39900043168809773
+    }
+  },
+  "no_retraining_or_refitting": true,
+  "no_threshold_optimization": true,
+  "model_development_closed": true
+}

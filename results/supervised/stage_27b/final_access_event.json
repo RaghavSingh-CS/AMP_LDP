@@ -1,0 +1,9 @@
+{
+  "stage": "Stage 27B final access event",
+  "timestamp": "2026-09-16T11:14:39.840891+05:30",
+  "cohort_terminology": "final evaluation cohort with disclosed historical baseline access",
+  "event": "Opened the governed final evaluation cohort with disclosed historical baseline access exactly once for frozen terminal inference.",
+  "stage27b_access_count": 1,
+  "authorized_by_preregistration_sha256": "ed2457e3a6eaf4b683c3fd8aaf89cf1f1fca63500a68f0427279813533e92702",
+  "disclosure": "The final evaluation cohort had been accessed historically in Stage 13 for an obsolete supervised window-level baseline. The learned latent-distribution hypothesis, architecture, pooling rule, five-seed ensemble, controls, and confirmation decision reported in Study 2 were developed and frozen later without Study 2 row-level access to this cohort. We therefore treat it as a governed final evaluation cohort with disclosed historical baseline access, not as a pristine untouched test set."
+}

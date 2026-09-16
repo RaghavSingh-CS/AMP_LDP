@@ -1,0 +1,22 @@
+{
+  "allowed_claims": [
+    "Learned latent-distribution representation",
+    "Customer-level electricity-theft discrimination",
+    "Weak customer-level supervision",
+    "Distribution-preserving aggregation",
+    "Reproducible across development, confirmation, and governed final evaluation",
+    "Improvement over direct distribution aggregation",
+    "Improvement or parity relative to FULL_48"
+  ],
+  "prohibited_claims": [
+    "Theft-window detection or theft-period localization",
+    "Theft probability for individual windows",
+    "State of the art without a protocol-compatible literature comparison",
+    "External generalization",
+    "Utility-wide deployment validity",
+    "Causal identification of theft behaviour",
+    "Pristine, untouched, unseen, never-seen, or completely independent untouched test set"
+  ],
+  "paperworthiness": "LEVEL 1 \u2014 strong methodological result",
+  "required_disclosure": "The final evaluation cohort had been accessed historically in Stage 13 for an obsolete supervised window-level baseline. The learned latent-distribution hypothesis, architecture, pooling rule, five-seed ensemble, controls, and confirmation decision reported in Study 2 were developed and frozen later without Study 2 row-level access to this cohort. We therefore treat it as a governed final evaluation cohort with disclosed historical baseline access, not as a pristine untouched test set."
+}

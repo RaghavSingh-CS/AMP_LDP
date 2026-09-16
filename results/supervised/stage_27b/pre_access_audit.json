@@ -1,0 +1,19 @@
+{
+  "alias_of": "pre_final_access_audit.json",
+  "stage": "Stage 27B pre-final-access audit",
+  "created_before_row_level_access": true,
+  "audit_timestamp": "2026-09-16T11:10:20.3642961+05:30",
+  "cohort_terminology": "final evaluation cohort with disclosed historical baseline access",
+  "branch": "study2/mil",
+  "source_HEAD": "20cd26627b0601965166bab879ab3c46695ac0f0",
+  "git_clean_at_stage_start": true,
+  "stage27b_preregistration_sha256": "ed2457e3a6eaf4b683c3fd8aaf89cf1f1fca63500a68f0427279813533e92702",
+  "all_frozen_artifact_and_checkpoint_hashes_verified": true,
+  "exact_seeds": [42, 43, 44, 45, 46],
+  "bootstrap": {"resamples": 2000, "seed": 2502, "paired": true},
+  "refitting_permitted": false,
+  "threshold_optimization_permitted": false,
+  "prior_Study2_Stage27B_row_level_access": false,
+  "row_level_access_at_audit_time": false,
+  "audit_result": "ALL_PRE_ACCESS_ASSERTIONS_PASSED"
+}

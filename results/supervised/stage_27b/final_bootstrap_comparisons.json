@@ -1,0 +1,57 @@
+{
+  "policy": {
+    "resamples": 2000,
+    "seed": 2502,
+    "paired_unit": "final evaluation cohort with disclosed historical baseline access",
+    "shared_indices_across_all_comparisons": true,
+    "sampling_attempts": 2000
+  },
+  "LATENT_minus_FULL_48": {
+    "ROC_AUC_delta": {
+      "observed_delta": 0.013866833714776816,
+      "bootstrap_mean_delta": 0.013817912205568491,
+      "lower_95": 0.0004657464758692082,
+      "upper_95": 0.02751138415955436,
+      "fraction_above_zero": 0.977
+    },
+    "average_precision_delta": {
+      "observed_delta": 0.036537577774580055,
+      "bootstrap_mean_delta": 0.03630936697237671,
+      "lower_95": 0.00799261269197509,
+      "upper_95": 0.06521413011094208,
+      "fraction_above_zero": 0.995
+    }
+  },
+  "LATENT_minus_DIRECT": {
+    "ROC_AUC_delta": {
+      "observed_delta": 0.016762090995522838,
+      "bootstrap_mean_delta": 0.016705468783805074,
+      "lower_95": 0.006282076175268589,
+      "upper_95": 0.027864796450000315,
+      "fraction_above_zero": 0.998
+    },
+    "average_precision_delta": {
+      "observed_delta": 0.05342379508048406,
+      "bootstrap_mean_delta": 0.0520938041886364,
+      "lower_95": 0.027427546377562905,
+      "upper_95": 0.07790689139548956,
+      "fraction_above_zero": 1.0
+    }
+  },
+  "DIRECT_minus_FULL_48": {
+    "ROC_AUC_delta": {
+      "observed_delta": -0.002895257280746022,
+      "bootstrap_mean_delta": -0.002887556578236583,
+      "lower_95": -0.016124095323166214,
+      "upper_95": 0.010102502635546812,
+      "fraction_above_zero": 0.3335
+    },
+    "average_precision_delta": {
+      "observed_delta": -0.016886217305904005,
+      "bootstrap_mean_delta": -0.015784437216259686,
+      "lower_95": -0.043592841819946056,
+      "upper_95": 0.012385800960792758,
+      "fraction_above_zero": 0.133
+    }
+  }
+}
