@@ -1,0 +1,111 @@
+{
+  "stage": "Stage 24B — first MIL experiment draft preregistration",
+  "status": "DRAFT_CREATED_BEFORE_ANY_MIL_TRAINING",
+  "research_question": "Can customer-bag supervision over frozen temporal-window representations match or improve customer discrimination while learning reproducible instance relevance without temporal fraud labels?",
+  "data": {
+    "fit": "DEV_TRAIN only",
+    "evaluate_once": "DEV_VAL only after code/configuration freeze",
+    "closed": ["CONFIRMATION", "FINAL_TEST"],
+    "eligible_window_rule": "Existing Stage 3C usable stride-30 windows with missing_fraction < 1.0",
+    "new_preprocessing": false
+  },
+  "instance_representation": {
+    "name": "SUMMARY_17",
+    "source": "Frozen Stage 14 behavioural_features definition",
+    "dimension": 17,
+    "standardization": "Fit one feature-wise mean and standard deviation on DEV_TRAIN instances only; apply unchanged to DEV_VAL; replace zero scales by 1",
+    "reason": "Small, interpretable, finite, frozen, reproducible, and substantially less redundant than RAW_PLUS_SUMMARY; selected without new DEV_VAL performance"
+  },
+  "model": {
+    "architecture_source": "results/supervised/stage_24a/mil_architecture_spec.json",
+    "shared_encoder": "Linear(17,32)-ReLU-Dropout(0.1)-Linear(32,16)-ReLU",
+    "shared_classifier": "Linear(16,1)",
+    "pooling_variants": ["MEAN", "MAX", "GATED_ATTENTION"],
+    "only_difference_across_variants": "pooling operator and its intrinsic attention parameters"
+  },
+  "training": {
+    "loss_unit": "customer bag",
+    "loss": "unweighted binary cross-entropy",
+    "instance_level_loss": false,
+    "optimizer": "AdamW(lr=0.001, weight_decay=0.0001)",
+    "batch_size_customers": 64,
+    "epochs": 50,
+    "early_stopping": false,
+    "gradient_clip_global_norm": 5.0,
+    "seeds": [17, 42, 73, 101, 202],
+    "one_fit_per_pool_per_seed": true,
+    "total_fits": 15
+  },
+  "batching": {
+    "method": "custom collate to batch-local maximum length with boolean masks",
+    "truncation": false,
+    "window_duplication": false,
+    "label_dependent_sampling": false,
+    "padding_invariance_unit_test_required": true
+  },
+  "primary_evaluation": {
+    "unit": "customer",
+    "metrics": ["ROC-AUC", "average precision"],
+    "secondary_metrics": ["Brier score", "fixed-threshold-free prediction distribution"],
+    "threshold_selection": "none in Stage 24B",
+    "reporting": "Per seed and mean/SD/min/max; do not choose a lucky seed"
+  },
+  "comparison_matrix": [
+    {
+      "model": "Frozen Study 1 FULL_48 HGB customer baseline",
+      "status": "reuse committed DEV_VAL metrics and probabilities; do not retrain",
+      "DEV_VAL_ROC_AUC": 0.7888308218953116,
+      "DEV_VAL_average_precision": 0.35979459032174654
+    },
+    {
+      "model": "Existing propagated-window supervised HGB, customer-balanced Q90 aggregation",
+      "status": "reuse committed Stage 20B metrics; do not retrain",
+      "DEV_VAL_ROC_AUC": 0.7417742953801463,
+      "DEV_VAL_average_precision": 0.27569278388909063
+    },
+    {"model": "MIL MEAN", "status": "train fresh on DEV_TRAIN and score DEV_VAL"},
+    {"model": "MIL MAX", "status": "train fresh on DEV_TRAIN and score DEV_VAL"},
+    {"model": "MIL GATED_ATTENTION", "status": "train fresh on DEV_TRAIN and score DEV_VAL"}
+  ],
+  "anchor_criteria_source": "results/supervised/stage_24a/anchor_result_criteria.json",
+  "attention_semantics": {
+    "allowed": "Relative contribution or relevance of an instance to the model's customer-level representation or decision",
+    "forbidden": [
+      "probability that theft occurred in that window",
+      "confirmed theft period",
+      "theft start date",
+      "theft end date",
+      "ground-truth anomaly probability"
+    ]
+  },
+  "attention_analyses": {
+    "concentration": ["entropy", "normalized entropy", "effective number exp(entropy)", "top-1 mass", "top-10-percent mass"],
+    "stability": ["pairwise seed top-10-percent Jaccard", "within-bag Spearman rank correlation", "matched random expectation"],
+    "class_comparison": "Report distributions for FLAG=0 and FLAG=1 as model-behaviour descriptions, not localization accuracy",
+    "feature_associations": "Spearman associations between attention and the 17 existing window summaries, overall and by customer label; descriptive only",
+    "perturbation": {
+      "fractions": [0.1],
+      "conditions": ["remove top-attention instances", "remove equal-count bottom-attention instances", "remove equal-count random instances"],
+      "random_repeats_per_customer_seed": 100,
+      "operation": "Remove real instances and recompute the bag prediction; do not replace with padding or zero-valued pseudo-instances",
+      "minimum_remaining_instances": 1,
+      "single_instance_bags": "exclude from removal analysis and report count",
+      "outcome": "change in customer probability/logit with paired customer-level intervals"
+    }
+  },
+  "trivial_explanation_controls": [
+    "Report score and attention associations with window mean, maximum, standard deviation, range, and bag size",
+    "Compare attention concentration and prediction performance within predeclared bag-size strata 1–10, 11–27, and 28–34 windows",
+    "Compare FLAG class bag-size distributions and test whether prediction is associated with bag size within each class",
+    "Use top-versus-random-versus-bottom removal to distinguish learned relevance from arbitrary removal",
+    "Compare high-attention feature profiles with existing Stage 14 summaries to disclose if attention is effectively selecting high consumption or high variance",
+    "Treat MAX pooling as a possible anomaly-detector mechanism and compare its seed stability and bag-size association with MEAN and ATTENTION",
+    "Run padding-invariance tests by adding masked rows and verify logits/attention over valid instances are unchanged",
+    "Never pass mask, missing_fraction, window count, customer ID, window ID, or dates as model features",
+    "Report results for very short bags separately; do not duplicate instances"
+  ],
+  "chronology": "Ignored by pooling in the first experiment; window order retained only for traceability and later descriptive plots",
+  "adaptive_changes_after_DEV_VAL": false,
+  "confirmation_access": false,
+  "final_test_access": false
+}

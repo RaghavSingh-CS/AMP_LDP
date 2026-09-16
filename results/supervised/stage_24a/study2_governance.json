@@ -1,0 +1,43 @@
+{
+  "stage": "Stage 24A — Study 2 governance boundary",
+  "study_1": {
+    "status": "FROZEN_AND_COMPLETE",
+    "final_commit": "d0601c54f6e9d0f11caac2ebd27f7c86a568a863",
+    "final_method": "FINAL_FULL_48 customer behavioural representation plus unweighted HistGradientBoostingClassifier",
+    "final_ROC_AUC": 0.7925125381284772,
+    "final_average_precision": 0.37015859978842647,
+    "result_artifacts_modifiable": false,
+    "main_modifiable_for_study2": false
+  },
+  "study_2": {
+    "name": "WEAKLY_SUPERVISED_MIL_EXPLORATION",
+    "branch": "study2/mil",
+    "branch_start_commit": "d0601c54f6e9d0f11caac2ebd27f7c86a568a863",
+    "development_fit_role": "DEV_TRAIN",
+    "development_evaluation_role": "DEV_VAL",
+    "closed_roles": ["CONFIRMATION", "FINAL_TEST"]
+  },
+  "frozen_membership": {
+    "manifest": "results/governance/stage_17a/research_protocol_manifest.csv",
+    "manifest_sha256": "dae7dba53260a3af6b8e2ddd904b5c7867c3321f27cdff5af5e4060b97c348c0",
+    "DEV_TRAIN": {"governance_customers": 23725, "eligible_customers": 23724, "eligible_windows": 614976},
+    "DEV_VAL": {"governance_customers": 5931, "eligible_customers": 5931, "eligible_windows": 153947},
+    "CONFIRMATION": {"governance_customers": 6355, "status": "CLOSED"},
+    "FINAL_TEST": {"governance_customers": 6356, "status": "CLOSED"}
+  },
+  "stage24a_access": {
+    "loaded_row_level_populations": ["original-train processed data", "original-train usable windows"],
+    "loaded_research_roles": ["DEV_TRAIN", "DEV_VAL"],
+    "confirmation_row_level_access": false,
+    "final_test_row_level_access": false,
+    "mil_model_training": false,
+    "dev_val_model_scoring": false
+  },
+  "future_gate": {
+    "development": "Complete exactly the frozen Stage 24B DEV_TRAIN to DEV_VAL experiment",
+    "freeze_condition": "Only after a pre-registered anchor criterion is met, freeze representation, architecture, pool, seed aggregation, and evaluation code",
+    "confirmation": "Open CONFIRMATION once under a separately recorded gate; accept the result without tuning",
+    "failed_confirmation": "Return to DEV_TRAIN/DEV_VAL only for a materially new pre-registered hypothesis; no confirmation-driven tweak",
+    "final_test": "Remain closed until the complete Study 2 method and claim are frozen; one final evaluation only"
+  }
+}

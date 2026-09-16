@@ -1697,3 +1697,55 @@ The final result was accepted as-is. No model, feature, hyperparameter,
 threshold, calibration, subgroup, resampling, GAN/SMOTE, or metric adaptation
 followed access. **AMP FROZEN EXPERIMENT COMPLETE.** Future modelling must be
 explicitly separated from the frozen AMP experiment.
+
+## STUDY 2 — WEAKLY SUPERVISED MIL
+
+Study 1 is frozen and complete at commit
+`d0601c54f6e9d0f11caac2ebd27f7c86a568a863`. Its `FINAL_FULL_48` customer
+representation, unweighted HistGradientBoostingClassifier, and reported final
+evaluation are immutable. Study 2 is a separate weakly supervised
+multiple-instance learning exploration on branch `study2/mil`; it does not
+reopen, revise, or supersede Study 1.
+
+SGCC `FLAG` identifies whether a **customer** is labelled normal (`0`) or theft
+(`1`). The repository contains dated consumption measurements and deterministic
+window start/end dates, but no authoritative theft-event start/end timestamps
+and no independently observed fraud label for a temporal window. Window
+manifests inherit the customer's `FLAG` for weak supervision and traceability.
+Consequently, “customer is labelled fraudulent” is observable, whereas
+“this temporal window is verified fraudulent” is not. **The dataset does not
+provide verified instance-level theft ground truth.** Propagated window labels
+are not declared proven wrong or noisy, and no individual window may be called
+a verified theft period.
+
+Stage 24A is feasibility and design only. It loads row-level data solely from
+the original-train population assigned to `DEV_TRAIN` or `DEV_VAL`; it trains
+no MIL model and performs no new validation scoring. `CONFIRMATION` and
+`FINAL_TEST` remain closed. Stage 24B, if executed, must fit only on
+`DEV_TRAIN`, evaluate only on `DEV_VAL`, use customer/bag-level binary
+cross-entropy, and apply no instance-level fraud loss or propagated-`FLAG`
+window loss.
+
+The first experiment freezes the existing Stage 14 `SUMMARY_17` window
+representation. It compares exactly mean, max, and one gated-attention pooling
+operator under a shared small MLP encoder and customer classifier. Padded
+customer batches use masks, retain every eligible window, and apply no
+truncation, duplication, or label-dependent sampling. Pooling is deliberately
+permutation invariant: the first experiment studies weak bag supervision, not
+temporal dynamics. Window chronology remains recoverable for traceability but
+is not a model input.
+
+An attention weight may be described only as an instance's relative
+contribution or relevance to the learned customer representation/decision. It
+is not a probability of theft, a confirmed theft period, a theft start/end
+date, or a ground-truth anomaly probability. Concentration, cross-seed
+stability, feature association, and controlled top/random/bottom instance
+removal are model-behaviour analyses. Even a reproducible perturbation effect
+can support only that the model concentrates predictive evidence in a subset
+of instances; it cannot validate theft localization.
+
+The authoritative Stage 24A design artifacts are under
+`results/supervised/stage_24a/`. Any future confirmation gate requires the
+complete Study 2 method and claim to be frozen first. `FINAL_TEST` remains
+sealed until a successful, separately governed Study 2 reaches a final-method
+stage.

@@ -1,0 +1,369 @@
+{
+  "stage": "Stage 24A \u2014 development-only MIL bag feasibility audit",
+  "data_scope": {
+    "loaded_processed_population": "original train only",
+    "loaded_window_population": "original train usable stride-30 windows only",
+    "allowed_research_roles": [
+      "DEV_TRAIN",
+      "DEV_VAL"
+    ],
+    "confirmation_row_level_access": false,
+    "final_test_row_level_access": false
+  },
+  "frozen_inputs": {
+    "governance_manifest": {
+      "path": "results/governance/stage_17a/research_protocol_manifest.csv",
+      "sha256": "dae7dba53260a3af6b8e2ddd904b5c7867c3321f27cdff5af5e4060b97c348c0"
+    },
+    "train_usable_window_manifest": {
+      "path": "data/windows/stride_30/usable/train_windows.parquet",
+      "sha256": "71d04ea00e4e3884892514f10c47ac268d9b9837be204c1dd870c12532895482"
+    },
+    "train_processed_matrix": {
+      "path": "data/processed/train.parquet",
+      "sha256": "867e0f188c736c248c4777d2dd4b52c0c20a5518882c8e8aa558dc1c6fed819e"
+    },
+    "stage14_representation_specification": {
+      "path": "results/supervised/stage_14/preregistered_config.json",
+      "sha256": "0cb8ae776ead003c7beb84dc8958af738f8d8917e78ebc433f7414b12dabd0d3",
+      "summary_feature_names": [
+        "mean",
+        "median",
+        "minimum",
+        "maximum",
+        "q10",
+        "q90",
+        "standard_deviation",
+        "range",
+        "interquartile_range",
+        "mean_absolute_deviation",
+        "first_to_last_change",
+        "absolute_first_to_last_change",
+        "mean_absolute_consecutive_change",
+        "maximum_absolute_consecutive_change",
+        "linear_slope",
+        "fraction_below_minus_one",
+        "second_half_minus_first_half_mean"
+      ]
+    }
+  },
+  "overall": {
+    "customers": 29655,
+    "windows": 768923,
+    "windows_per_customer": {
+      "min": 1,
+      "q10": 10.0,
+      "q25": 14.0,
+      "median": 32.0,
+      "q75": 34.0,
+      "q90": 34.0,
+      "max": 34,
+      "mean": 25.928949586916204,
+      "std_population": 9.957301011086267
+    },
+    "short_bags": {
+      "at_most_1_windows": {
+        "count": 9,
+        "fraction": 0.00030349013657056146
+      },
+      "at_most_3_windows": {
+        "count": 46,
+        "fraction": 0.0015511718091384252
+      },
+      "at_most_5_windows": {
+        "count": 85,
+        "fraction": 0.0028662957342775247
+      },
+      "at_most_10_windows": {
+        "count": 6655,
+        "fraction": 0.22441409543078739
+      }
+    }
+  },
+  "by_research_role": {
+    "DEV_TRAIN": {
+      "customers": 23724,
+      "windows": 614976,
+      "windows_per_customer": {
+        "min": 1,
+        "q10": 10.0,
+        "q25": 14.0,
+        "median": 32.0,
+        "q75": 34.0,
+        "q90": 34.0,
+        "max": 34,
+        "mean": 25.922104198280223,
+        "std_population": 9.9544317706494
+      },
+      "short_bags": {
+        "at_most_1_windows": {
+          "count": 8,
+          "fraction": 0.0003372112628561794
+        },
+        "at_most_3_windows": {
+          "count": 35,
+          "fraction": 0.0014752992749957848
+        },
+        "at_most_5_windows": {
+          "count": 71,
+          "fraction": 0.002992749957848592
+        },
+        "at_most_10_windows": {
+          "count": 5316,
+          "fraction": 0.2240768841679312
+        }
+      }
+    },
+    "DEV_VAL": {
+      "customers": 5931,
+      "windows": 153947,
+      "windows_per_customer": {
+        "min": 1,
+        "q10": 10.0,
+        "q25": 13.0,
+        "median": 32.0,
+        "q75": 34.0,
+        "q90": 34.0,
+        "max": 34,
+        "mean": 25.956331141460126,
+        "std_population": 9.968722708247526
+      },
+      "short_bags": {
+        "at_most_1_windows": {
+          "count": 1,
+          "fraction": 0.0001686056314280897
+        },
+        "at_most_3_windows": {
+          "count": 11,
+          "fraction": 0.0018546619457089867
+        },
+        "at_most_5_windows": {
+          "count": 14,
+          "fraction": 0.0023604788399932556
+        },
+        "at_most_10_windows": {
+          "count": 1339,
+          "fraction": 0.2257629404822121
+        }
+      }
+    }
+  },
+  "by_customer_label": {
+    "normal_FLAG_0": {
+      "customers": 27128,
+      "windows": 708308,
+      "windows_per_customer": {
+        "min": 1,
+        "q10": 10.0,
+        "q25": 15.0,
+        "median": 32.0,
+        "q75": 34.0,
+        "q90": 34.0,
+        "max": 34,
+        "mean": 26.109849601887348,
+        "std_population": 9.92523779728893
+      },
+      "short_bags": {
+        "at_most_1_windows": {
+          "count": 7,
+          "fraction": 0.0002580359775877322
+        },
+        "at_most_3_windows": {
+          "count": 34,
+          "fraction": 0.001253317605426128
+        },
+        "at_most_5_windows": {
+          "count": 66,
+          "fraction": 0.0024329106458271894
+        },
+        "at_most_10_windows": {
+          "count": 6017,
+          "fraction": 0.2218003538779121
+        }
+      }
+    },
+    "theft_labelled_FLAG_1": {
+      "customers": 2527,
+      "windows": 60615,
+      "windows_per_customer": {
+        "min": 1,
+        "q10": 10.0,
+        "q25": 10.0,
+        "median": 28.0,
+        "q75": 34.0,
+        "q90": 34.0,
+        "max": 34,
+        "mean": 23.986941036802534,
+        "std_population": 10.093009665374746
+      },
+      "short_bags": {
+        "at_most_1_windows": {
+          "count": 2,
+          "fraction": 0.0007914523149980214
+        },
+        "at_most_3_windows": {
+          "count": 12,
+          "fraction": 0.004748713889988128
+        },
+        "at_most_5_windows": {
+          "count": 19,
+          "fraction": 0.007518796992481203
+        },
+        "at_most_10_windows": {
+          "count": 638,
+          "fraction": 0.25247328848436884
+        }
+      }
+    }
+  },
+  "by_research_role_and_customer_label": {
+    "DEV_TRAIN": {
+      "normal_FLAG_0": {
+        "customers": 21702,
+        "windows": 566642,
+        "windows_per_customer": {
+          "min": 1,
+          "q10": 10.0,
+          "q25": 15.0,
+          "median": 32.0,
+          "q75": 34.0,
+          "q90": 34.0,
+          "max": 34,
+          "mean": 26.11012809879274,
+          "std_population": 9.917781984655463
+        },
+        "short_bags": {
+          "at_most_1_windows": {
+            "count": 6,
+            "fraction": 0.0002764722145424385
+          },
+          "at_most_3_windows": {
+            "count": 24,
+            "fraction": 0.001105888858169754
+          },
+          "at_most_5_windows": {
+            "count": 53,
+            "fraction": 0.0024421712284582067
+          },
+          "at_most_10_windows": {
+            "count": 4799,
+            "fraction": 0.22113169293152704
+          }
+        }
+      },
+      "theft_labelled_FLAG_1": {
+        "customers": 2022,
+        "windows": 48334,
+        "windows_per_customer": {
+          "min": 1,
+          "q10": 10.0,
+          "q25": 10.0,
+          "median": 28.0,
+          "q75": 34.0,
+          "q90": 34.0,
+          "max": 34,
+          "mean": 23.904055390702275,
+          "std_population": 10.122039363842797
+        },
+        "short_bags": {
+          "at_most_1_windows": {
+            "count": 2,
+            "fraction": 0.0009891196834817012
+          },
+          "at_most_3_windows": {
+            "count": 11,
+            "fraction": 0.005440158259149357
+          },
+          "at_most_5_windows": {
+            "count": 18,
+            "fraction": 0.008902077151335312
+          },
+          "at_most_10_windows": {
+            "count": 517,
+            "fraction": 0.25568743818001977
+          }
+        }
+      }
+    },
+    "DEV_VAL": {
+      "normal_FLAG_0": {
+        "customers": 5426,
+        "windows": 141666,
+        "windows_per_customer": {
+          "min": 1,
+          "q10": 10.0,
+          "q25": 15.0,
+          "median": 32.0,
+          "q75": 34.0,
+          "q90": 34.0,
+          "max": 34,
+          "mean": 26.10873571691854,
+          "std_population": 9.955002390752739
+        },
+        "short_bags": {
+          "at_most_1_windows": {
+            "count": 1,
+            "fraction": 0.00018429782528566163
+          },
+          "at_most_3_windows": {
+            "count": 10,
+            "fraction": 0.0018429782528566164
+          },
+          "at_most_5_windows": {
+            "count": 13,
+            "fraction": 0.002395871728713601
+          },
+          "at_most_10_windows": {
+            "count": 1218,
+            "fraction": 0.22447475119793586
+          }
+        }
+      },
+      "theft_labelled_FLAG_1": {
+        "customers": 505,
+        "windows": 12281,
+        "windows_per_customer": {
+          "min": 3,
+          "q10": 10.0,
+          "q25": 12.0,
+          "median": 28.0,
+          "q75": 34.0,
+          "q90": 34.0,
+          "max": 34,
+          "mean": 24.318811881188118,
+          "std_population": 9.969028403071434
+        },
+        "short_bags": {
+          "at_most_1_windows": {
+            "count": 0,
+            "fraction": 0.0
+          },
+          "at_most_3_windows": {
+            "count": 1,
+            "fraction": 0.0019801980198019802
+          },
+          "at_most_5_windows": {
+            "count": 1,
+            "fraction": 0.0019801980198019802
+          },
+          "at_most_10_windows": {
+            "count": 121,
+            "fraction": 0.2396039603960396
+          }
+        }
+      }
+    }
+  },
+  "very_short_bag_definition": "At most 5 usable windows; additional thresholds are reported for sensitivity.",
+  "mapping_and_chronology_integrity": {
+    "unique_window_ids": true,
+    "each_window_maps_to_exactly_one_customer": true,
+    "duplicate_customer_window_number_mappings": 0,
+    "duplicate_customer_start_end_mappings": 0,
+    "start_and_end_dates_parse": true,
+    "chronological_order_recoverable": true,
+    "bag_construction_uses_other_customer_information": false,
+    "bag_construction_rule": "Group each customer's own frozen eligible windows by CONS_NO; sort by window_number_within_customer only for audit/analysis."
+  },
+  "feasibility_conclusion": "Variable-length bags are small (at most 34 instances) and directly manageable without truncation, resampling, or cross-customer information."
+}

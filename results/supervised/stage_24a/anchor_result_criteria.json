@@ -1,0 +1,70 @@
+{
+  "stage": "Stage 24A — pre-training anchor-result criteria",
+  "primary_metrics": ["customer-level ROC-AUC", "customer-level average precision"],
+  "reference_baseline": {
+    "name": "Frozen Study 1 FULL_48 HGB",
+    "evaluation_role": "DEV_VAL",
+    "ROC_AUC": 0.7888308218953116,
+    "average_precision": 0.35979459032174654,
+    "source": "results/supervised/stage_17b/dev_val_metrics.csv",
+    "final_test_metrics_are_tuning_targets": false
+  },
+  "seed_aggregation": {
+    "seeds": [17, 42, 73, 101, 202],
+    "reported": ["per-seed metrics", "mean", "standard deviation", "min", "max"],
+    "paired_uncertainty": "For the across-seed mean MIL probability per DEV_VAL customer versus the frozen baseline probability, use 2000 paired customer bootstrap resamples with seed 2402 and percentile 95% intervals"
+  },
+  "outcome_A_strong_discrimination": {
+    "all_required": [
+      "Mean ROC-AUC delta versus frozen FULL_48 HGB is at least +0.010",
+      "Mean average-precision delta versus frozen FULL_48 HGB is at least +0.020",
+      "At least 4 of 5 seeds have positive deltas for both primary metrics",
+      "Paired 95% bootstrap intervals for the seed-ensemble deltas exclude zero for both primary metrics"
+    ]
+  },
+  "outcome_B_comparable_plus_distinct_weak_supervision": {
+    "discrimination_all_required": [
+      "Mean ROC-AUC is no more than 0.010 below frozen FULL_48 HGB",
+      "Mean average precision is no more than 0.020 below frozen FULL_48 HGB",
+      "At least 4 of 5 seeds meet both non-inferiority margins"
+    ],
+    "distinct_result_all_required": [
+      "Attention concentration is reproducible across seeds under the pre-registered concentration measures",
+      "Top-attention removal reduces customer prediction more than matched random removal with a paired 95% interval excluding zero",
+      "Top-window overlap or rank stability exceeds its matched random expectation"
+    ],
+    "interpretation": "Competitive customer discrimination plus reproducible model-relevance structure learned without instance-level fraud labels"
+  },
+  "outcome_C_weak": {
+    "definition": "No pooling variant satisfies Outcome A or B, or the attention relevance pattern is no more stable/informative than matched random controls",
+    "materially_worse_flag": "Mean ROC-AUC more than 0.020 below baseline or mean average precision more than 0.040 below baseline"
+  },
+  "candidate_anchor_statements_and_required_evidence": [
+    {
+      "type": "performance",
+      "form": "Weakly supervised MIL improved customer-level AP by X over the frozen conventional baseline.",
+      "required": "Outcome A, exact observed delta, five-seed reproducibility, and paired customer-bootstrap uncertainty"
+    },
+    {
+      "type": "supervision",
+      "form": "A bag-level model trained without temporal fraud labels achieved customer-level ROC-AUC X and AP Y.",
+      "required": "Completed fixed Stage 24B protocol, full seed distribution, and explicit comparison with the frozen baseline"
+    },
+    {
+      "type": "concentration",
+      "form": "X% of model relevance was concentrated in Y% of customer windows.",
+      "required": "Pre-registered top-k mass and entropy estimates with customer-level intervals, class-wise reporting, and cross-seed stability"
+    },
+    {
+      "type": "perturbation",
+      "form": "Removing the top Y% model-relevant windows reduced customer confidence by X versus Z under random removal.",
+      "required": "Matched top/random/bottom removal, repeated random controls, paired customer-level uncertainty, and consistent direction across at least 4 of 5 seeds"
+    },
+    {
+      "type": "stability",
+      "form": "Instance relevance remained stable across five independent seeds.",
+      "required": "Pairwise top-set Jaccard and within-bag rank correlation materially above matched random expectations across seed pairs"
+    }
+  ],
+  "victory_claim_precommitted": false
+}

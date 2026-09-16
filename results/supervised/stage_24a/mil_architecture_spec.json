@@ -1,0 +1,97 @@
+{
+  "stage": "Stage 24A — minimal MIL architecture specification",
+  "status": "DESIGN_ONLY_NOT_TRAINED",
+  "primary_instance_representation": "SUMMARY_17",
+  "input_dimension": 17,
+  "mathematical_formulation": {
+    "bag": "B_i = {x_i1, ..., x_i,m_i}",
+    "label": "Y_i = customer FLAG in {0,1}",
+    "encoder": "h_ij = f_theta(x_ij)",
+    "aggregation": "z_i = g(h_i1, ..., h_i,m_i)",
+    "prediction": "p_i = sigmoid(q(z_i))",
+    "loss": "Unweighted binary cross-entropy over customer bags only",
+    "instance_loss": false,
+    "propagated_FLAG_instance_supervision": false
+  },
+  "shared_instance_encoder": {
+    "layers": [
+      {"type": "Linear", "in_features": 17, "out_features": 32, "parameters": 576},
+      {"type": "ReLU"},
+      {"type": "Dropout", "probability": 0.1},
+      {"type": "Linear", "in_features": 32, "out_features": 16, "parameters": 528},
+      {"type": "ReLU"}
+    ],
+    "embedding_dimension": 16,
+    "normalization": "none",
+    "parameter_count": 1104
+  },
+  "shared_customer_classifier": {
+    "layers": [
+      {"type": "Linear", "in_features": 16, "out_features": 1, "parameters": 17}
+    ],
+    "parameter_count": 17
+  },
+  "pooling_variants": [
+    {
+      "name": "MEAN",
+      "definition": "Mask-aware arithmetic mean of valid instance embeddings",
+      "pooling_parameters": 0,
+      "total_trainable_parameters": 1121
+    },
+    {
+      "name": "MAX",
+      "definition": "Mask-aware elementwise maximum over valid instance embeddings",
+      "pooling_parameters": 0,
+      "total_trainable_parameters": 1121
+    },
+    {
+      "name": "GATED_ATTENTION",
+      "definition": "a_ij = softmax_j(w^T[tanh(V h_ij) elementwise_multiply sigmoid(U h_ij)]); z_i = sum_j a_ij h_ij",
+      "attention_dimension": 16,
+      "attention_layers": {
+        "V": "Linear(16,16,bias=True)",
+        "U": "Linear(16,16,bias=True)",
+        "w": "Linear(16,1,bias=False)"
+      },
+      "pooling_parameters": 560,
+      "total_trainable_parameters": 1681
+    }
+  ],
+  "initialization": {
+    "linear_weights": "Xavier uniform",
+    "linear_biases": "zeros"
+  },
+  "training": {
+    "optimizer": "AdamW",
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "loss": "BCEWithLogitsLoss with no class or instance weights",
+    "bag_batch_size": 64,
+    "epochs": 50,
+    "early_stopping": "none; the fixed 50-epoch budget prevents DEV_VAL-driven epoch selection",
+    "gradient_clipping_global_norm": 5.0,
+    "shuffle": "DEV_TRAIN bag order once per epoch using the run seed",
+    "sampling": "Every eligible DEV_TRAIN customer appears exactly once per epoch; no label-dependent sampling",
+    "random_seeds": [17, 42, 73, 101, 202]
+  },
+  "variable_length_implementation": {
+    "choice": "Padded small bag batches with a boolean validity mask and custom collate function",
+    "padding_value": 0.0,
+    "mask_semantics": "True for a real instance and False for padding; masked positions cannot contribute to any pool",
+    "truncation": false,
+    "window_duplication": false,
+    "label_dependent_sampling": false,
+    "all_eligible_windows_preserved": true,
+    "maximum_bag_instances": 34,
+    "maximum_padded_input_mib_per_batch_summary17_float32": 0.14111328125,
+    "estimated_total_training_memory": "Well below 1 GiB including model, optimizer, masks, gradients, and activations; the full SUMMARY_17 development matrix is 49.86 MiB",
+    "cpu_runtime_estimate": "Approximately 2–10 minutes per 50-epoch fit and 0.5–2.5 hours for all 15 fixed pooling/seed fits; verify empirically in Stage 24B",
+    "gpu_runtime_estimate": "A GPU is optional, not required. The audited environment has CPU-only PyTorch 2.13.0 and no CUDA device."
+  },
+  "chronology_policy": {
+    "first_experiment": "deliberately ignored by permutation-invariant pooling",
+    "rationale": "Isolate bag-level weak supervision before introducing temporal sequence modelling",
+    "interpretation": "The model may identify decision-relevant instances independent of ordering; it does not model temporal dynamics"
+  },
+  "excluded_architectures": ["Transformer", "LSTM", "GRU", "CNN", "GAN", "graph network", "architecture search", "additional attention variants"]
+}
