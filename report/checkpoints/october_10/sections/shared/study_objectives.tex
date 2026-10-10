@@ -1,0 +1,14 @@
+\subsection{Study objectives}
+
+The completed study pursued the following measurable objectives:
+
+\begin{enumerate}
+  \item \textbf{Respect the available supervision.} Formulate each customer as a bag of 30-day windows, apply theft supervision only at customer level, and avoid claims about individual theft windows or event timing.
+  \item \textbf{Test the aggregation bottleneck.} Evaluate whether single-vector mean, maximum, and gated-attention MIL retain sufficient customer information, and compare their customer-level ROC-AUC and Average Precision with multi-statistic distribution representations.
+  \item \textbf{Isolate learned-representation value.} Hold the six distribution statistics and HGB classifier constant while comparing AMP-LDP's 96-dimensional latent distribution with the 102-dimensional DIRECT distribution of handcrafted window summaries.
+  \item \textbf{Benchmark against an established customer profile.} Compare the frozen AMP-LDP ensemble with the DEV\_TRAIN-fitted FULL\_48 HGB comparator under symmetric Study 2 training governance.
+  \item \textbf{Evaluate reproducibility and uncertainty.} Assess the frozen five-seed arithmetic ensemble on DEV\_VAL, CONFIRMATION, and the governed final evaluation; report individual-seed robustness and paired customer-bootstrap intervals for ROC-AUC and Average Precision differences.
+  \item \textbf{Constrain the resulting claims.} Determine whether the learned-distribution effect persists across cohort roles while explicitly withholding claims of theft-period localization, causal identification, external-utility generalization, and protocol-independent state-of-the-art performance.
+\end{enumerate}
+
+These objectives describe the completed AMP evidence chain rather than a proposed future experiment. The remaining report sections document the frozen implementation and results; no new model development is implied.

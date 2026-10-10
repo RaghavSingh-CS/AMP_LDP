@@ -44,3 +44,17 @@ argument, `Supplement` means it supports interpretation or robustness, and
 - **Internal provenance:** Stages 17A, 23A, 24A, 25A and 27A. Their material
   governance facts belong in Methods, but they are not experimental result
   sections.
+
+## Coursework checkpoint documentation
+
+- **Stage 37 --- October 10 methodology submission:** Documentation and
+  integration only; no experiment was reopened. The independent checkpoint at
+  `report/checkpoints/october_10/` preserves the submitted September problem
+  statement, literature survey, research gap, objectives, citations, and author
+  details, then adds a concise methodology section covering the implemented
+  pipeline, dataset and preprocessing, AMP-LDP and comparison models, frozen
+  training/evaluation roles, and customer-level metrics. Method facts are drawn
+  from `AMP_METHOD_FREEZE.md`, `docs/preprocessing_decisions.md`, the full report
+  methodology, and committed Stage 14/16/17A/17B/24A/25A/25B/27A/27B protocol
+  artifacts. Validation is static when no LaTeX toolchain is available; the
+  self-contained Overleaf ZIP is the compilation handoff.

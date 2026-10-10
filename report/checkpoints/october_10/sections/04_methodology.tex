@@ -1,0 +1,134 @@
+\section{Methodology}\label{sec:methodology}
+
+\subsection{Overall System Architecture}\label{sec:architecture}
+
+AMP---Automated Meter Profiling for Electricity Theft Detection---is implemented as a customer-level machine-learning pipeline. Figure~\ref{fig:amp-architecture} summarizes the data flow. The input is the State Grid Corporation of China (SGCC) customer-by-day table. Preprocessing repairs the calendar, fills missing values within each customer history, applies a logarithmic transform, and scales each daily position using training-customer statistics. Customers are then assigned to disjoint development, confirmation, and final-evaluation roles before temporal examples are generated. Each customer history is divided into eligible 30-day windows, and every window is converted into 17 behavioural summaries.
+
+AMP-LDP maps each 17-dimensional window vector to a 16-dimensional latent vector. Instead of labelling or classifying individual windows, it describes the distribution of every latent dimension across all windows belonging to one customer. Six statistics per latent dimension produce a 96-dimensional customer profile. A HistGradientBoosting (HGB) classifier converts this profile into a customer-level theft-discrimination probability. Five independently seeded encoder--HGB pipelines are combined by arithmetic averaging. The final output is one probability or ranking score per customer; it is not a probability for any particular 30-day period.
+
+\begin{figure*}[t]
+  \centering
+  \input{figures/amp_ldp_architecture}
+  \caption{Implemented AMP-LDP pipeline and matched DIRECT control. The customer label supervises encoder training once per customer bag and is never attached to individual windows.}
+  \label{fig:amp-architecture}
+\end{figure*}
+
+\subsection{Dataset Description}\label{sec:dataset}
+
+The project uses the publicly distributed SGCC smart-meter benchmark, which has also been used in earlier customer-level electricity-theft studies \cite{Zheng2018WideDeep,Shehzad2022GeneticETD}. Each row contains a customer identifier, a binary \texttt{FLAG}, and chronological daily electricity-consumption measurements. The repository does not independently establish the utility's inspection procedure or theft-event dates, so those details are not inferred.
+
+Cleaning retained 42,367 customers: 38,755 labelled normal and 3,612 theft-associated, giving a theft prevalence of 8.5255\%. Five source rows containing no observed consumption values were removed. Calendar validation produced 1,034 daily positions. The almost entirely missing date 3 October 2014 was removed, while the absent date 18 September 2016 was inserted as an explicitly missing position so that calendar order remained correct.
+
+Missing values were handled separately within each customer series. Internal gaps were linearly interpolated; leading and trailing gaps were filled using the nearest observed value. Zero consumption remained a valid reading. The numerical sequence was transformed using $\log(1+x)$ without manual clipping, and a separate binary mask preserved whether each value had originally been observed. A feature-wise standard scaler was fitted only on historical-training customers and applied unchanged to the other customer partitions. The mask, customer identifier, label, split name, and missing-value counts were excluded from model inputs.
+
+The original customers were split once by customer, not by window, using a deterministic 70/15/15 stratified split with seed 42. The original training group was later divided 80/20 into \textsc{dev\_train} and \textsc{dev\_val}; the original validation group became \textsc{confirmation}; and the original test group became the final evaluation cohort. Table~\ref{tab:cohorts} records the frozen customer counts. One theft-labelled \textsc{dev\_train} customer had no eligible 30-day window. It remained in the governance manifest but was excluded from representation fitting, leaving 23,724 representation-available training customers. All pairwise customer overlaps between roles are zero.
+
+\begin{table}[ht]
+\centering
+\caption{Frozen customer-level research roles.}
+\label{tab:cohorts}
+\small
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Role & Customers & Normal & Theft & Prevalence \\
+\midrule
+\textsc{dev\_train} & 23,725 & 21,702 & 2,023 & 8.5269\% \\
+\textsc{dev\_val} & 5,931 & 5,426 & 505 & 8.5146\% \\
+\textsc{confirmation} & 6,355 & 5,813 & 542 & 8.5287\% \\
+Final evaluation & 6,356 & 5,814 & 542 & 8.5274\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Each scaled history was divided into complete, non-overlapping windows of 30 days, using window length 30 and stride 30. The 1,034 daily positions permit at most 34 complete windows; the final 14 positions do not form a complete window and were unused. A window was eligible when at least one of its 30 positions had originally been observed. A fully originally missing window was removed even if interpolation had produced finite values.
+
+For each retained window $\mathbf{w}_{ij}\in\mathbb{R}^{30}$, a fixed map $\phi$ produces $\mathbf{s}_{ij}=\phi(\mathbf{w}_{ij})\in\mathbb{R}^{17}$. The 17 summaries are mean, median, minimum, maximum, 10th and 90th percentiles, population standard deviation, range, interquartile range, mean absolute deviation, signed and absolute first-to-last change, mean and maximum absolute consecutive change, least-squares slope, fraction at or below $-1$ in scaled space, and second-half minus first-half mean. These summary dimensions were standardized using means and population standard deviations calculated from all eligible \textsc{dev\_train} windows only.
+
+The label granularity is important. For customer $i$, let
+\begin{equation}
+  \mathcal{B}_i=\{\mathbf{s}_{ij}:j=1,\ldots,m_i\},
+  \qquad y_i\in\{0,1\}.
+  \label{eq:bag}
+\end{equation}
+The \texttt{FLAG} $y_i$ labels the complete customer bag $\mathcal{B}_i$. It does not identify a theft date, duration, or verified positive window. Copying $y_i$ to every window would therefore create assumed instance labels. AMP-LDP instead uses one customer-level loss and makes no theft-localization claim.
+
+\subsection{Proposed Model and Comparison Approaches}\label{sec:model}
+
+For each seed $r\in\{42,43,44,45,46\}$, the standardized window vector $\widetilde{\mathbf{s}}_{ij}$ is encoded as
+\begin{equation}
+ \mathbf{z}_{ij}^{(r)}=operatorname{ReLU}\!\left(
+ \mathbf{W}_{2}^{(r)}\operatorname{Drop}_{0.1}\!\left[
+ \operatorname{ReLU}\!\left(\mathbf{W}_{1}^{(r)}\widetilde{\mathbf{s}}_{ij}
+ +\mathbf{b}_{1}^{(r)}\right)\right]+\mathbf{b}_{2}^{(r)}\right)
+ \in\mathbb{R}^{16}.
+ \label{eq:encoder}
+\end{equation}
+This is the implemented $17\rightarrow32\rightarrow16$ encoder: a 17-to-32 linear layer, ReLU, dropout with probability 0.1, a 32-to-16 linear layer, and a final ReLU. It contains 1,104 trainable parameters and no batch or layer normalization.
+
+For latent dimension $k$, the valid window embeddings for customer $i$ form $Z_{ik}^{(r)}=\{z_{ijk}^{(r)}\}_{j=1}^{m_i}$. AMP-LDP calculates
+\begin{equation}
+ \mathbf{g}_{ik}^{(r)}=left[
+ \mu(Z),\sqrt{\operatorname{Var}_{\mathrm{pop}}(Z)+10^{-8}},
+ Q_{0.10}(Z),Q_{0.50}(Z),Q_{0.90}(Z),\max(Z)
+ \right].
+ \label{eq:pooling}
+\end{equation}
+Quantiles are computed after sorting valid windows and linearly interpolating at position $q(m_i-1)$. Padding values are removed by a boolean mask before any statistic is calculated. Concatenating the six statistics for all 16 latent dimensions gives
+\begin{equation}
+ \mathbf{g}_{i}^{(r)}=operatorname{concat}_{k=1}^{16}\mathbf{g}_{ik}^{(r)}
+ \in\mathbb{R}^{96}.
+ \label{eq:profile}
+\end{equation}
+This profile preserves marginal location, dispersion, lower and upper tails, and extremes across a customer's windows while remaining invariant to window order.
+
+During encoder training, a linear $96\rightarrow1$ head produces a customer logit $a_i^{(r)}$. The encoder and head minimize unweighted binary cross-entropy once per customer:
+\begin{equation}
+ \mathcal{L}^{(r)}=-\frac{1}{N}\sum_{i=1}^{N}
+ \left[y_i\log\sigma(a_i^{(r)})+(1-y_i)\log\{1-\sigma(a_i^{(r)})\}\right].
+ \label{eq:loss}
+\end{equation}
+No instance-level loss is used. After training, dropout is disabled, the 96-dimensional profiles are extracted, and one unweighted \texttt{HistGradientBoostingClassifier} is fitted for each seed. The temporary linear head is not used for the primary prediction. If $h^{(r)}$ is the seed-specific HGB, then
+\begin{equation}
+ p_i^{(r)}=h^{(r)}(\mathbf{g}_i^{(r)}),
+ \qquad \widehat p_i=\frac{1}{5}\sum_{r=42}^{46}p_i^{(r)}.
+ \label{eq:ensemble}
+\end{equation}
+
+Three comparison approaches clarify what AMP-LDP changes. DIRECT applies exactly the same six statistics to each standardized \textsc{summary\_17} dimension without an encoder, creating $17\times6=102$ customer features. It uses the same HGB configuration and training population, so the intended difference is learned encoding. FULL\_48 is a strong engineered customer-profile baseline containing 48 level, variability, change, low-consumption, persistence, and broad chronology features; it uses the frozen Stage 17B HGB trained on \textsc{dev\_train}. Finally, earlier MEAN\_MIL, MAX\_MIL, and GATED\_ATTENTION\_MIL controls use the same 17-dimensional windows and customer-level loss but compress each bag into one 16-dimensional vector before a linear classifier. These controls test single-vector aggregation and are not components of AMP-LDP.
+
+\subsection{Training and Testing Strategy}\label{sec:training}
+
+Customer-disjoint roles prevent windows from the same customer appearing in both fitting and evaluation. All AMP-LDP encoders, seed-specific HGB classifiers, the DIRECT control, and the Study 2 FULL\_48 comparator use representation-available \textsc{dev\_train} customers only for fitting. \textsc{dev\_val} supports development assessment under frozen specifications. \textsc{confirmation} is opened only for an explicitly frozen gate, and the final cohort is evaluated only after the model definition, comparison rules, seeds, and artifact hashes are fixed. Neither protected cohort is used for refitting, calibration, feature revision, or threshold selection.
+
+Each encoder is trained for 50 fixed epochs with AdamW, learning rate $10^{-3}$, weight decay $10^{-4}$, customer-bag batch size 64, and global gradient-norm clipping at 5. There is no early stopping. Linear weights use Xavier-uniform initialization and biases start at zero. Variable-length customer bags are padded only within a batch, and boolean masks ensure that padding contributes to neither pooling nor loss. Every eligible \textsc{dev\_train} customer appears once per epoch; there is no label-dependent sampling.
+
+The five neural runs use seeds 42, 43, 44, 45, and 46. Python, NumPy, and PyTorch random generators are seeded, deterministic PyTorch algorithms are enabled, and the training-customer order is permuted using the run seed. No seed is selected, removed, or weighted using evaluation performance. The HGB fitted to each 96-dimensional profile uses learning rate 0.1, 100 boosting iterations, at most 15 leaf nodes, at least 100 samples per leaf, $L_2$ regularization 1.0, no class weighting, no early stopping, and random state 42.
+
+Class imbalance is handled primarily through suitable ranking metrics and customer-level evaluation rather than synthetic resampling. The final AMP-LDP, DIRECT, and FULL\_48 classifiers are unweighted: no SMOTE, GAN augmentation, undersampling, or label-dependent window sampling is used. Hyperparameters and the five-seed averaging rule were fixed during development before protected-cohort evaluation. The final prediction is the unchanged arithmetic mean in Equation~\ref{eq:ensemble}.
+
+Leakage controls operate at every stage. Scaling references are fitted only on training customers; split membership is assigned before window modelling; customer identifiers, labels, dates, missingness metadata, and usable-window counts are excluded from predictors; and test-set performance cannot influence feature or model selection. The final evaluation cohort is described as having disclosed historical access for an obsolete baseline, rather than as a pristine unseen set, but the AMP-LDP procedure itself remains frozen before its terminal evaluation.
+
+\subsection{Evaluation Metrics}\label{sec:metrics}
+
+The unit of evaluation is the customer. The co-primary metrics are customer ROC-AUC and customer Average Precision (AP). ROC-AUC measures how often a randomly selected theft-labelled customer receives a higher score than a randomly selected normal customer across all thresholds. AP summarizes precision at the ranked positions where recall increases and is especially informative when the positive class is uncommon. AP is related to the precision--recall curve but is not necessarily identical to trapezoidal PR-AUC; this study uses the standard Average Precision definition implemented by scikit-learn.
+
+At a fixed threshold, let true positives, false positives, true negatives, and false negatives be $TP$, $FP$, $TN$, and $FN$. The confusion matrix is
+\begin{equation}
+ \begin{bmatrix}TN & FP\\ FN & TP\end{bmatrix},
+\end{equation}
+and the derived measures are
+\begin{equation}
+ \operatorname{Precision}=\frac{TP}{TP+FP},\qquad
+ \operatorname{Recall}=\frac{TP}{TP+FN},
+ \label{eq:precision-recall}
+\end{equation}
+\begin{equation}
+ F_1=\frac{2\,\operatorname{Precision}\,\operatorname{Recall}}
+ {\operatorname{Precision}+\operatorname{Recall}}.
+ \label{eq:f1}
+\end{equation}
+Precision describes how many flagged predictions are theft-labelled customers, recall describes how many theft-labelled customers are retrieved, and $F_1$ balances the two. These threshold-dependent measures and the confusion matrix are secondary because they depend on an operating threshold.
+
+Accuracy alone is inadequate for this dataset: a classifier that predicts every customer as normal would appear highly accurate because about 91.5\% of customers are normal, while detecting no theft-labelled customers. ROC-AUC and AP instead assess ranking, with AP directly reflecting positive-class retrieval under the observed prevalence.
+
+For paired method comparisons, uncertainty is estimated with 2,000 customer-level bootstrap resamples using seed 2502. Each resample uses the same sampled customer indices for both methods, preserving their pairing. Metric differences are recomputed within each resample, and the 2.5th and 97.5th percentiles form a 95\% interval. This procedure quantifies sampling uncertainty in the difference between frozen customer-level predictions without retraining the models.

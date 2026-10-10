@@ -1,0 +1,47 @@
+% Reproducible TikZ source for the frozen AMP-LDP architecture.
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+  font=\sffamily\small,
+  node distance=8mm and 8mm,
+  block/.style={draw, rounded corners=2pt, align=center, minimum height=11mm, minimum width=27mm, fill=blue!5},
+  learned/.style={block, fill=blue!12},
+  aggregate/.style={block, fill=green!10},
+  control/.style={block, fill=orange!12},
+  output/.style={block, fill=purple!10},
+  note/.style={draw, dashed, rounded corners=2pt, align=center, fill=gray!8, inner sep=4pt},
+  arrow/.style={-{Latex[length=2.4mm]}, thick},
+  dashedarrow/.style={-{Latex[length=2.4mm]}, thick, dashed}
+]
+  \node[block] (sgcc) {SGCC table\\customer ID, \texttt{FLAG},\\1,034 daily values};
+  \node[block, right=of sgcc] (prep) {Preprocessing\\calendar repair, imputation,\\$\log(1+x)$, train scaling};
+  \node[block, right=of prep] (split) {Customer-disjoint roles\\\textsc{dev\_train}, \textsc{dev\_val},\\confirmation, final};
+  \node[block, right=of split] (windows) {Eligible non-overlapping\\30-day windows\\unlabeled instances};
+  \node[block, right=of windows] (summary) {Behavioural map\\$\phi(\mathbf w_{ij})$\\\textsc{summary\_17}};
+
+  \node[note, above=of split] (flag) {One customer label $y_i$\\\texttt{FLAG}$\in\{0,1\}$};
+  \node[learned, below=17mm of summary] (encoder) {Seed-specific encoder\\$17\rightarrow32\rightarrow16$\\ReLU, dropout 0.1};
+  \node[aggregate, right=of encoder] (latentpool) {Per latent dimension\\mean, stable SD,\\q10, median, q90, max\\$16\times6=96$};
+  \node[learned, right=of latentpool] (hgb) {Frozen latent HGB\\for seed $r$};
+  \node[output, right=of hgb] (ensemble) {Five seed probabilities\\arithmetic mean\\$\widehat p_i$};
+  \node[output, right=of ensemble] (decision) {Customer-level\\ranking score};
+
+  \node[aggregate, below=16mm of latentpool] (directpool) {DIRECT: identical statistics\\on SUMMARY dimensions\\$17\times6=102$};
+  \node[control, right=of directpool] (directhgb) {Frozen DIRECT HGB};
+  \node[control, right=of directhgb] (directprob) {Matched customer\\probability};
+
+  \draw[arrow] (sgcc) -- (prep);
+  \draw[arrow] (prep) -- (split);
+  \draw[arrow] (split) -- (windows);
+  \draw[arrow] (windows) -- (summary);
+  \draw[arrow] (summary) -- node[right, font=\scriptsize]{learned branch} (encoder);
+  \draw[arrow] (encoder) -- (latentpool);
+  \draw[arrow] (latentpool) -- (hgb);
+  \draw[arrow] (hgb) -- (ensemble);
+  \draw[arrow] (ensemble) -- (decision);
+  \draw[arrow] (summary.south) |- node[pos=0.25, right, font=\scriptsize]{control branch} (directpool.west);
+  \draw[arrow] (directpool) -- (directhgb);
+  \draw[arrow] (directhgb) -- (directprob);
+  \draw[dashedarrow] (flag.south) -- node[right, font=\scriptsize]{bag-level BCE during encoder training only} (latentpool.north);
+
+\end{tikzpicture}%
+}

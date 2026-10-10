@@ -1,0 +1,39 @@
+\subsection{Comparative view of recent journal studies}
+
+Table~\ref{tab:recent-literature} consolidates the 15 verified journal papers from 2023--2026. Metrics are reported only at the level substantiated by the Stage 29 package. A metric name without a value means that the paper evaluated the measure but the verified package did not establish a point estimate suitable for transcription.
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}P{0.13\textwidth}P{0.18\textwidth}P{0.16\textwidth}P{0.25\textwidth}P{0.20\textwidth}@{}}
+\caption{Recent electricity-theft journal literature. Values are source-protocol results and are not a cross-paper leaderboard.}\label{tab:recent-literature}\\
+\toprule
+Author and year & Technique & Dataset & Performance metrics & Limitation \\
+\midrule
+\endfirsthead
+\toprule
+Author and year & Technique & Dataset & Performance metrics & Limitation \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{Continued on next page}\\
+\endfoot
+\bottomrule
+\endlastfoot
+Liu et al. (2023) & Supervised contrastive encoder with LTTB augmentation & SGCC customer histories & AUC and recall under paper split & No matched direct-distribution control; non-AMP split \\
+Pamir et al. (2023) & Cost-sensitive GCAE--LSTM with salp-swarm tuning & SGCC; 42,372 histories, 3,615 theft customers & Precision 99.45\%; F1 95.93\%; accuracy 92.25\%; AUC 71.13\%; 80/20 split & Extensive tuning; metric divergence; protocol not equivalent \\
+Khan et al. (2023) & AlexNet-derived classifier with imbalance treatment & CNGC/SGCC customer histories & Accuracy, precision, recall, F1, AUC & Sampling and tuning differ; no matched aggregation control \\
+Huang et al. (2024) & Dual-time feature fusion & SGCC daily histories & Accuracy 0.947; precision 0.932; recall 0.964; F1 0.948; AUC 0.986 & No AP in verified record; non-governed split \\
+Zhuang et al. (2024) & Dynamic generative residual GCN & SGCC customer histories & Classification metrics under paper protocol & Graph and generative components confound representation comparison \\
+Shahzadi et al. (2024) & Deep data-driven pipeline with imbalance handling & SGCC customer histories & Accuracy, precision, recall, F1, AUC & Exact verified point values unavailable; different partition \\
+Tursunboev et al. (2024) & Multi-objective evolutionary hybrid deep learning & SGCC customer histories & Customer classification metrics & Search budget and objectives differ; no frozen external cohort \\
+Wang et al. (2024) & Two-stage regional-transfer detector & Source and new-region theft data & Cross-region classification assessment & Different target and datasets; not an AMP cohort comparison \\
+Iftikhar et al. (2024) & K-means SMOTE with MLP--GRU & CNGC/SGCC customer histories & Precision, recall, F1, accuracy, MCC, ROC-AUC, PR-AUC; displayed best AUC 0.95 across three split ratios & Synthetic balancing and changing train/test ratios \\
+Saqib et al. (2024) & Deep supervised predictor & Non-smart-grid billing/consumption setting & Classification metrics under paper split & Different acquisition environment and feature availability \\
+Elshennawy et al. (2025) & Hybrid deep classifier & SGCC customer histories & Accuracy up to 94.7\%; other classification metrics & Preprocessing, prevalence, and partition not AMP-equivalent \\
+Iqbal et al. (2025) & Transfer-learned CNN--LSTM and BiGRU--BiLSTM & Temporal electricity sequences & Precision, recall, F1, accuracy, ROC-AUC; AUC up to 0.89 & Source/target construction differs from governed AMP roles \\
+Yang et al. (2026) & Bayesian-optimized TCN with explainability & Customer consumption sequences & Accuracy 98.04\% under article protocol & Accuracy prevalence-sensitive; tuning and cohort differ \\
+Yang et al. (2024) & Self-decision ant-colony clustering & SGCC and Smart* & Dataset-specific classification metrics & Unsupervised objective and two datasets differ from probability modelling \\
+Gunduz and Das (2024) & Hybrid CNN with generative treatment & Constructed or injected consumption attacks & Accuracy, precision, recall, F1, ROC & Synthetic attacks are not inspected SGCC customer labels \\
+\end{longtable}
+\endgroup
