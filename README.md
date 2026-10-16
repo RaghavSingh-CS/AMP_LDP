@@ -1,5 +1,11 @@
 # Anomaly-Based Electricity Theft Detection Using Autoencoder and GAN Models
 
+The frozen AMP-LDP research now has a local Streamlit presentation layer. See
+[Interface Stage 1 instructions](app/README.md) for CPU-only installation,
+startup, provenance and validation. Stage status is **PARTIAL** because no
+canonical Stage 27B per-customer AMP-LDP score export was persisted; the
+Overview displays verified aggregate evidence and the Explorer explains the gap.
+
 This project studies anomaly-based electricity theft detection from SGCC daily
 smart-meter consumption histories. The planned workflow compares temporal
 autoencoder and GAN-based approaches while preserving customer traceability and

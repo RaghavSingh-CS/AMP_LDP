@@ -2116,3 +2116,52 @@ The repository audit found no push-blocking issue and records
 large tracked artifacts, intentional duplicates, and literature-source
 provenance. Stage 28 does not itself authorize a push. Study 1 experimental work
 and Study 2 experimental work both remain closed.
+
+## Interface development workstream
+
+### Interface Stage 1 — foundation and data integration (17 October 2026)
+
+This is a separate interface workstream; it does not renumber, reopen, or alter
+any ML stage or frozen decision. Technical delivery is **PARTIAL**, pending the
+missing canonical AMP-LDP customer-score artifact and supervising acceptance.
+Interface Stage 2 is not authorized or started.
+
+| Decision | Implementation and evidence |
+|---|---|
+| Use Streamlit for the local presentation layer | Native, CPU-only components; Streamlit 1.66.0 with existing pandas 3.0.5 / numpy 2.5.2; no model deserialization or training imports |
+| Keep application structure modular | `app/main.py`, `config.py`, `artifact_catalog.json`, `data_loader.py`, `views/overview.py`, `views/explorer.py`; `views` avoids automatic Streamlit `pages/` discovery; tests under `tests/interface/` |
+| Read authentic final metrics | LATENT row in Stage 27B `final_primary_metrics.csv`; counts from `final_integrity.json`; exact values 0.8117294176037735 ROC-AUC, 0.42186322254778824 AP, 6,356 customers and 542 theft-labelled customers; display four decimals under the existing reporting policy |
+| Preserve model/freeze identity | Stage 27A `final_model_freeze.json` and `stage27b_preregistration.json`; SUMMARY_17 → 17→32→16 → six statistics per latent dimension → 96 features → five frozen HGBs; seeds 42–46, arithmetic mean; DEV_TRAIN-only fitting; all ten checkpoint hashes verified |
+| Preserve final-cohort disclosure | Stage 27B `final_access_event.json`; use “final evaluation cohort with disclosed historical baseline access”; display historical Stage 13 access explicitly |
+| Require reviewed provenance bindings | All six catalog source hashes verified against Stage 27B commit `dbd978ffeebe7cee772f8ec693243895be7ff2c8`; SHA-256 text hashes normalize only CRLF→LF; validate schema and cross-artifact metadata/counts; unavailable state replaces any missing or invalid evidence |
+| Keep research inputs read-only | Paths resolved inside repository; bounded cached parsing of verified bytes, fresh hash/existence checks on every load; small artifacts only, no raw histories or research writes |
+| Do not substitute another model's customer predictions | Stage 27B evaluator did not save its per-customer scores; available Stage 23B FULL_48, Stage 13 baseline and Stage 24B DEV_VAL exports are ineligible; `predictions: null` declares the missing canonical AMP-LDP export |
+| Implement Explorer with safe unavailable behavior | Explains exact gap and disables unavailable controls; future approved export contract validates schema, original unique IDs, finite [0,1] scores, final cohort size, original FINAL_TEST membership, ordered ID/label hashes and exact ensemble provenance before displaying anything |
+| Provide reviewable Explorer behavior | Implemented table, global descending ordinal risk rank with identifier tie-breaker, literal identifier search, alternate sorting, evaluation-only label annotation and bounded interactive scrolling; complete populated path tested with synthetic fixtures confined to tests |
+| Keep claims at customer risk-ranking level | No calibrated-probability claim, confirmed-theft/legal-proof interpretation, or theft-day localization |
+| Exclude later-stage work | No inference, model fitting, metric recomputation, preprocessing/split modifications, threshold selection, history visualization, expanded comparisons or deployment infrastructure |
+| Validate before delivery | 24 automated tests passed; syntax/import and dependency checks passed; loopback startup, HTTP 200/health, actual browser navigation/metrics, light/dark themes and 390×844 layout checked; 463 tracked research artifacts match Git; research source unchanged |
+| Preserve Git and prior user files | Initial branch `study2/mil`, HEAD `034a2d1`; existing untracked ZIPs and report checkpoint directory untouched; only interface code/tests/dependencies/docs, README link and interface-venv ignore rule included in local delivery commit; no push authorization established |
+
+Reproduction, artifact contract, limitations and executed validation are recorded
+in `app/README.md`, `app/AUDIT.md` and `app/VALIDATION.md`. Launch from the
+repository root with:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements-interface.txt
+.\.venv\Scripts\python.exe -m streamlit run app/main.py --server.address 127.0.0.1 --browser.gatherUsageStats false
+```
+
+The corrected validation suite uses `python -m unittest discover -s
+tests/interface -v`. Early sandbox attempts blocked temporary-file/socket access;
+runtime tests and HTTP checks succeeded outside that restriction. No pre-existing
+unit suite was found, and historical evaluation programs were deliberately not
+rerun. A pandas-3 test-fixture construction error was fixed before the final pass.
+
+**Remaining dependency:** recover an authentic previously persisted Stage 27B
+AMP-LDP customer export from an authoritative archive, with original identifiers,
+ordered customer labels and five-seed scores, then review its chain of custody
+and bind its hash in the interface catalog. The aggregate integrity file alone
+does not provide per-customer scores or labels. Any regeneration or additional
+cohort/model access requires a separate methodological decision; this workstream
+does not authorize it. Stage 2 needs explicit supervisor approval after review.
