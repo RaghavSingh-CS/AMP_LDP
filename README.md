@@ -6,6 +6,9 @@ startup, provenance and validation. **Interface Stage 1B: PASS**: authorized
 inference-only replay reproduced the frozen AMP-LDP metrics exactly and activated
 the Customer Explorer. Its separate derived score artifact is explicitly marked
 as reconstructed; the original Stage 27B export was never persisted.
+**Interface Stage 2: PASS** adds verified original consumption histories,
+missingness, coverage and interactive customer inspection for all 6,356 scored
+customers. See [Stage 2 validation](app/STAGE2_VALIDATION.md).
 
 This project studies anomaly-based electricity theft detection from SGCC daily
 smart-meter consumption histories. The planned workflow compares temporal

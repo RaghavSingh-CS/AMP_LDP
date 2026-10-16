@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "source": {
+    "path": "data/raw/data set.csv",
+    "sha256": "99ba49d416238b400771b97aea71975706ce94989dd5440202402441cbcc4579"
+  },
+  "index": {
+    "path": "app/derived/stage2/history_index.csv",
+    "sha256": "0e84bd18a28e462e3a2965f930be0fc82c4953aec08e1d50d38403e02e1fe465"
+  },
+  "test_mask": {
+    "path": "data/processed/test_mask.parquet",
+    "sha256": "315be291c798f26e1db79256c5ba45b00571270f1ad1a0b5f2f52b0a68552327"
+  },
+  "windows": {
+    "path": "data/windows/stride_30/usable/test_windows.parquet",
+    "sha256": "237672636f627b8e550baac1cb64b328a29a4a4f356d745a30f84bb3df03c1c2"
+  },
+  "provenance": {
+    "path": "app/derived/stage2/history_provenance.json",
+    "sha256": "5867ed5a36cd9e6b9b08b9e56df6e6a6614ecbd1309a14fdc9c57b71d885b496"
+  }
+}

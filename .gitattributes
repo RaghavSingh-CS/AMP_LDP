@@ -4,3 +4,5 @@ results/governance/stage_17a/research_protocol_manifest.csv -text
 # Preserve the exact byte hashes of derived interface replay evidence.
 app/derived/stage1b/*.csv -text
 app/derived/stage1b/*.json -text
+app/derived/stage2/*.csv -text
+app/derived/stage2/*.json -text

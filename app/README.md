@@ -1,11 +1,17 @@
-# AMP interface — Stage 1
+# AMP interface
 
-**Status: Interface Stage 1B PASS; Stage 1 technical gates closed.** Authorized
+**Current status: Interface Stage 2 PASS — customer consumption inspector.**
+All 6,356 scored customers have verified original histories. Open the Customer
+Risk Explorer, search or select an identifier, and choose **Open customer
+inspector**. Back preserves search, sort and selected customer; each customer's
+date interval is retained during navigation. Stage 3 has not started.
+See [STAGE2_VALIDATION.md](STAGE2_VALIDATION.md) for current evidence.
+
+**Previous delivery: Interface Stage 1B PASS.** Authorized
 offline inference-only replay produced a separate derived export of all 6,356
 AMP-LDP customer scores. Both frozen ensemble metrics reproduced exactly. The
 Explorer is active and clearly labels the reconstruction. No model was fitted,
-no threshold changed, and no frozen research artifact was rewritten. Stage 2
-has not been started or authorized. The original Stage 1 partial record remains
+no threshold changed, and no frozen research artifact was rewritten. The original Stage 1 partial record remains
 in [VALIDATION.md](VALIDATION.md); the resolution is in
 [RECOVERY_STAGE1B.md](RECOVERY_STAGE1B.md).
 
@@ -32,7 +38,9 @@ python -m venv .venv-interface
 ```
 
 The existing `.venv` was used for validation. Direct interface dependencies are
-Streamlit 1.66.0, pandas 3.0.5 and numpy 2.5.2. No torch, CUDA, scikit-learn,
+Streamlit 1.66.0, pandas 3.0.5, numpy 2.5.2, pyarrow 25.0.1 and Altair 6.3.0.
+These packages were already installed; Stage 2 needed no installation.
+No torch, CUDA, scikit-learn,
 LightGBM, pytest or model checkpoint deserialization is required. pandas, numpy,
 Pillow and packaging retain their pre-existing versions after installation.
 The separate environment command is documented, not claimed as separately tested.
@@ -43,6 +51,11 @@ The separate environment command is documented, not claimed as separately tested
 - `config.py`, `artifact_catalog.json`: repository root, paths and reviewed
   provenance bindings. The catalog contains hashes, not copied metric values.
 - `data_loader.py`: reusable, read-only evidence and prediction adapter.
+- `consumption_loader.py`, `consumption_catalog.json`: original-history access,
+  verified source/index/mask/window lineage and descriptive statistics.
+- `views/inspector.py`: customer details, interactive source chart and coverage.
+- `derived/stage2/`: compact raw-record index, provenance and protected snapshot;
+  no duplicate consumption values.
 - `derived/stage1b/`: verified reconstructed CSV, provenance and research snapshot.
 - `recovery/`: separately invoked offline replay and independent metric checks;
   these modules are never imported by the dashboard.
@@ -167,17 +180,79 @@ used by the runtime application.
 .\.venv\Scripts\python.exe -m pip check
 ```
 
-The interface suite has 35 tests; the separately run offline suite has 6 tests.
+The interface suite has 53 tests; the separately run offline suite has 6 tests
+(59 total, including all 41 previous regressions).
 See [RECOVERY_STAGE1B.md](RECOVERY_STAGE1B.md) for current validation and
 [VALIDATION.md](VALIDATION.md) for the initial Stage 1 record.
 The master decision record is `../docs/preprocessing_decisions.md`, appended as
-**Interface Stage 1**, independently of the existing ML stage numbering.
+the **Interface development workstream**, independently of ML stage numbering.
+
+## Customer consumption inspection
+
+The original, immutable `data/raw/data set.csv` is required for history charts.
+The adapter joins by original CONS_NO to the verified Stage 1B scores and checks
+FLAG against the held-out evaluation labels. Its compact index records each
+selected CSV record's byte offset, length and SHA-256. Every request rechecks
+the selected record's hash, own ID and label before displaying values. There
+is no assumption that a data row number equals a score row number.
+
+The observed period is 1 January 2014–31 October 2016. The source has 1,034 date
+columns; the complete calendar has 1,035 days. Missing 18 September 2016 has no
+source column and is explicitly marked missing. The source chart includes
+3 October 2014 even though frozen model preprocessing excluded that day.
+Original zeros remain observed. Counts/statistics cover the full period and use
+observed numeric source values only; there is no interpolation or silent zero
+fill. Units were not established, so the UI labels source units without assuming
+kWh. Processed/imputed values are not plotted as original readings.
+
+Altair supplies line/point tooltips and horizontal pan/wheel zoom. Lines use
+separate observed segments, so they stop across missing days. The coverage
+strip distinguishes observed, missing and absent-column days. Choose a date
+interval using the range control; **Reset viewed interval** also recreates the
+chart to clear browser zoom. Charts inherit the native Streamlit theme.
+
+The inspector shows original identifier, six-decimal risk score plus the exact
+stored float value, global rank, evaluation-only FLAG, frozen score provenance,
+observed/missing/zero counts, missing percentage and observed-value statistics.
+Previous/Next rank supports sequential inspection. Actual evaluated-window
+metadata and a concise explanation distinguish raw observations from frozen
+imputed/log1p/scaled model inputs. No theft periods or causal explanation are
+inferred.
+
+Runtime verifies the raw CSV's full hash once per filesystem identity; it streams
+the hash and does not materialize a full consumption table. Missing files and
+identity changes are checked before using cached validation. Later requests
+seek/read one original record. Small immutable index parses and up to 16
+customer window lookups are cached. Parquet hashes use exact binary bytes.
+Measured on this machine: approximately 0.54 seconds cold, 0.22 seconds for
+another customer and 0.20 seconds repeated. These are observations, not a
+performance guarantee.
+
+The shipped index is 812,696 bytes. All three Stage 2 metadata files total
+903,135 bytes (about 882 KiB). Git preserves their exact bytes. Dataset inputs
+remain local and untracked; a missing source disables the history view while
+keeping the frozen score and Back navigation available. The app needs no GPU
+or network connectivity once dependencies and local artifacts are present.
+
+The separate metadata builder is:
+
+```powershell
+.\.venv\Scripts\python.exe -m app.recovery.build_history_index
+```
+
+It was executed once. It requires the shipped protected snapshot and original
+inputs and refuses to overwrite the shipped index/provenance. It scans the raw
+CSV once, verifies all 6,356 selected histories against frozen test masks and
+evaluated-window metadata, and writes only interface metadata/catalog. It never
+fits, scores, changes preprocessing or writes research artifacts. Ordinary
+dashboard use does not invoke it. See `STAGE2_DESIGN.md` for the preimplementation
+design and `derived/stage2/history_provenance.json` for exact source hashes.
 
 ## Boundaries and next dependency
 
-No live inference, retraining, preprocessing/split changes, threshold, history
-charts, expanded comparison pages or deployment infrastructure is implemented.
-Stage 2 requires supervisor acceptance and an explicit scope. Stage 1B's narrow
+No live inference, retraining, preprocessing/split changes, thresholds,
+expanded comparison pages or deployment infrastructure are implemented.
+Stage 3 requires supervisor acceptance and explicit scope. Stage 1B's narrow
 authorization resolved the missing-export dependency through frozen replay.
 The original export remains absent, and reconstructed scores must retain that
 description. No original per-row score checksum exists for direct byte comparison;

@@ -17,7 +17,7 @@ st.set_page_config(page_title="AMP | Electricity Theft Risk Profiling", page_ico
 st.title("AMP")
 st.write("**Automated Meter Profiling for Electricity Theft Detection**")
 st.sidebar.title("AMP")
-st.sidebar.caption("Frozen research · Interface Stage 1")
+st.sidebar.caption("Frozen research · Customer inspection")
 page = st.sidebar.radio("Navigation", ["Overview", "Customer Risk Explorer"])
 st.sidebar.divider()
 st.sidebar.caption("Customer-level research ranking. Research results are read-only.")

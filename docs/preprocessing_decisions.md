@@ -2204,3 +2204,47 @@ No discrepancy or Stage 1B blocker remains. The original persisted export is
 still absent and must not be claimed recovered; the reproducible derived
 artifact resolves the interface dependency. Broader methodological work,
 deployment, explanations/history views and Stage 2 remain outside this approval.
+
+### Interface Stage 2 — customer inspection and consumption visualization (17 October 2026)
+
+**PASS — technical delivery; supervising acceptance remains separate.** The
+user explicitly authorized this presentation/inspection scope after Stage 1B.
+No Interface Stage 3 implementation is authorized or started. Historical ML
+stages, conclusions and previous interface stage records remain unchanged.
+
+| Decision | Implementation and verified outcome |
+|---|---|
+| Inspect authentic held-out histories | `data/raw/data set.csv` supplies original numeric readings; exact raw SHA-256 `99ba49d416238b400771b97aea71975706ce94989dd5440202402441cbcc4579` matches historical frozen evidence; all 6,356 scored customers have source histories |
+| Prove identity by CONS_NO, never row number | Source IDs unique across 42,372 raw records; selected IDs and FLAG join exactly to Stage 1B scores and historical test split; compact metadata binds byte offset/length and record SHA-256; runtime checks the record's own ID and evaluation label; Stage 17A / Stage 27A/B / score lineage stays intact |
+| Validate missingness and model coverage | Every selected source missingness mask matches frozen `test_mask.parquet` on the processed calendar; all 165,020 usable window records match exact customer/label, bounds, dates, missing counts and eligibility |
+| Preserve original time/value semantics | Source period 2014-01-01–2016-10-31; 1,034 source date columns and 1,035 complete calendar positions; absent 2016-09-18 explicitly missing; genuine zeros observed; original 2014-10-03 reading retained in source plot even though model calendar excludes it; no interpolation or silent zero fill; unit unestablished, so no kWh claim |
+| Keep raw chart distinct from model inputs | Explain frozen within-customer imputation/fill, log1p and train-fitted scaling, 30-position windows / 17 summaries / 16 latent dimensions / 96 customer features / five-HGB mean; actual eligible window metadata displayed; 34 candidate windows and 14 trailing unused processed positions disclosed |
+| Use installed Altair | Native line/point tooltips and horizontal pan/wheel zoom; separate observed segments stop lines across missing days; coverage strip distinguishes observed, missing and absent-column days; date interval control and reset; no Plotly installation or new framework |
+| Extend Explorer with integrated detail view | Original ID, frozen risk score (six-decimal metric plus exact stored value), global rank, evaluation-only FLAG, score provenance, full-period observation/missing/zero counts, missing percentage and observed-only descriptive statistics |
+| Preserve navigation state | Independent session state retains query, sort, selected ID and per-customer date interval across Back/Overview navigation; Previous/Next rank supports sequential inspection; reset recreates chart to clear zoom |
+| Read histories efficiently and safely | `consumption_loader.py` verifies large-file hashes once per filesystem identity, then seeks one source record; selected bytes/hash/ID/label checked each request; bounded immutable index/window caches; missing/corrupt artifacts give unavailable history while score/Back remain available; Parquet hashed as binary bytes |
+| Store metadata separately | `app/derived/stage2/history_index.csv`, `history_provenance.json`, `research_snapshot.json` total 903,135 bytes; no copied consumption dataset; create-only index builder scans once and writes only interface metadata/catalog; scoped Git attributes preserve exact metadata bytes |
+| Test before closure | 53 interface tests plus all 6 offline regression tests passed (59 total, retaining prior 41); ID isolation, chronology, missing/zero/statistic semantics, real customers from both classes, exact score/rank, artifact errors, navigation/interval/reset verified; syntax/dependency/startup and actual browser smoke checks passed |
+| Preserve frozen research | All 538 protected files byte-identical, covering tracked research/source, all local data and Stage 1B derived evidence; no model fit, score regeneration, threshold/preprocessing/split change or Stage 27A/B rewrite; unrelated untracked files untouched |
+| Retain methodological limits | No theft-event verification, theft-day localization, SHAP/LIME/attribution, invented anomaly highlight, causal explanation, risk category threshold, deployment or Stage 3 comparison page |
+
+The original preimplementation design is in `app/STAGE2_DESIGN.md`; exact lineage,
+tests, known limits and startup are in `app/STAGE2_VALIDATION.md` and
+`app/README.md`. The source index hashes to
+`0e84bd18a28e462e3a2965f930be0fc82c4953aec08e1d50d38403e02e1fe465`.
+The initial runtime test caught text normalization being applied to Parquet;
+binary exact-byte verification fixed that failure without changing the artifact.
+Laptop browser testing also prompted a separate exact-score caption to prevent
+visual truncation. Corrected tests passed.
+
+Measured local history loading was approximately 0.54 seconds cold and
+0.20–0.22 seconds warm; these measurements are not guaranteed latency targets.
+Local source artifacts must remain present and match hashes. The one-time
+metadata build may take several minutes; it is not part of dashboard startup.
+All Stage 1B score/provenance bytes remain unchanged. The Stage 2 delivery is
+committed locally on `study2/mil`; no push is authorized or performed.
+
+Proposed Stage 3 scope, subject to separate approval: a restrained comparison
+view over already frozen aggregate evidence with correct cohort/comparator
+disclosures. It must not imply new training, scoring, evaluation design or
+stronger claims. Stage 3 has not begun.
