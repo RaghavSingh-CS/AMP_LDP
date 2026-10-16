@@ -2,7 +2,8 @@
 
 Historical Stage 1 record. Interface Stage 1B subsequently closed the score gap
 through explicitly authorized, verified inference-only replay. Current status
-and executed Stage 2 inspection checks are in [STAGE2_VALIDATION.md](STAGE2_VALIDATION.md).
+and executed Stage 3 checks are in [STAGE3_VALIDATION.md](STAGE3_VALIDATION.md).
+Earlier inspection checks remain in [STAGE2_VALIDATION.md](STAGE2_VALIDATION.md).
 The earlier score-recovery record is in [RECOVERY_STAGE1B.md](RECOVERY_STAGE1B.md).
 
 **Technical delivery status: PARTIAL; supervisor acceptance remains separate.**

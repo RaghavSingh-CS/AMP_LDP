@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "evidence_commit": "dbd978ffeebe7cee772f8ec693243895be7ff2c8",
+  "hash_policy": "SHA-256 over UTF-8 bytes after CRLF-to-LF normalization",
+  "comparators": {
+    "path": "results/supervised/stage_27a/final_comparator_freeze.json",
+    "sha256": "e97724ee4e62519d70810c0054297755e5c48c873e7190eafca2e87622e34f19"
+  },
+  "evaluator": {
+    "path": "src/evaluation/evaluate_stage27b_terminal.py",
+    "sha256": "e2bcc763fca858a5792bf2e31803b9357c65efbed9880ad5f61d3154c8d448c5"
+  },
+  "method_document": {
+    "path": "docs/paper/AMP_METHOD_FREEZE.md",
+    "sha256": "5d09a0c645f61de82caf0077fc563bad05323b547a4d154654100f7053369e90"
+  },
+  "historical_architectures": {
+    "path": "results/model_comparison/fc_vs_cnn_vs_lstm/architecture_comparison_report.md",
+    "sha256": "731755d4a548151d6d930f92ad8200489d5afc5b3fbdc8f6669ef94f3b0c8b85"
+  },
+  "comparator_curves": {
+    "FULL_48": null,
+    "DIRECT": null
+  },
+  "curves": {
+    "path": "app/derived/stage3/curve_provenance.json",
+    "sha256": "7cdf785590c09a070a4c2801c889b89dcd759705eab218bb4c0dfe02517ecf78"
+  }
+}

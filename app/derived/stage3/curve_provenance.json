@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "status": "VERIFIED",
+  "created_at": "2026-10-16T19:58:23.104217+00:00",
+  "source_head": "efe2ca7eb8d9ef4447d77d5f686d531a29e37e72",
+  "builder": {
+    "path": "app/recovery/build_performance_curves.py",
+    "sha256": "0bdfe644469204652164418c3286fbd8844696d8fffa121ecbb3b1fb5cc31c45"
+  },
+  "source_scores": {
+    "path": "app/derived/stage1b/customer_scores.csv",
+    "sha256": "17a7af4ac32a01981549dd6fe4e99809948aa92c82aa611b05214433b0d182ff"
+  },
+  "source_provenance": {
+    "path": "app/derived/stage1b/provenance.json",
+    "sha256": "e38b28f37231acabf2b42bd6912f65ac2eb6b99d5db4aecc372ab75381b582b3"
+  },
+  "score_origin": "reconstructed_inference_only",
+  "model_id": "LATENT_DISTRIBUTION_HGB_FIVE_SEED_MEAN",
+  "protocol_sha256": "ed2457e3a6eaf4b683c3fd8aaf89cf1f1fca63500a68f0427279813533e92702",
+  "metric_source": {
+    "path": "results/supervised/stage_27b/final_primary_metrics.csv",
+    "sha256": "2ee0b10750579c6e124b300fac21a1eed87d8629195d5efd7773b2cccd38111f"
+  },
+  "customers": 6356,
+  "theft_customers": 542,
+  "customer_membership_sha256": "ba5fd170f32752428a768674a4a326a3840c8ec1d2dac6e629f7b78f607dbaf4",
+  "labels_sha256": "c6af95845b225740a6a0704f3030ae9f4032631819950e3eafd91ad386d12dd0",
+  "ROC_definition": "sklearn.metrics.roc_auc_score",
+  "AP_definition": "sklearn.metrics.average_precision_score; non-interpolated recall-increment weighted precision",
+  "curve_functions": [
+    "sklearn.metrics.roc_curve",
+    "sklearn.metrics.precision_recall_curve"
+  ],
+  "parameters": {
+    "pos_label": 1,
+    "roc_drop_intermediate": true,
+    "pr_drop_intermediate": false,
+    "pr_order": "increasing recall; step-before"
+  },
+  "verified_metrics": {
+    "ROC_AUC": 0.8117294176037735,
+    "average_precision": 0.42186322254778824
+  },
+  "no_inference_or_fitting": true,
+  "no_operating_threshold_selected": true,
+  "points": {
+    "roc": 835,
+    "pr": 6050
+  },
+  "coordinates": {
+    "path": "app/derived/stage3/curves.json",
+    "sha256": "de051fa9ff50a93d35923650f5e4a537b849e002f86212bb624519df2c1178a7"
+  },
+  "environment": {
+    "python": "3.12.14",
+    "sklearn": "1.9.0"
+  },
+  "protected_files_unchanged": 543
+}

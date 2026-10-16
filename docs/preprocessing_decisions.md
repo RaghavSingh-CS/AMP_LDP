@@ -2248,3 +2248,41 @@ Proposed Stage 3 scope, subject to separate approval: a restrained comparison
 view over already frozen aggregate evidence with correct cohort/comparator
 disclosures. It must not imply new training, scoring, evaluation design or
 stronger claims. Stage 3 has not begun.
+
+
+### Interface Stage 3 — Model Performance and comparative evidence (17 October 2026)
+
+**PASS — technical delivery; supervising acceptance remains separate.** The
+user authorized a presentation layer over frozen evidence and read-only curve
+calculation from existing verified scores. No Interface Stage 4 is authorized
+or implemented. Prior research and interface decisions remain historical.
+
+| Decision | Evidence and executed result |
+|---|---|
+| Audit before implementation | Base HEAD `efe2ca7`, branch `study2/mil`; unrelated untracked ZIPs/checkpoint report preserved. Stage 27A/B, Stage 1B provenance, evaluator definitions, paper method and reconstruction records audited; sources/hashes recorded in `app/STAGE3_DESIGN.md` before implementation |
+| Include only comparable primary models | Stage 27B `final_primary_metrics.csv`: AMP-LDP (LATENT), original Stage 17B FULL_48 HGB, Stage 25B DIRECT HGB; 6,356 identical FINAL_TEST customers, 542 theft-labelled, no exclusions, customer ROC-AUC and sklearn Average Precision; all models trained DEV_TRAIN only. Adapter binds comparator IDs, checkpoint hashes, feature dimensions and protocol |
+| Retain exact primary results | AMP-LDP ROC `0.8117294176037735`, AP `0.42186322254778824`; FULL_48 `0.7978625838889967` / `0.3853256447732082`; DIRECT `0.7949673266082506` / `0.3684394274673042`. Full precision internally; six decimals displayed. Verified count-derived prevalence `542/6356`, displayed 8.5274% |
+| Exclude incompatible historical metrics | FC/CNN/LSTM share historical input splits but use normal-window reconstruction-MSE training/scoring, primary window-level metrics and P95 validation rules; customer mean/max/p95 diagnostics are not protocol-equivalent Stage 27B comparators. Stage 13 window baseline, Stage 24B DEV_VAL, individual seeds and different Stage 23B DEV_TRAIN+DEV_VAL FULL_48 refit excluded |
+| Make comparison visually honest | Three-row table, separate ROC/AP bars with [0,1] axes, consistent model colors/order, six-decimal tooltips; absolute AMP-LDP minus FULL_48 deltas +0.013867 ROC / +0.036538 AP, minus DIRECT +0.016762 / +0.053424; no relative-gain or statistical significance claim |
+| Derive only supported curves | No matching original Stage 27B curves or comparator prediction exports located; FULL_48/DIRECT aggregate-only with explicit explanation. Offline create-only builder reads existing verified Stage 1B scores/labels only; no model access or inference. ROC 835 points, PR 6,050 points; independent original sklearn ROC-AUC and AP exactly match frozen values, differences 0.0 |
+| Preserve curve origin and definitions | Separate `app/derived/stage3/curves.json` and `curve_provenance.json`; curve SHA `de051fa9ff50a93d35923650f5e4a537b849e002f86212bb624519df2c1178a7`. Manifest binds reconstructed source/provenance, model/protocol, ordered membership/label hashes, original metrics, builder/output hashes, parameters/environment and no-inference/no-threshold policy. PR uses increasing-recall step-before; AP is non-interpolated recall-increment weighted precision, not trapezoidal PR area |
+| Explain actual frozen method | Non-overlapping 30-day windows, 17 summaries, 17→32→16 encoder, six latent distribution statistics→96 customer features, five HGBs seeds 42–46 and unweighted arithmetic mean; DIRECT six statistics over 17 summaries→102; FULL_48 includes engineered chronology/persistence. Encoder does not establish causal explanations |
+| Preserve ranking-only threshold policy | No applicable frozen AMP-LDP operating threshold/matching confusion matrix found; neither confusion matrix nor 0.5/test-selected cutoff displayed. ROC/AP explanations distinguish ranking and binary decisions; prevalence is context, not guaranteed performance |
+| Integrate native app architecture | Model Performance sidebar page with metrics, comparison, supported curves, interpretation, method, limitations and source hashes. Presentation separate from evidence loading; current hashes checked with cached immutable parsing. Missing optional curves retain aggregate view; missing/incompatible primary evidence fails closed. Existing Overview, Explorer/Inspector and navigation state preserved; no new dependencies or GPU/online requirement |
+| Validate honestly | 75 interface + 8 offline tests pass (83 total, retaining all previous 59). Tests cover schema/hash, exact metrics/prevalence/deltas/order, comparator protocol, chart axes/labels/data, curve alignment/geometry/all coordinates, AP distinction, missing/malformed/cache failures, create-only safety and unchanged research. Syntax/import and dependency checks pass. Initial Windows newline/hash issue corrected only in new Stage 3 output; new test selectors/caption inspection corrected, existing tests unchanged |
+| Browser checks | Streamlit startup successful; health/root HTTP 200; native navigation, tables and ROC/AP bars/curves inspected; light/dark themes and desktop 1280×720/mobile 390×844 passed, charts stack, viewport reset; earlier feature regression suite passes |
+| Confirm frozen integrity | All 543 protected research/source/data and earlier Stage 1B/2 derived/catalog files byte-identical before/after calculation and tests; no fit, inference, calibration, split/preprocessing/threshold change, new evaluation protocol, bootstrap rerun or original access-event rewrite. Stage 3 derived metadata/coordinates total 350,310 bytes |
+| Maintain claims and Git boundaries | SGCC final evaluation cohort retains disclosed historical Stage 13 baseline access; scores are review priorities, not established calibrated probabilities, proof, theft-day localization or causal evidence. Independent external/operational generalization unestablished. Only stage-specific interface/tests/docs/derived files committed locally; no push authorized/performed |
+
+Current usage, evidence contracts and commands are in `app/README.md`; executed
+acceptance details and exact output hashes are in `app/STAGE3_VALIDATION.md`.
+The original Stage 1B reconstructed score/provenance and Stage 2 histories remain
+unchanged. Missing comparator curves are an explicitly allowed evidence limit,
+not fabricated to close a gate. No important aggregate comparison evidence is
+missing, and all Stage 3 acceptance gates are met.
+
+Recommended Stage 4, pending explicit approval: demonstration usability and guided
+research narrative, with provenance-aware presentation/export if scoped. Preserve
+ranking-only frozen boundaries. New comparator inference, attribution, threshold
+selection or deployment needs separate authorization and supporting evidence.
+Stage 4 has not started.

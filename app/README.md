@@ -1,11 +1,18 @@
 # AMP interface
 
-**Current status: Interface Stage 2 PASS — customer consumption inspector.**
+**Current status: Interface Stage 3 PASS — frozen Model Performance dashboard.**
+Open **Model Performance** for verified customer metrics, the protocol-compatible
+AMP-LDP / FULL_48 / DIRECT comparison, absolute differences, AMP-LDP ROC and
+precision–recall curves, methodology, limitations and source hashes. See
+[STAGE3_VALIDATION.md](STAGE3_VALIDATION.md) and the preimplementation
+[evidence audit](STAGE3_DESIGN.md). Stage 4 is not started.
+
+**Previous delivery: Interface Stage 2 PASS — customer consumption inspector.**
 All 6,356 scored customers have verified original histories. Open the Customer
 Risk Explorer, search or select an identifier, and choose **Open customer
 inspector**. Back preserves search, sort and selected customer; each customer's
-date interval is retained during navigation. Stage 3 has not started.
-See [STAGE2_VALIDATION.md](STAGE2_VALIDATION.md) for current evidence.
+date interval is retained during navigation.
+See [STAGE2_VALIDATION.md](STAGE2_VALIDATION.md) for its evidence.
 
 **Previous delivery: Interface Stage 1B PASS.** Authorized
 offline inference-only replay produced a separate derived export of all 6,356
@@ -39,7 +46,7 @@ python -m venv .venv-interface
 
 The existing `.venv` was used for validation. Direct interface dependencies are
 Streamlit 1.66.0, pandas 3.0.5, numpy 2.5.2, pyarrow 25.0.1 and Altair 6.3.0.
-These packages were already installed; Stage 2 needed no installation.
+These packages were already installed; Stages 2 and 3 needed no installation.
 No torch, CUDA, scikit-learn,
 LightGBM, pytest or model checkpoint deserialization is required. pandas, numpy,
 Pillow and packaging retain their pre-existing versions after installation.
@@ -51,6 +58,12 @@ The separate environment command is documented, not claimed as separately tested
 - `config.py`, `artifact_catalog.json`: repository root, paths and reviewed
   provenance bindings. The catalog contains hashes, not copied metric values.
 - `data_loader.py`: reusable, read-only evidence and prediction adapter.
+- `performance_loader.py`, `performance_catalog.json`: hash/schema/protocol
+  checks for the three frozen customer methods, optional curve provenance,
+  derived prevalence and absolute metric differences.
+- `views/performance.py`: full-range comparison/curve charts and interpretation.
+- `derived/stage3/`: immutable ROC/PR coordinates, calculation provenance and
+  protected research baseline. No new model predictions or input data copies.
 - `consumption_loader.py`, `consumption_catalog.json`: original-history access,
   verified source/index/mask/window lineage and descriptive statistics.
 - `views/inspector.py`: customer details, interactive source chart and coverage.
@@ -180,8 +193,12 @@ used by the runtime application.
 .\.venv\Scripts\python.exe -m pip check
 ```
 
-The interface suite has 53 tests; the separately run offline suite has 6 tests
-(59 total, including all 41 previous regressions).
+The interface suite has 75 tests; the separately run offline suite has 8 tests
+(83 total, retaining all 59 previous regressions). New checks cover comparator
+compatibility, exact metrics and model ordering, correct axes/labels/deltas,
+curve provenance/alignment and AP step semantics, optional curve failures,
+malformed evidence, unchanged research and navigation. Offline checks
+independently reproduce all coordinates from existing scores; no inference runs.
 See [RECOVERY_STAGE1B.md](RECOVERY_STAGE1B.md) for current validation and
 [VALIDATION.md](VALIDATION.md) for the initial Stage 1 record.
 The master decision record is `../docs/preprocessing_decisions.md`, appended as
@@ -248,11 +265,54 @@ fits, scores, changes preprocessing or writes research artifacts. Ordinary
 dashboard use does not invoke it. See `STAGE2_DESIGN.md` for the preimplementation
 design and `derived/stage2/history_provenance.json` for exact source hashes.
 
+## Model Performance evidence
+
+All displayed comparisons come from `results/supervised/stage_27b/final_primary_metrics.csv`.
+Stage 27A freezes the original Stage 17B FULL_48 and Stage 25B DIRECT HGBs,
+DEV_TRAIN-only training for all methods, and the same customer evaluation
+protocol. The table keeps full floats and displays six decimals. Both bar-chart
+axes span 0–1; differences are absolute metric units. No significance claim or
+relative percentage gain is made. FC/CNN/LSTM reconstruction metrics, historical
+Stage 13 / DEV_VAL exports and the different Stage 23B FULL_48 refit are excluded.
+
+The SGCC cohort has 6,356 customers, 542 theft-labelled (8.5274%). It retains the
+explicit disclosure of historical Stage 13 baseline access. It is not evidence
+of external utility generalization. No applicable frozen AMP-LDP decision
+threshold/confusion matrix exists; the page uses ranking metrics only.
+
+No original Stage 27B curve coordinates or matching comparator predictions were
+found. Only AMP-LDP curves are supported, using the Stage 1B reconstructed scores
+and exact aligned labels. The separate create-only visualization builder is:
+
+```powershell
+.\.venv\Scripts\python.exe -m app.recovery.build_performance_curves
+```
+
+It was run during Stage 3 and refuses to overwrite the shipped files. It requires
+the existing research environment's sklearn only for offline coordinate
+calculation and integrity checks. It loads no model, fits nothing, regenerates
+no score, chooses no operating threshold and writes no research artifact. The
+dashboard never invokes or imports it. All 835 ROC and 6,050 PR points are kept.
+Independent sklearn ROC-AUC and `average_precision_score` match the frozen values
+exactly. PR uses step-before interpolation on increasing recall; AP is the
+recall-increment weighted precision sum, not trapezoidal PR area. FULL_48 and
+DIRECT retain aggregate-only displays with an explicit absence explanation.
+
+The curve manifest binds source CSV/provenance, membership and labels, metric
+source, protocol, output hash, builder source hash, environment and parameters.
+The catalog binds the manifest. Hash checks run on every load with cached
+immutable parsing. Missing/corrupt curves leave aggregate comparison available;
+unverified aggregate/comparator metadata disables the page. All 543 protected
+research/source/data and earlier interface evidence files remain byte-identical.
+
 ## Boundaries and next dependency
 
-No live inference, retraining, preprocessing/split changes, thresholds,
-expanded comparison pages or deployment infrastructure are implemented.
-Stage 3 requires supervisor acceptance and explicit scope. Stage 1B's narrow
+No live inference, retraining, preprocessing/split changes, thresholds or
+deployment infrastructure are implemented. Stage 4 requires explicit scope
+and approval. A suitable next scope is demo usability, guided research narrative
+and provenance-aware presentation/export, retaining the frozen ranking-only
+boundary. New comparator inference, causal explanations, threshold selection
+or deployment would need separate authorization and evidence. Stage 1B's narrow
 authorization resolved the missing-export dependency through frozen replay.
 The original export remains absent, and reconstructed scores must retain that
 description. No original per-row score checksum exists for direct byte comparison;

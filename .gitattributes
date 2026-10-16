@@ -6,3 +6,6 @@ app/derived/stage1b/*.csv -text
 app/derived/stage1b/*.json -text
 app/derived/stage2/*.csv -text
 app/derived/stage2/*.json -text
+app/derived/stage3/*.json -text
+# Curve provenance records this builder's exact source bytes.
+app/recovery/build_performance_curves.py -text

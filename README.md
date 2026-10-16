@@ -9,6 +9,11 @@ as reconstructed; the original Stage 27B export was never persisted.
 **Interface Stage 2: PASS** adds verified original consumption histories,
 missingness, coverage and interactive customer inspection for all 6,356 scored
 customers. See [Stage 2 validation](app/STAGE2_VALIDATION.md).
+**Interface Stage 3: PASS** adds the frozen Model Performance dashboard,
+protocol-compatible AMP-LDP / FULL_48 / DIRECT comparisons, and source-supported
+AMP-LDP ROC/PR curves calculated from the existing reconstructed scores.
+See [Stage 3 evidence and validation](app/STAGE3_VALIDATION.md). No Stage 4,
+new inference, threshold selection or model development is included.
 
 This project studies anomaly-based electricity theft detection from SGCC daily
 smart-meter consumption histories. The planned workflow compares temporal
