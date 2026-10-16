@@ -2165,3 +2165,42 @@ and bind its hash in the interface catalog. The aggregate integrity file alone
 does not provide per-customer scores or labels. Any regeneration or additional
 cohort/model access requires a separate methodological decision; this workstream
 does not authorize it. Stage 2 needs explicit supervisor approval after review.
+
+### Interface Stage 1B — frozen prediction reconstruction and Explorer activation (17 October 2026)
+
+**PASS — Stage 1 technical acceptance gates are now closed.** Supervising stage
+acceptance remains separate; Interface Stage 2 is not authorized or started.
+This entry resolves the original Interface Stage 1 PARTIAL result without
+rewriting any earlier ML stage, terminal conclusion or access-event record.
+
+The user expressly authorized inference-only replay if every fitted component,
+held-out input and scoring operation could be established as frozen, plus metric
+recomputation solely as an integrity check. No fitting, seed-based model
+recreation, threshold/parameter change or frozen-artifact write was permitted.
+
+| Finding or decision | Executed evidence |
+|---|---|
+| Prefer recovery | No original AMP-LDP export found in the full project inventory including ignored inputs, local/ref branches and filename history, registered worktree, inspected reflogs, stashes (none), or four project archives; historical Stage 13 / Stage 23B FULL_48 / Stage 24B DEV_VAL exports rejected |
+| Replay prerequisites satisfied | Five fitted HGBs passed fitted-state checks; five encoder state dictionaries available; all ten checkpoint hashes matched Stage 27A; processed test, usable stride-30 test windows, original split manifest, governance and saved standardizer matched historical hashes; original source helpers unchanged from Stage 27B commit `dbd978f` |
+| Reuse exact frozen processing | Offline `app/recovery/replay_stage1b.py` calls original test loader, preparation and latent-feature helpers; strict loaded state replaces every initialized tensor; saved DEV_TRAIN mean/scale, original quantile/statistic order, 64-customer batches and seed-order arithmetic mean retained; CPU eval/no_grad; no original evaluator main/access writer called |
+| Enforce inference-only boundaries | Runtime tripwires reject HGB/StandardScaler/Pipeline fitting methods and Tensor.backward; no train/validation consumption loaded; no comparator estimator scored, bootstrap rerun, calibration, threshold or protocol redesign |
+| Validate full cohort before scoring | 6,356 customers, 542 theft-labelled, 165,020 windows; exact original ordered customer/window/label hashes; historical test membership and labels aligned; zero protected-role overlap |
+| Independently verify scores | sklearn ROC-AUC `0.8117294176037735` and AP `0.42186322254778824`, both exact full-precision matches with differences `0.0`; all five individual seed metrics also agreed at six decimals; CSV roundtrip preserved exact float64 scores |
+| Persist separate derived interface evidence | `app/derived/stage1b/customer_scores.csv` (354,095 bytes), `provenance.json`, `research_snapshot.json`; combined 440,033 bytes; CSV SHA-256 `17a7af4ac32a01981549dd6fe4e99809948aa92c82aa611b05214433b0d182ff`; exact-byte Git attributes scoped only to these derived files |
+| Retain honest origin | Scores are reconstructed by authorized frozen replay, not recovered original persisted Stage 27B predictions; no original per-row checksum exists; provenance records all exact input/checkpoint/code/output hashes, base replay HEAD, exact new script hashes, source evidence commit, environment, method, counts, checks and fresh-directory reproduction command |
+| Activate Explorer after verification | Catalog binds CSV and reconstruction manifest; adapter verifies both plus model/protocol/output/cohort identities and metric-check evidence; original IDs, score, global descending rank, search, alternate sorting, scored count, evaluation-only FLAG labels and source/provenance display enabled; missing/corrupted artifacts still produce unavailable state |
+| Validate before closure | 35 interface tests and 6 offline verification/safety tests passed; syntax/import checks, Streamlit startup and HTTP health/200 passed; actual browser verified real table, original-ID search and ascending/default descending sorting |
+| Protect frozen research | 512 protected tracked research/source files and required ignored test inputs byte-identical before/after replay; original metrics, models, split/input files and final-access event untouched; earlier ML research conclusions unchanged |
+| Git boundary | Base HEAD `b7a085b`; only interface code/tests/docs and small derived artifacts included in the local delivery commit; prior untracked ZIPs/report directory preserved; no push performed or authorized |
+
+The source inventory and feasibility conditions were recorded before inference
+in `app/RECOVERY_STAGE1B.md`; that report now includes executed results and
+closure. Startup and the create-only reproduction command are in `app/README.md`.
+The original Stage 1 validation report remains historical. The dashboard still
+requires only CPU interface dependencies; offline replay/testing uses the
+already-installed frozen research environment and is never run at app startup.
+
+No discrepancy or Stage 1B blocker remains. The original persisted export is
+still absent and must not be claimed recovered; the reproducible derived
+artifact resolves the interface dependency. Broader methodological work,
+deployment, explanations/history views and Stage 2 remain outside this approval.

@@ -17,7 +17,12 @@ def render() -> None:
         st.selectbox("Sort customers", ["Highest risk first", "Lowest risk first", "Customer identifier"], disabled=True)
         return
     st.metric("Total scored customers", f"{len(result.frame):,}")
-    st.caption(f"Frozen score source: {result.source}")
+    st.caption(f"Score artifact: {result.source}")
+    st.write(result.message)
+    if result.provenance_source:
+        with st.expander("Score provenance"):
+            st.text(result.provenance_source)
+            st.caption("Hash-verified manifest records frozen inputs, fitted checkpoints, replay code, metric agreement and research-file integrity.")
     query = st.text_input("Search customer identifier", placeholder="Enter all or part of the original identifier")
     order = st.selectbox("Sort customers", ["Highest risk first", "Lowest risk first", "Customer identifier"])
     filtered = explore(result.frame, query, order)

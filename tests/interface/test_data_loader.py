@@ -106,6 +106,8 @@ class EvidenceTests(unittest.TestCase):
             load_evidence(self.root)
 
     def test_missing_canonical_scores(self):
+        self.catalog["predictions"] = None
+        (self.root / "app/artifact_catalog.json").write_text(json.dumps(self.catalog))
         result = load_predictions(self.root)
         self.assertIsNone(result.frame)
         self.assertIsNone(result.source)

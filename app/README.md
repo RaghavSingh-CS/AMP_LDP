@@ -1,10 +1,13 @@
 # AMP interface — Stage 1
 
-**Status: PARTIAL.** The Streamlit foundation and authentic aggregate integration
-are complete. Canonical Stage 27B AMP-LDP customer scores are absent, so the
-Explorer transparently displays an unavailable state. No inference, training,
-metric recomputation, threshold selection or prediction generation was performed.
-Stage 2 has not been started or accepted.
+**Status: Interface Stage 1B PASS; Stage 1 technical gates closed.** Authorized
+offline inference-only replay produced a separate derived export of all 6,356
+AMP-LDP customer scores. Both frozen ensemble metrics reproduced exactly. The
+Explorer is active and clearly labels the reconstruction. No model was fitted,
+no threshold changed, and no frozen research artifact was rewritten. Stage 2
+has not been started or authorized. The original Stage 1 partial record remains
+in [VALIDATION.md](VALIDATION.md); the resolution is in
+[RECOVERY_STAGE1B.md](RECOVERY_STAGE1B.md).
 
 ## Start locally in PowerShell
 
@@ -40,6 +43,9 @@ The separate environment command is documented, not claimed as separately tested
 - `config.py`, `artifact_catalog.json`: repository root, paths and reviewed
   provenance bindings. The catalog contains hashes, not copied metric values.
 - `data_loader.py`: reusable, read-only evidence and prediction adapter.
+- `derived/stage1b/`: verified reconstructed CSV, provenance and research snapshot.
+- `recovery/`: separately invoked offline replay and independent metric checks;
+  these modules are never imported by the dashboard.
 - `views/overview.py`: verified metrics, pipeline, freeze provenance and context.
 - `views/explorer.py`: score table/search/sorting when verified scores exist;
   informative unavailable state otherwise. Native scrolling limits table height.
@@ -64,7 +70,7 @@ and Stage 17A governance preserved in that commit:
 | Final role, cohort expectations, ensemble rule | `results/supervised/stage_27a/stage27b_preregistration.json` |
 | Evaluation event and historical-access disclosure | `results/supervised/stage_27b/final_access_event.json` |
 | Original identifiers and split membership | `results/governance/stage_17a/research_protocol_manifest.csv` |
-| AMP-LDP customer scores / individual labels | **No canonical Stage 27B score export found** |
+| Reconstructed AMP-LDP scores / evaluation labels | `app/derived/stage1b/customer_scores.csv`, bound to `provenance.json`; original Stage 27B export absent |
 
 The LATENT values are ROC-AUC `0.8117294176037735`, AP `0.42186322254778824`,
 6,356 evaluation customers and 542 theft-labelled customers. The UI uses the
@@ -90,30 +96,61 @@ Parsing of verified immutable bytes is cached with bounded `lru_cache`. Every
 request rechecks current file existence and content hash, so cached data cannot
 hide changed or deleted evidence. The app opens no research artifact for writing.
 
-## Future approved score-export contract
+## Derived score artifact and verification
 
-`predictions` is deliberately `null` in the catalog. Do not point it at a
-Stage 13, Stage 23B, DEV_VAL or confirmation export. Stage 23B's customer file
+`predictions` binds the separate reconstructed Stage 1B artifact and its
+hash-verified provenance manifest. Do not point it at a Stage 13, Stage 23B,
+DEV_VAL or confirmation export. Stage 23B's customer file
 belongs to the refitted Study 1 FULL_48 model, not AMP-LDP. The terminal evaluator
 `src/evaluation/evaluate_stage27b_terminal.py` retains its scores only in memory
-and persists aggregate/seed metrics. Do not rerun it to fill this gap.
+and persists aggregate/seed metrics. Its main/access writers were not rerun.
 
-A supervisor-approved canonical export must supply UTF-8 CSV columns exactly
+The approved derived export supplies UTF-8 CSV columns exactly
 `CONS_NO,FLAG,risk_score`, with original identifiers, customer-level binary labels
 and the frozen arithmetic five-seed ensemble score. Its rows must retain the
 original Stage 27B customer order so the recorded membership and label hashes
-can be checked before any sorting. Governance must contain exactly the same
+are checked before any sorting. Governance contains exactly the same
 FINAL_TEST IDs, all with original split `test`; duplicate IDs or protected-role
 substitutions fail validation. Expected counts come from frozen evidence.
 Scores must be numeric, finite and within [0,1]. No calibration is inferred.
 
-The reviewed catalog record must include `path`, LF-normalized `sha256`,
+The reviewed catalog record includes `path`, LF-normalized `sha256`,
 `model_id=LATENT_DISTRIBUTION_HGB_FIVE_SEED_MEAN`, `source_stage=27B`,
 `research_role=FINAL_TEST`, `seeds=[42,43,44,45,46]`,
 `ensemble=arithmetic_mean`, and `model_freeze_sha256` matching the frozen model
-record. This binding is a provenance assertion requiring review against the
-export's chain of custody; schema and score range alone cannot prove provenance.
+record. The additional `origin=reconstructed_inference_only` and `provenance`
+path/hash bind the reconstruction manifest. It must state VERIFIED status,
+correct frozen model/protocol/cohort identity, zero fitting, unchanged research,
+and successful independent six-decimal metric verification. These bindings were
+reviewed against the executed replay; schema/range alone cannot prove provenance.
 No UI upload or arbitrary path override is provided.
+
+The output CSV is 354,095 bytes, SHA-256
+`17a7af4ac32a01981549dd6fe4e99809948aa92c82aa611b05214433b0d182ff`.
+Git attributes preserve all three derived evidence files byte-for-byte. Their
+combined size is approximately 430 KiB; no new checkpoint or consumption dataset
+is committed.
+
+## Reproduce the authorized offline replay
+
+This is a separate research-environment command, not a dashboard requirement.
+It requires the existing fitted checkpoints, historical processed test inputs
+and the package versions recorded in the provenance manifest. The original
+environment is available in `.venv`; the minimal interface-only environment
+does not install torch or scikit-learn.
+
+```powershell
+.\.venv\Scripts\python.exe -m app.recovery.replay_stage1b --output-dir app/derived/stage1b-reproduced
+```
+
+The command rejects existing output directories and paths outside `app/derived/`.
+It checks every prerequisite before inference, uses only original saved state
+and read-only helpers, rejects fitting/backpropagation, and verifies every seed
+and the ensemble. It never modifies the original Stage 27B access record, calls
+historical evaluation main functions, selects thresholds or loads train/validation
+consumption. The initial execution used the default `app/derived/stage1b` output.
+The documented `-reproduced` command writes a fresh sibling; it was not separately
+executed because one verified replay was sufficient for this delivery.
 
 After validation, global rank is deterministic ordinal descending score, then
 original identifier for ties. Literal, case-insensitive identifier search and
@@ -126,10 +163,13 @@ used by the runtime application.
 ```powershell
 .\.venv\Scripts\python.exe -m compileall -q app tests/interface
 .\.venv\Scripts\python.exe -m unittest discover -s tests/interface -v
+.\.venv\Scripts\python.exe -m unittest discover -s tests/recovery -v
 .\.venv\Scripts\python.exe -m pip check
 ```
 
-See [VALIDATION.md](VALIDATION.md) for executed checks and acceptance gates.
+The interface suite has 35 tests; the separately run offline suite has 6 tests.
+See [RECOVERY_STAGE1B.md](RECOVERY_STAGE1B.md) for current validation and
+[VALIDATION.md](VALIDATION.md) for the initial Stage 1 record.
 The master decision record is `../docs/preprocessing_decisions.md`, appended as
 **Interface Stage 1**, independently of the existing ML stage numbering.
 
@@ -137,7 +177,9 @@ The master decision record is `../docs/preprocessing_decisions.md`, appended as
 
 No live inference, retraining, preprocessing/split changes, threshold, history
 charts, expanded comparison pages or deployment infrastructure is implemented.
-Stage 2 requires supervisor acceptance and an explicit scope. The immediate
-data dependency is recovery of an authentic, already-persisted AMP-LDP export
-from an authoritative archive, or a separate methodological decision about the
-missing scores. This stage authorizes neither regeneration nor new cohort access.
+Stage 2 requires supervisor acceptance and an explicit scope. Stage 1B's narrow
+authorization resolved the missing-export dependency through frozen replay.
+The original export remains absent, and reconstructed scores must retain that
+description. No original per-row score checksum exists for direct byte comparison;
+frozen inputs, fitted state, ordered cohort hashes and exact aggregate metric
+agreement establish the reconstruction's evidence chain.

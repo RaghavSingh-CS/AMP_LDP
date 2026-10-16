@@ -1,5 +1,9 @@
 # Interface Stage 1 validation — 17 October 2026
 
+Historical Stage 1 record. Interface Stage 1B subsequently closed the score gap
+through explicitly authorized, verified inference-only replay. Current status
+and executed checks are in [RECOVERY_STAGE1B.md](RECOVERY_STAGE1B.md).
+
 **Technical delivery status: PARTIAL; supervisor acceptance remains separate.**
 The missing canonical Stage 27B AMP-LDP score export prevents authentic
 customer-score display. No substitute model outputs or generated predictions

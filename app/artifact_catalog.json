@@ -3,13 +3,51 @@
   "evidence_commit": "dbd978ffeebe7cee772f8ec693243895be7ff2c8",
   "text_hash_policy": "SHA-256 over UTF-8 file bytes after CRLF-to-LF normalization",
   "artifacts": {
-    "model": {"path": "results/supervised/stage_27a/final_model_freeze.json", "sha256": "a5ce3e6db799e3f4053a69d457a7d22a9f45db27bda6e6f08ec87c69b232c14e"},
-    "protocol": {"path": "results/supervised/stage_27a/stage27b_preregistration.json", "sha256": "ed2457e3a6eaf4b683c3fd8aaf89cf1f1fca63500a68f0427279813533e92702"},
-    "metrics": {"path": "results/supervised/stage_27b/final_primary_metrics.csv", "sha256": "2ee0b10750579c6e124b300fac21a1eed87d8629195d5efd7773b2cccd38111f"},
-    "integrity": {"path": "results/supervised/stage_27b/final_integrity.json", "sha256": "688f39a004341780abec390bd31b6c18b90284b8a3c104828afd299bd0af9551"},
-    "access": {"path": "results/supervised/stage_27b/final_access_event.json", "sha256": "d3715030ef9fa52e89310a4fa5daa85c62fbc2eff7e64521ae1e42f885346116"},
-    "governance": {"path": "results/governance/stage_17a/research_protocol_manifest.csv", "sha256": "dae7dba53260a3af6b8e2ddd904b5c7867c3321f27cdff5af5e4060b97c348c0"}
+    "model": {
+      "path": "results/supervised/stage_27a/final_model_freeze.json",
+      "sha256": "a5ce3e6db799e3f4053a69d457a7d22a9f45db27bda6e6f08ec87c69b232c14e"
+    },
+    "protocol": {
+      "path": "results/supervised/stage_27a/stage27b_preregistration.json",
+      "sha256": "ed2457e3a6eaf4b683c3fd8aaf89cf1f1fca63500a68f0427279813533e92702"
+    },
+    "metrics": {
+      "path": "results/supervised/stage_27b/final_primary_metrics.csv",
+      "sha256": "2ee0b10750579c6e124b300fac21a1eed87d8629195d5efd7773b2cccd38111f"
+    },
+    "integrity": {
+      "path": "results/supervised/stage_27b/final_integrity.json",
+      "sha256": "688f39a004341780abec390bd31b6c18b90284b8a3c104828afd299bd0af9551"
+    },
+    "access": {
+      "path": "results/supervised/stage_27b/final_access_event.json",
+      "sha256": "d3715030ef9fa52e89310a4fa5daa85c62fbc2eff7e64521ae1e42f885346116"
+    },
+    "governance": {
+      "path": "results/governance/stage_17a/research_protocol_manifest.csv",
+      "sha256": "dae7dba53260a3af6b8e2ddd904b5c7867c3321f27cdff5af5e4060b97c348c0"
+    }
   },
-  "predictions": null,
+  "predictions": {
+    "path": "app/derived/stage1b/customer_scores.csv",
+    "sha256": "17a7af4ac32a01981549dd6fe4e99809948aa92c82aa611b05214433b0d182ff",
+    "model_id": "LATENT_DISTRIBUTION_HGB_FIVE_SEED_MEAN",
+    "source_stage": "27B",
+    "research_role": "FINAL_TEST",
+    "seeds": [
+      42,
+      43,
+      44,
+      45,
+      46
+    ],
+    "ensemble": "arithmetic_mean",
+    "model_freeze_sha256": "a5ce3e6db799e3f4053a69d457a7d22a9f45db27bda6e6f08ec87c69b232c14e",
+    "origin": "reconstructed_inference_only",
+    "provenance": {
+      "path": "app/derived/stage1b/provenance.json",
+      "sha256": "e38b28f37231acabf2b42bd6912f65ac2eb6b99d5db4aecc372ab75381b582b3"
+    }
+  },
   "prediction_unavailable_reason": "The frozen Stage 27B evaluator persisted aggregate metrics but no canonical AMP-LDP per-customer scores. Historical FULL_48, window-baseline and DEV_VAL predictions cannot substitute for this model. An approved canonical export and reviewed provenance binding are required."
 }

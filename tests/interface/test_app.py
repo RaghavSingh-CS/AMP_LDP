@@ -20,12 +20,27 @@ class AppTests(unittest.TestCase):
         self.assertEqual([m.value for m in app.metric], ["6,356", "542", "0.8117", "0.4219"])
         app.radio[0].set_value("Customer Risk Explorer").run()
         self.assertFalse(app.exception)
-        self.assertIn("scores unavailable", app.warning[0].value)
-        self.assertTrue(app.text_input[0].disabled)
-        self.assertTrue(app.selectbox[0].disabled)
-        self.assertEqual(len(app.dataframe), 0)
+        self.assertEqual(app.metric[0].value, "6,356")
+        self.assertFalse(app.text_input[0].disabled)
+        self.assertFalse(app.selectbox[0].disabled)
+        self.assertEqual(len(app.dataframe[0].value), 6356)
+        self.assertTrue(app.dataframe[0].value["risk_score"].is_monotonic_decreasing)
+        customer = app.dataframe[0].value["CONS_NO"].iloc[0]
+        app.text_input[0].set_value(customer).run()
+        self.assertEqual(app.dataframe[0].value["CONS_NO"].tolist(), [customer])
+        self.assertEqual(app.dataframe[0].value["rank"].tolist(), [1])
         app.radio[0].set_value("Overview").run()
         self.assertEqual(len(app.metric), 4)
+
+    def test_unavailable_explorer(self):
+        with patch("app.views.explorer.load_predictions", return_value=PredictionResult(None, None, "Missing test artifact")):
+            app = self.app()
+            app.radio[0].set_value("Customer Risk Explorer").run()
+            self.assertFalse(app.exception)
+            self.assertIn("scores unavailable", app.warning[0].value)
+            self.assertTrue(app.text_input[0].disabled)
+            self.assertTrue(app.selectbox[0].disabled)
+            self.assertEqual(len(app.dataframe), 0)
 
     def test_unavailable_overview(self):
         with patch("app.views.overview.load_evidence", side_effect=ArtifactError("Missing test artifact")):

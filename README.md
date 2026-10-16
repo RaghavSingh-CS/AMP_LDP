@@ -2,9 +2,10 @@
 
 The frozen AMP-LDP research now has a local Streamlit presentation layer. See
 [Interface Stage 1 instructions](app/README.md) for CPU-only installation,
-startup, provenance and validation. Stage status is **PARTIAL** because no
-canonical Stage 27B per-customer AMP-LDP score export was persisted; the
-Overview displays verified aggregate evidence and the Explorer explains the gap.
+startup, provenance and validation. **Interface Stage 1B: PASS**: authorized
+inference-only replay reproduced the frozen AMP-LDP metrics exactly and activated
+the Customer Explorer. Its separate derived score artifact is explicitly marked
+as reconstructed; the original Stage 27B export was never persisted.
 
 This project studies anomaly-based electricity theft detection from SGCC daily
 smart-meter consumption histories. The planned workflow compares temporal

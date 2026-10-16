@@ -43,6 +43,7 @@ class PredictionResult:
     frame: pd.DataFrame | None
     source: str | None
     message: str
+    provenance_source: str | None = None
 
 
 def _require(condition: bool, message: str) -> None:
@@ -200,6 +201,15 @@ def load_predictions(root: Path = REPOSITORY_ROOT) -> PredictionResult:
                  and record["ensemble"] == "arithmetic_mean"
                  and record["model_freeze_sha256"] == evidence.catalog["artifacts"]["model"]["sha256"],
                  "Prediction provenance does not match frozen AMP-LDP.")
+        description = "Verified frozen evaluation scores."
+        if record.get("origin") == "reconstructed_inference_only":
+            provenance = _json(_verified(root, record["provenance"]))
+            _validate_reconstruction(provenance, record, evidence)
+            description = ("Derived interface scores reconstructed by frozen inference replay in Interface Stage 1B. "
+                           "These are not original persisted Stage 27B predictions. "
+                           "Independent ROC-AUC and AP checks match the frozen evaluation to six decimals.")
+        else:
+            _require(record.get("origin") in (None, "recovered_original"), "Unsupported score artifact origin.")
         frame = _csv(_verified(root, record))
         governance = _csv(_verified(root, evidence.catalog["artifacts"]["governance"]))
         validated = validate_predictions(
@@ -207,9 +217,45 @@ def load_predictions(root: Path = REPOSITORY_ROOT) -> PredictionResult:
             membership_sha256=evidence.integrity["customer_membership_sha256"],
             labels_sha256=evidence.integrity["labels_sha256"],
         )
-        return PredictionResult(validated, record["path"], "Verified frozen evaluation scores.")
+        return PredictionResult(validated, record["path"], description,
+                                record.get("provenance", {}).get("path"))
     except (ArtifactError, KeyError, TypeError, ValueError, UnicodeError) as exc:
         return PredictionResult(None, None, f"Customer scores unavailable: {exc}")
+
+
+def _validate_reconstruction(provenance: dict, record: dict, evidence: FrozenEvidence) -> None:
+    """Validate the reviewed replay manifest without loading a model at runtime."""
+    _require(provenance["schema_version"] == 1 and provenance["status"] == "VERIFIED"
+             and provenance["origin"] == "reconstructed_inference_only"
+             and provenance["original_stage27b_persisted_predictions"] is False
+             and provenance["model_id"] == MODEL_ID
+             and provenance["source_protocol_stage"] == "27B"
+             and provenance["source_evidence_commit"] == evidence.catalog["evidence_commit"]
+             and provenance["model_freeze_sha256"] == record["model_freeze_sha256"]
+             and provenance["protocol_sha256"] == evidence.catalog["artifacts"]["protocol"]["sha256"],
+             "Reconstruction provenance identity mismatch.")
+    output = provenance["output"]
+    _require(output["path"] == record["path"] and output["sha256"] == record["sha256"]
+             and output["customers"] == evidence.customers and output["theft_customers"] == evidence.theft_customers,
+             "Reconstruction output binding mismatch.")
+    scoring = provenance["scoring"]
+    _require(scoring["seeds"] == SEEDS and scoring["seed_order"] == SEEDS
+             and scoring["ensemble"] == "arithmetic_mean" and scoring["class_column"] == 1
+             and scoring["fit_calls"] == scoring["backpropagation_calls"] == 0
+             and scoring["model_mode"] == "eval" and provenance["no_threshold_changes"] is True
+             and provenance["no_training_or_validation_features_loaded"] is True
+             and provenance["research_integrity"]["unchanged"] is True,
+             "Reconstruction violates frozen inference boundaries.")
+    for key in ("customer_membership_sha256", "window_membership_sha256", "labels_sha256"):
+        _require(provenance["cohort_integrity"][key] == evidence.integrity[key], "Reconstruction cohort hash mismatch.")
+    verification = provenance["verification"]
+    _require(verification["agreement"] is True and verification["required_decimal_places"] == 6,
+             "Reconstruction metric verification missing.")
+    for name, expected in (("ROC_AUC", evidence.roc_auc), ("average_precision", evidence.average_precision)):
+        observed = float(verification["observed"][name])
+        _require(np.isfinite(observed) and f"{observed:.6f}" == f"{expected:.6f}"
+                 and verification["expected"][name] == expected,
+                 f"Reconstruction metric mismatch: {name}.")
 
 
 def explore(frame: pd.DataFrame, query: str, order: str) -> pd.DataFrame:
