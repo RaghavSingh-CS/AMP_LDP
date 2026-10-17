@@ -2321,3 +2321,34 @@ fallbacks or rerun ML on stage. Dataset sharing permissions and external utility
 validity remain unestablished; a clean isolated package reinstall is not claimed.
 Supervising acceptance remains separate. Stage 4 ends interface development;
 do not automatically begin any further research or development stage.
+
+
+### FINAL PROJECT FREEZE — local checkpoint; publication blocked (17 October 2026)
+
+The final user instruction accepts the reported ML freeze and Interface Stages
+1, 1B, 2, 3 and 4 PASS outcomes and authorizes final audit, documentation and a
+conditional GitHub push. Its explicit publication/privacy stop gate remains
+binding. **The local checkpoint is complete; the remote release is blocked.**
+Historical records and their original authorization/status statements are retained.
+
+AMP's research methodology, fitted models, evaluation results, interface
+implementation and demo configuration are frozen. Future work requires an
+explicitly authorized new development stage on a separate branch.
+
+| Decision | Final evidence and boundary |
+|---|---|
+| Retain frozen methodology/protocol | Stage 27A commit `20cd26627b0601965166bab879ab3c46695ac0f0`; `final_model_freeze.json`, `final_comparator_freeze.json`, `stage27b_preregistration.json`. DEV_TRAIN-only 17→32→16 encoders, six latent statistics→96 features, five frozen HGBs/seeds 42–46 and unweighted mean; compatible original FULL_48 and DIRECT controls. No refit, inference replay, calibration, new threshold or protocol change |
+| Preserve authoritative results | Stage 27B evidence commit `dbd978ffeebe7cee772f8ec693243895be7ff2c8`; final evaluation cohort with disclosed historical baseline access, 6,356 customers/542 positive/165,020 windows. AMP-LDP ROC-AUC `0.8117294176037735`, AP `0.42186322254778824`; original access event and full-precision metrics unchanged. No committed differences in research paths from that evidence commit |
+| Preserve reconstructed origin and artifact integrity | Stage 1B is a separately authorized inference-only reconstruction, not an original persisted prediction export. CSV SHA `17a7af4ac32a01981549dd6fe4e99809948aa92c82aa611b05214433b0d182ff`, provenance SHA `e38b28f37231acabf2b42bd6912f65ac2eb6b99d5db4aecc372ab75381b582b3`; exact metric reproduction. Stage 2 index/source lineage and Stage 3 coordinates/provenance remain unchanged and catalog-verified |
+| Freeze completed dashboard | Overview, Explorer/Inspector with original histories, compatible performance comparisons and supported AMP-LDP curves, provenance-bound demo examples, five-minute guide, aggregate-only local JSON and fail-closed read-only preflight. Prior Stage 4 browser/offline rehearsal is retained; no new interface implementation |
+| Record final rerun | 17 October: 98 interface + 8 recovery tests passed (106); all 12 preflight checks passed, zero warnings; compileall and pip check passed. All 549 Stage 4 protected baseline files match exact bytes before and after validation. No prediction generation, fitting, threshold change or research write |
+| Audit complete outgoing history | Root `C:/Projects/ML_Project`, branch `study2/mil`, implementation HEAD `b2ef13307922ca649ab84cd5fde3038cac980bee`. Fetched origin URL `https://github.com/RaghavSingh-CS/ML_Project.git`; private repository, admin/push access. Remote branch `55035842fa0306a4fafa911472b45db16517f70f` is ancestor; 13 outgoing commits, 117 changed paths, 148 blob versions/3,508,090 bytes before freeze docs. Largest blob 812,696 bytes; no raw consumption dataset, LFS pointer, environment/credential file or >50 MiB blob outgoing. Credential-pattern scan of every outgoing blob and methodology ZIP members found no matches; limited detection, not an exhaustive certification |
+| STOP publication at explicit data gate | Stage 1B CSV and Stage 2 history index newly upload 6,356 original/pseudonymous customer IDs with labels, reconstructed scores and history metadata; three authentic examples occur in catalog, guide, validation, tests and this ledger. Research-role governance does not establish upload/redistribution permission. Private visibility does not resolve it. Dataset licence/data-owner approval covering this upload is required; no push, silent removal or history rewrite |
+| Identify checkpoint and planned release | Final documentation commit subject `docs(amp): finalize project freeze and release checkpoint`; execution report supplies full SHA (also resolve via `git log -1 --format=%H -- docs/FINAL_PROJECT_FREEZE.md`). Planned annotated tag `amp-demo-freeze-2026-10-17` must target that exact commit only after safe branch push/remote verification. Tag absent locally/remotely during audit; neither branch nor tag pushed, no tag created |
+| Report enforcement accurately | GitHub branch reports `protected: false`; protection/ruleset APIs return HTTP 403 requiring GitHub Pro or public visibility for this private repository. No rule/visibility/default-branch change. Branch/tag enforcement pending; documentation/tag alone does not provide immutability. No GitHub Release/archive |
+| Preserve local boundaries and scientific limits | Three unrelated ZIPs and untracked September 20 v2 report excluded. SGCC/internal/historical-access and reconstructed-origin limits retained; no calibrated probability, theft proof/day, causal or external/operational claim; comparator curves absent, no binary operating threshold, unconfirmed raw units, illustrative label/rank-conditioned examples. Clean isolated reinstall/wheelhouse not established |
+| Reopening conditions | Release administration may resume after documented data permission and renewed audit/validation/ancestry checks. Any ML, evaluation, interface or demo change requires explicit authorization for a new stage on a separate branch. Withhold the final remote-freeze declaration until safe publication and remote branch/tag verification succeed |
+
+Concise scope, reproducibility references, approved local input dependencies,
+startup, release identity and publication blocker are in
+`docs/FINAL_PROJECT_FREEZE.md`. No further development stage is started.
