@@ -1,11 +1,20 @@
 # AMP interface
 
-**Current status: Interface Stage 3 PASS — frozen Model Performance dashboard.**
+**Current status: Interface Stage 4 PASS — ready for a supervised local demo.**
+Start with the [presenter runbook](DEMO_GUIDE.md) and run
+`.\.venv\Scripts\python.exe -m app.preflight` before presenting. Overview remains
+the landing page; the optional **Demo Guide** provides five-minute cues and three
+verified real-customer presets. Performance offers an explicit aggregate-only
+JSON export. See [final validation](STAGE4_VALIDATION.md). Stage 4 completes the
+interface-development scope, subject to supervising acceptance; no further stage
+is started automatically.
+
+**Previous delivery: Interface Stage 3 PASS — frozen Model Performance dashboard.**
 Open **Model Performance** for verified customer metrics, the protocol-compatible
 AMP-LDP / FULL_48 / DIRECT comparison, absolute differences, AMP-LDP ROC and
 precision–recall curves, methodology, limitations and source hashes. See
 [STAGE3_VALIDATION.md](STAGE3_VALIDATION.md) and the preimplementation
-[evidence audit](STAGE3_DESIGN.md). Stage 4 is not started.
+[evidence audit](STAGE3_DESIGN.md).
 
 **Previous delivery: Interface Stage 2 PASS — customer consumption inspector.**
 All 6,356 scored customers have verified original histories. Open the Customer
@@ -29,6 +38,7 @@ Python 3.12 is verified. From this repository:
 ```powershell
 Set-Location C:\Projects\ML_Project
 .\.venv\Scripts\python.exe -m pip install -r requirements-interface.txt
+.\.venv\Scripts\python.exe -m app.preflight
 .\.venv\Scripts\python.exe -m streamlit run app/main.py --server.address 127.0.0.1 --browser.gatherUsageStats false
 ```
 
@@ -46,7 +56,7 @@ python -m venv .venv-interface
 
 The existing `.venv` was used for validation. Direct interface dependencies are
 Streamlit 1.66.0, pandas 3.0.5, numpy 2.5.2, pyarrow 25.0.1 and Altair 6.3.0.
-These packages were already installed; Stages 2 and 3 needed no installation.
+These packages were already installed; Stages 2–4 needed no installation.
 No torch, CUDA, scikit-learn,
 LightGBM, pytest or model checkpoint deserialization is required. pandas, numpy,
 Pillow and packaging retain their pre-existing versions after installation.
@@ -55,6 +65,14 @@ The separate environment command is documented, not claimed as separately tested
 ## Structure and behavior
 
 - `main.py`: application identity and native sidebar navigation.
+- `navigation.py`, `views/demo_guide.py`: optional presenter callbacks, preserving
+  ordinary sidebar navigation and Explorer state.
+- `demo.py`, `demo_catalog.json`: reproducible real-customer selections,
+  source/provenance binding and aggregate-only local summary export.
+- `preflight.py`: stdlib entry point for dependency/artifact/import/history
+  checks, explicit PASS/FAIL and recovery guidance, optional curve warnings.
+- `benchmark.py`: read-only fresh-process startup/AppTest timing; `--offline`
+  uses the validation-only guard in `tests/offline/sitecustomize.py`.
 - `config.py`, `artifact_catalog.json`: repository root, paths and reviewed
   provenance bindings. The catalog contains hashes, not copied metric values.
 - `data_loader.py`: reusable, read-only evidence and prediction adapter.
@@ -99,8 +117,8 @@ and Stage 17A governance preserved in that commit:
 | Reconstructed AMP-LDP scores / evaluation labels | `app/derived/stage1b/customer_scores.csv`, bound to `provenance.json`; original Stage 27B export absent |
 
 The LATENT values are ROC-AUC `0.8117294176037735`, AP `0.42186322254778824`,
-6,356 evaluation customers and 542 theft-labelled customers. The UI uses the
-frozen paper reporting policy of four decimals. These numbers are read from
+6,356 evaluation customers and 542 theft-labelled customers. Overview uses the
+frozen paper four-decimal policy; Performance uses six decimals. Values come from
 validated evidence at runtime. They are recorded here as verification results.
 
 The final cohort had disclosed historical Stage 13 baseline access. The UI uses
@@ -193,8 +211,13 @@ used by the runtime application.
 .\.venv\Scripts\python.exe -m pip check
 ```
 
-The interface suite has 75 tests; the separately run offline suite has 8 tests
-(83 total, retaining all 59 previous regressions). New checks cover comparator
+The interface suite has 98 tests; the separately run offline suite has 8 tests
+(106 total, retaining all 83 previous regressions). New Stage 4 checks cover
+real preset identifiers/criteria/provenance, guided navigation and preserved state,
+aggregate export correctness and exclusion of every customer ID, preflight
+dependencies/missing inputs/optional warnings, network-isolated fresh execution,
+exact parsing of all original CSV score floats, and protected bytes.
+Previous checks cover comparator
 compatibility, exact metrics and model ordering, correct axes/labels/deltas,
 curve provenance/alignment and AP step semantics, optional curve failures,
 malformed evidence, unchanged research and navigation. Offline checks
@@ -305,13 +328,54 @@ immutable parsing. Missing/corrupt curves leave aggregate comparison available;
 unverified aggregate/comparator metadata disables the page. All 543 protected
 research/source/data and earlier interface evidence files remain byte-identical.
 
-## Boundaries and next dependency
+## Demo readiness and export policy
+
+The optional Demo Guide budgets 45/50/85/80/40 seconds across Overview,
+rankings, authentic inspection, Performance and conclusion. Presets are selected
+reproducibly by evaluation label and global rank: highest theft-labelled,
+lowest normal-labelled, and optional highest normal-labelled. Their original IDs
+and selection/source hashes are documented in `DEMO_GUIDE.md`; they are
+illustrative choices rather than a representative sample. Selection never runs
+inference. Guide buttons preserve ordinary Explorer query/sort/date state.
+Use **Back to page start** in the sidebar if the browser retains scroll position.
+
+Stage 4 corrects float parsing to preserve the existing score CSV's exact
+17-digit roundtrip; all global rankings and six-decimal values are unchanged.
+No score file was rewritten. The history chart uses explicit fit-x autosizing
+and a stacked coverage legend to avoid mobile page overflow, with all source
+values, gaps, tooltip and pan/zoom/reset behavior retained. Original source loading
+has a visible verification spinner and an actionable unavailable-history state.
+
+`python -m app.preflight` checks five pinned dependencies, demo configuration,
+critical imports, frozen evidence/comparators, Stage 1B source/provenance/schema/
+cohort checks, real presenter selections, history inputs/index and all three
+example histories. Optional curves report WARN if unavailable; required failures
+return exit status 1 with restoration guidance. It never repairs or runs ML.
+Use `--json` for a structured report. See the runbook for exact startup/recovery.
+
+One explicit **Download aggregate evidence summary** button produces a local
+JSON with full-precision metrics, definitions, cohort/access disclosure, source
+hashes, reconstructed score origin and limits. It excludes customer IDs, examples,
+scores and histories. Source redistribution permission is not established, so
+supported `client.disableDataExport=true` hides built-in CSV/read-only clipboard
+exports, including chart table views. This is not security/access control;
+visible data and chart PNGs can still be captured. No customer-level sharing
+permission is asserted. Viewer toolbar retains theme controls and hides Deploy.
+
+Repository Streamlit configuration disables usage telemetry and binds loopback.
+No essential CDN, remote API, cloud or download is used by the app. Fresh startup,
+preflight and all pages passed with external Python connections blocked;
+browser assets were local. The existing environment was verified; an isolated
+dependency reinstall without a complete local wheelhouse was not performed.
+Performance measurements and their machine/test limits are in
+`STAGE4_VALIDATION.md`; preload pages before presenting.
+
+## Frozen research boundaries
 
 No live inference, retraining, preprocessing/split changes, thresholds or
-deployment infrastructure are implemented. Stage 4 requires explicit scope
-and approval. A suitable next scope is demo usability, guided research narrative
-and provenance-aware presentation/export, retaining the frozen ranking-only
-boundary. New comparator inference, causal explanations, threshold selection
+deployment infrastructure are implemented. Stage 4 is the final interface
+delivery, subject to supervising acceptance. New comparator inference,
+causal explanations, threshold selection
 or deployment would need separate authorization and evidence. Stage 1B's narrow
 authorization resolved the missing-export dependency through frozen replay.
 The original export remains absent, and reconstructed scores must retain that

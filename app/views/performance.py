@@ -6,6 +6,7 @@ import streamlit as st
 
 from app.config import COHORT_NAME
 from app.data_loader import ArtifactError
+from app.demo import aggregate_summary
 from app.performance_loader import METRICS, MODEL_ORDER, absolute_differences, load_curves, load_performance
 
 COLORS = ["#38a9d6", "#cf8d3a", "#8e79d6"]
@@ -92,6 +93,9 @@ def render():
                 st.altair_chart(curve_chart(values, pr=pr), width="stretch", theme="streamlit")
         st.caption("Coordinates come solely from existing scores and labels. ROC-AUC and AP reproduce the frozen values exactly. The PR curve uses steps; AP is the non-interpolated sum of recall increments weighted by precision, not trapezoidal PR area.")
     st.info("FULL_48 and DIRECT curves are unavailable: no matching original Stage 27B per-customer predictions or curve artifacts were located. Their verified aggregate metrics are shown above.")
+    st.download_button("Download aggregate evidence summary", aggregate_summary(evidence, curves),
+                       file_name="amp-frozen-evaluation-summary.json", mime="application/json", on_click="ignore")
+    st.caption("Local aggregate metrics, cohort disclosure, definitions and source hashes only. Customer identifiers, presenter examples and consumption histories are excluded.")
 
     st.subheader("How to interpret the evidence")
     st.write("**ROC-AUC** measures how well scores rank a theft-labelled customer above a normal-labelled customer across thresholds (ties receive half credit). It summarizes discrimination, not the fraction of customers correctly classified.")

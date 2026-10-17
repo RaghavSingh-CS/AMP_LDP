@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "model_id": "LATENT_DISTRIBUTION_HGB_FIVE_SEED_MEAN",
+  "source_scores": {
+    "path": "app/derived/stage1b/customer_scores.csv",
+    "sha256": "17a7af4ac32a01981549dd6fe4e99809948aa92c82aa611b05214433b0d182ff"
+  },
+  "source_provenance": {
+    "path": "app/derived/stage1b/provenance.json",
+    "sha256": "e38b28f37231acabf2b42bd6912f65ac2eb6b99d5db4aecc372ab75381b582b3"
+  },
+  "selection_uses_evaluation_labels": true,
+  "inference_inputs_changed": false,
+  "examples": [
+    {
+      "key": "high_theft",
+      "CONS_NO": "45C64D484FC7B1A767557CF0674330E0",
+      "criterion": "Smallest global rank among FLAG=1 customers"
+    },
+    {
+      "key": "low_normal",
+      "CONS_NO": "D5F510E7EFD856CDA64770568C25017B",
+      "criterion": "Largest global rank among FLAG=0 customers"
+    },
+    {
+      "key": "high_normal",
+      "CONS_NO": "C21A9C87D49E6945FB4570F38F73C023",
+      "criterion": "Smallest global rank among FLAG=0 customers"
+    }
+  ]
+}

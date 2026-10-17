@@ -177,7 +177,9 @@ def validate_predictions(
     _require(int(labels.eq("1").sum()) == theft_customers
              and stable_hash(labels.tolist()) == labels_sha256, "Frozen evaluation label hash/count mismatch.")
     try:
-        scores = pd.to_numeric(result["risk_score"], errors="raise").astype(float)
+        # Python's correctly rounded float parser preserves the Stage 1B
+        # 17-digit CSV roundtrip; pandas.to_numeric can drop final digits.
+        scores = result["risk_score"].map(float).astype(float)
     except (TypeError, ValueError) as exc:
         raise ArtifactError("Non-numeric risk scores.") from exc
     _require(bool(np.isfinite(scores).all() and scores.between(0, 1).all()),

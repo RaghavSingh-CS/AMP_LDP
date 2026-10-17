@@ -15,6 +15,7 @@ def render() -> None:
     st.header("Customer Risk Explorer")
     st.caption(f"Evaluation data only · {COHORT_NAME}")
     st.info("Scores express model ranking, not calibrated theft probabilities. Ground-truth FLAG is a customer-level evaluation label, not evidence of theft on a particular day.")
+    st.caption("Local research demonstration · Customer data sharing permission is not established. Built-in CSV and clipboard exports are disabled; aggregate presentation exports are on Model Performance.")
     if result.frame is None:
         st.warning("AMP-LDP customer scores unavailable")
         st.write(result.message)

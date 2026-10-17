@@ -1,7 +1,7 @@
 # Anomaly-Based Electricity Theft Detection Using Autoencoder and GAN Models
 
 The frozen AMP-LDP research now has a local Streamlit presentation layer. See
-[Interface Stage 1 instructions](app/README.md) for CPU-only installation,
+[Interface instructions](app/README.md) for CPU-only installation,
 startup, provenance and validation. **Interface Stage 1B: PASS**: authorized
 inference-only replay reproduced the frozen AMP-LDP metrics exactly and activated
 the Customer Explorer. Its separate derived score artifact is explicitly marked
@@ -12,8 +12,12 @@ customers. See [Stage 2 validation](app/STAGE2_VALIDATION.md).
 **Interface Stage 3: PASS** adds the frozen Model Performance dashboard,
 protocol-compatible AMP-LDP / FULL_48 / DIRECT comparisons, and source-supported
 AMP-LDP ROC/PR curves calculated from the existing reconstructed scores.
-See [Stage 3 evidence and validation](app/STAGE3_VALIDATION.md). No Stage 4,
-new inference, threshold selection or model development is included.
+See [Stage 3 evidence and validation](app/STAGE3_VALIDATION.md).
+**Interface Stage 4: PASS** completes the local demonstration interface with an
+optional five-minute guide, real presenter presets, aggregate-only evidence
+export and read-only preflight. See the [demo runbook](app/DEMO_GUIDE.md) and
+[final validation](app/STAGE4_VALIDATION.md). No new inference, threshold
+selection or model development is included; no further stage starts automatically.
 
 This project studies anomaly-based electricity theft detection from SGCC daily
 smart-meter consumption histories. The planned workflow compares temporal

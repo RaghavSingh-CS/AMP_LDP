@@ -28,10 +28,13 @@ def consumption_chart(readings: pd.DataFrame):
         color=alt.Color("status:N", title="Reading coverage",
                         scale=alt.Scale(domain=["Observed", "Missing reading", "No source column"],
                                         range=["#318c9f", "#d99c36", "#8c6bb1"]),
-                        legend=alt.Legend(orient="bottom")),
+                        legend=alt.Legend(orient="bottom", columns=1)),
         tooltip=[alt.Tooltip("date:T", title="Date", format="%Y-%m-%d"), "status:N", "model_calendar_note:N"],
     ).properties(height=24)
-    return alt.vconcat(plot, coverage, spacing=12).resolve_scale(x="shared")
+    # Streamlit otherwise applies pad autosizing to this layered vconcat,
+    # adding axis widths outside the narrow screen's available chart width.
+    return (alt.vconcat(plot, coverage, spacing=12).resolve_scale(x="shared")
+            .properties(autosize=alt.AutoSizeParams(type="fit-x", contains="padding")))
 
 
 def reset_interval(state, customer, start, end):
@@ -61,6 +64,7 @@ def render(result, state) -> None:
     cols[2].metric("Evaluation label (FLAG)", str(label))
     cols[2].caption("Theft-labelled" if label else "Normal-labelled")
     st.caption("FLAG is ground-truth evaluation information, not a model output. The score is not an established calibrated probability.")
+    st.caption("Local inspection only. Customer-history CSV and clipboard exports are disabled; sharing permission is not established.")
     previous, following = st.columns(2)
     rank = int(row["rank"])
     for column, name, offset in ((previous, "Previous rank", -1), (following, "Next rank", 1)):
@@ -75,10 +79,12 @@ def render(result, state) -> None:
             st.text(result.provenance_source)
 
     try:
-        history = load_history(customer)
+        with st.spinner("Verifying and loading original consumption history…"):
+            history = load_history(customer)
     except ArtifactError as exc:
         st.warning("Customer consumption history unavailable")
         st.write(str(exc))
+        st.info("Use the Demo Guide preflight instructions to identify and restore the original source. The frozen score and Back control remain available.")
         return
     readings = history.readings
     stats = summarize(readings)

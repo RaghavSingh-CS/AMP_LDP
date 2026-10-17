@@ -9,3 +9,4 @@ app/derived/stage2/*.json -text
 app/derived/stage3/*.json -text
 # Curve provenance records this builder's exact source bytes.
 app/recovery/build_performance_curves.py -text
+app/derived/stage4/*.json -text
